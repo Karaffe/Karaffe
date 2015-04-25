@@ -40,9 +40,7 @@ public class ClassResolver {
 
     private void defaultImports() {
         try {
-            importMap.put("String", Class.forName("java.lang.String"));
             importMap.put("Int", Class.forName("java.lang.Integer"));
-            importMap.put("Double", Class.forName("java.lang.Double"));
             importMap.put("Any", Class.forName("java.lang.Object"));
             importMap.put("Void", Void.TYPE);
         } catch (ClassNotFoundException e) {
