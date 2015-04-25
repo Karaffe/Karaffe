@@ -17,6 +17,21 @@ mvn package
 `Karaffe-Lang-x.y.z-jar-with-dependencies.jar`が生成されます。  
 x,y,zはバージョンを表しています。  
 
+例:
+targetディレクトリへ移動します。
+```
+class User(age Int, name String) {
+
+}
+
+```
+を`User.krf`として保存し、
+```
+java -jar Karaffe-Lang-x.y.z-jar-with-dependencies.jar User.krf
+```
+を実行した時に、`User.class`が作成されていればOKです。
+あとはjavapとかしながら遊んであげてください。
+
 ##コントリビューティング
 
 IDEはNetbeans 8.0以上を推奨しますが、一般的なMavenプロジェクト構成なのでEclipseやIntelliJ IDEAでも動作します。どのIDEも、Mavenのプロジェクトとして開くことができます。事前に必要なプラグインをインストールした後に開いてください。  
