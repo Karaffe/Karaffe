@@ -49,6 +49,18 @@ public class ClassResolver {
     }
 
     public Optional<Class<?>> resolve(String className) {
+        Optional<Class<?>> clazz1 = resolveFromImportMap(className);
+        if (clazz1.isPresent()) {
+            return clazz1;
+        }
+        return resolveFromDefaultImports(className);
+    }
+
+    private Optional<Class<?>> resolveFromImportMap(String className) {
+        return Optional.ofNullable(importMap.get(className));
+    }
+
+    private Optional<Class<?>> resolveFromDefaultImports(String className) {
         final Function<String, Optional<Class<?>>> strToClazz = str -> {
             try {
                 return Optional.of(Class.forName(str));
