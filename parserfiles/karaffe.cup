@@ -138,6 +138,7 @@ BlockImport,
 BlockImportBody,
 BlockImportBodyList,
 ClassBody,
+ClassBodyBlock,
 ClassDecl,
 ClassDeclList,
 ClassModifier,
@@ -281,7 +282,7 @@ ClassDecl ::= SimpleClassDecl:c
                 {:RESULT = new ClassDecl(c);:}
             ;
 
-SimpleClassDecl ::= AnnotationList:a ClassModifierList:m CLASS Identifier:id AutoDeclBlock:b ExtendsOrImplements:ex LBRACE ClassBody:body RBRACE
+SimpleClassDecl ::= AnnotationList:a ClassModifierList:m CLASS Identifier:id AutoDeclBlock:b ExtendsOrImplements:ex ClassBodyBlock:body
                         {:RESULT = new SimpleClassDecl(a, m, id, b, ex, body);:}
                   ;
 
@@ -331,6 +332,11 @@ ExtendsOrImplements ::= LT SimpleTypeList:t
                             {:RESULT = new ExtendsOrImplements(t);:}
                       |
                       ;
+
+ClassBodyBlock ::= LBRACE ClassBody:body RBRACE
+                    {:RESULT = body;:}
+                 |
+                 ;
 
 ClassBody ::= FieldDecl:f
                 {:RESULT = new ClassBody(f);:}
