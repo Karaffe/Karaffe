@@ -7,8 +7,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import karaffe.compiler.phase.gencode.ByteCode;
-import karaffe.compiler.tree.ASMConvertible;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.classdecls.ClassDeclList;
@@ -16,7 +16,7 @@ import karaffe.compiler.visitor.Visitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
-public class CompileUnit extends AbstractNode implements ASMConvertible<List<ByteCode>> {
+public class CompileUnit extends AbstractNode implements Supplier<List<ByteCode>> {
 
     private final FileNode file;
     private final Optional<AST> packageDecl;
@@ -44,19 +44,6 @@ public class CompileUnit extends AbstractNode implements ASMConvertible<List<Byt
         return "(CompileUnit:" + String.join(",", file.toString(), packageDecl.toString(), importDecl.toString(), classDeclList.toString()) + ")";
     }
 
-    @Override
-    public List<ByteCode> toNode() {
-        List<ClassNode> classNodes = new ArrayList<>();
-        classDeclList.ifPresent(l -> classNodes.addAll(ClassDeclList.class.cast(l).toNode()));
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        List<ByteCode> byteCodes = new ArrayList<>();
-        classNodes.forEach(n -> {
-            n.accept(classWriter);
-            byteCodes.add(new ByteCode(classWriter.toByteArray(), n.name + ".class", packageDecl.map(p -> PackageDecl.class.cast(p).toPath(File.separator)).orElse("")));
-        });
-        return byteCodes;
-    }
-
     public boolean hasPackageDecl() {
         return packageDecl.isPresent();
     }
@@ -71,6 +58,19 @@ public class CompileUnit extends AbstractNode implements ASMConvertible<List<Byt
 
     public boolean isEmpty() {
         return !hasClassDecl() && !hasImportDecl() && !hasPackageDecl();
+    }
+
+    @Override
+    public List<ByteCode> get() {
+        List<ClassNode> classNodes = new ArrayList<>();
+        classDeclList.ifPresent(l -> classNodes.addAll(ClassDeclList.class.cast(l).get()));
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        List<ByteCode> byteCodes = new ArrayList<>();
+        classNodes.forEach(n -> {
+            n.accept(classWriter);
+            byteCodes.add(new ByteCode(classWriter.toByteArray(), n.name + ".class", packageDecl.map(p -> PackageDecl.class.cast(p).toPath(File.separator)).orElse("")));
+        });
+        return byteCodes;
     }
 
 }

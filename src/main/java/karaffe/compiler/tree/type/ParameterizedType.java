@@ -3,13 +3,13 @@
  */
 package karaffe.compiler.tree.type;
 
-import karaffe.compiler.tree.ASMConvertible;
+import java.util.function.Supplier;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.visitor.Visitor;
 import org.objectweb.asm.Type;
 
-public class ParameterizedType extends AbstractNode implements ASMConvertible<org.objectweb.asm.Type> {
+public class ParameterizedType extends AbstractNode implements Supplier<org.objectweb.asm.Type> {
 
     private final AST identifier;
     private final AST type;
@@ -27,7 +27,7 @@ public class ParameterizedType extends AbstractNode implements ASMConvertible<or
     }
 
     @Override
-    public Type toNode() {
+    public Type get() {
         return Type.getType(Object.class);
     }
 

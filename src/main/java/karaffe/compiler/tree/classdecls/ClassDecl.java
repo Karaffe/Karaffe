@@ -3,13 +3,13 @@
  */
 package karaffe.compiler.tree.classdecls;
 
-import karaffe.compiler.tree.ASMConvertible;
+import java.util.function.Supplier;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.visitor.Visitor;
 import org.objectweb.asm.tree.ClassNode;
 
-public class ClassDecl extends AbstractNode implements ASMConvertible<ClassNode> {
+public class ClassDecl extends AbstractNode implements Supplier<ClassNode> {
 
     private final AST classDecl;
 
@@ -29,9 +29,9 @@ public class ClassDecl extends AbstractNode implements ASMConvertible<ClassNode>
     }
 
     @Override
-    public ClassNode toNode() {
-        ASMConvertible<ClassNode> convertible = ASMConvertible.class.cast(classDecl);
-        return convertible.toNode();
+    public ClassNode get() {
+        Supplier<ClassNode> convertible = Supplier.class.cast(classDecl);
+        return convertible.get();
     }
 
 }

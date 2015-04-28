@@ -3,12 +3,12 @@
  */
 package karaffe.compiler.tree.modifiers;
 
-import karaffe.compiler.tree.ASMConvertible;
+import java.util.function.Supplier;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.visitor.Visitor;
 import org.objectweb.asm.Opcodes;
 
-public class FinalModifier extends AbstractNode implements ASMConvertible<Integer> {
+public class FinalModifier extends AbstractNode implements Supplier<Integer> {
 
     @Override
     public void accept(Visitor visitor) {
@@ -16,7 +16,7 @@ public class FinalModifier extends AbstractNode implements ASMConvertible<Intege
     }
 
     @Override
-    public Integer toNode() {
+    public Integer get() {
         return Opcodes.ACC_FINAL;
     }
 

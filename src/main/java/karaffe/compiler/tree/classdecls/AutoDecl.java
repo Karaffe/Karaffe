@@ -38,7 +38,7 @@ public class AutoDecl extends AbstractNode implements Supplier<FieldNode> {
     }
 
     public String desc() {
-        return type.toNode().getDescriptor();
+        return type.get().getDescriptor();
     }
 
     public String signature() {

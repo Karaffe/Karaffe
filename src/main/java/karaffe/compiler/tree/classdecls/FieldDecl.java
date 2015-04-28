@@ -47,7 +47,7 @@ public class FieldDecl extends AbstractNode implements Supplier<FieldNode> {
     }
 
     public String desc() {
-        return type.toNode().getDescriptor();
+        return type.get().getDescriptor();
     }
 
     public String signature() {

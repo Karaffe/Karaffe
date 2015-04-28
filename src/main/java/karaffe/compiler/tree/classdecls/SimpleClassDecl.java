@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 import karaffe.compiler.KCompiler;
 import karaffe.compiler.phase.ToDo;
-import karaffe.compiler.tree.ASMConvertible;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.Identifier;
@@ -26,7 +26,7 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class SimpleClassDecl extends AbstractNode implements ASMConvertible<ClassNode> {
+public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode> {
 
     private final Optional<AST> annotationList;
     private final Optional<AST> modifierList;
@@ -81,45 +81,6 @@ public class SimpleClassDecl extends AbstractNode implements ASMConvertible<Clas
         return new ArrayList<>();
     }
 
-    @Override
-    public ClassNode toNode() {
-        ClassNode classNode = new ClassNode();
-        classNode.access = access();
-        classNode.name = name();
-        classNode.signature = signature();
-        classNode.superName = superName();
-        classNode.interfaces = interfacesList();
-        classNode.version = Opcodes.V1_8;
-        List<FieldNode> fields = new ArrayList<>();
-        List<MethodNode> methods = new ArrayList<>();
-        autoDeclList.ifPresent(d -> fields.addAll(AutoDeclList.class.cast(d).get()));
-        fields.stream()
-                .map(f -> makeProperty(classNode, f))
-                .forEach(methods::add);
-        if (!fields.isEmpty()) {
-            makeCtor(classNode, methods, fields);
-        }
-        body.ifPresent(b -> fields.addAll(ClassBody.class.cast(b).get()));
-        if (fields.size()
-                != fields.stream()
-                .map(f -> f.name)
-                .distinct()
-                .toArray().length) {
-            //フィールド名が重複している
-            KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, "フィールド名が重複しています"));
-        }
-        if (methods.size()
-                != methods.stream()
-                .map(m -> m.name)
-                .distinct()
-                .toArray().length) {
-            KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, "メソッド名が重複しています"));
-        }
-        classNode.fields = fields;
-        classNode.methods = methods;
-        return classNode;
-    }
-
     private void makeCtor(ClassNode classNode, List<MethodNode> methods, List<FieldNode> fields) {
         List<Type> desclist = fields.stream()
                 .map(f -> f.desc)
@@ -155,5 +116,44 @@ public class SimpleClassDecl extends AbstractNode implements ASMConvertible<Clas
         insnList.add(new InsnNode(Opcodes.ARETURN));
         methodNode.instructions = insnList;
         return methodNode;
+    }
+
+    @Override
+    public ClassNode get() {
+        ClassNode classNode = new ClassNode();
+        classNode.access = access();
+        classNode.name = name();
+        classNode.signature = signature();
+        classNode.superName = superName();
+        classNode.interfaces = interfacesList();
+        classNode.version = Opcodes.V1_8;
+        List<FieldNode> fields = new ArrayList<>();
+        List<MethodNode> methods = new ArrayList<>();
+        autoDeclList.ifPresent(d -> fields.addAll(AutoDeclList.class.cast(d).get()));
+        fields.stream()
+                .map(f -> makeProperty(classNode, f))
+                .forEach(methods::add);
+        if (!fields.isEmpty()) {
+            makeCtor(classNode, methods, fields);
+        }
+        body.ifPresent(b -> fields.addAll(ClassBody.class.cast(b).get()));
+        if (fields.size()
+                != fields.stream()
+                .map(f -> f.name)
+                .distinct()
+                .toArray().length) {
+            //フィールド名が重複している
+            KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, "フィールド名が重複しています"));
+        }
+        if (methods.size()
+                != methods.stream()
+                .map(m -> m.name)
+                .distinct()
+                .toArray().length) {
+            KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, "メソッド名が重複しています"));
+        }
+        classNode.fields = fields;
+        classNode.methods = methods;
+        return classNode;
     }
 }

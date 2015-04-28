@@ -4,13 +4,13 @@
 package karaffe.compiler.tree.modifiers;
 
 import java.util.Optional;
-import karaffe.compiler.tree.ASMConvertible;
+import java.util.function.Supplier;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.util.ModifierData;
 import karaffe.compiler.visitor.Visitor;
 
-public class ModifierList extends AbstractNode implements ASMConvertible<ModifierData> {
+public class ModifierList extends AbstractNode implements Supplier<ModifierData> {
 
     private final AST modifier;
     private final Optional<AST> modifierList;
@@ -26,7 +26,7 @@ public class ModifierList extends AbstractNode implements ASMConvertible<Modifie
     }
 
     @Override
-    public ModifierData toNode() {
+    public ModifierData get() {
         return new ModifierData();
     }
 

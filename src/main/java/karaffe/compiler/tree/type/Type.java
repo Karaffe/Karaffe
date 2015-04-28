@@ -4,12 +4,12 @@
 package karaffe.compiler.tree.type;
 
 import java.util.Optional;
-import karaffe.compiler.tree.ASMConvertible;
+import java.util.function.Supplier;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.visitor.Visitor;
 
-public class Type extends AbstractNode implements ASMConvertible<org.objectweb.asm.Type> {
+public class Type extends AbstractNode implements Supplier<org.objectweb.asm.Type> {
 
     private final Optional<AST> simpleTypeOrParameterized;
 
@@ -29,14 +29,14 @@ public class Type extends AbstractNode implements ASMConvertible<org.objectweb.a
     }
 
     @Override
-    public org.objectweb.asm.Type toNode() {
+    public org.objectweb.asm.Type get() {
         org.objectweb.asm.Type ret = simpleTypeOrParameterized.map(t -> {
             if (t instanceof Type) {
                 Type t1 = (Type) t;
-                return t1.toNode();
+                return t1.get();
             } else if (t instanceof SimpleType) {
                 SimpleType simpleType = (SimpleType) t;
-                return simpleType.toNode();
+                return simpleType.get();
             }
             return org.objectweb.asm.Type.BOOLEAN_TYPE;
 

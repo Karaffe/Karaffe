@@ -3,13 +3,13 @@
  */
 package karaffe.compiler.tree.type;
 
-import karaffe.compiler.tree.ASMConvertible;
+import java.util.function.Supplier;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.name.AmbiguousName;
 import karaffe.compiler.visitor.Visitor;
 
-public class TypeName extends AbstractNode implements ASMConvertible<String> {
+public class TypeName extends AbstractNode implements Supplier<String> {
 
     private final AST name;
 
@@ -28,7 +28,7 @@ public class TypeName extends AbstractNode implements ASMConvertible<String> {
     }
 
     @Override
-    public String toNode() {
+    public String get() {
         return AmbiguousName.class.cast(name).toPath("/");
     }
 }

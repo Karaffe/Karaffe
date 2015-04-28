@@ -23,7 +23,7 @@ public class ClassGen implements Function<AST, List<ByteCode>> {
     public List<ByteCode> apply(AST ast) {
         if (ast instanceof CompileUnit) {
             CompileUnit compileUnit = (CompileUnit) ast;
-            return compileUnit.toNode();
+            return compileUnit.get();
         } else if (ast instanceof ErrorNode) {
             ErrorNode errorNode = (ErrorNode) ast;
             return Collections.emptyList();
