@@ -8,13 +8,19 @@ import karaffe.compiler.visitor.Visitor;
 
 public class PackageOrTypeName extends AbstractNode {
 
-    public PackageOrTypeName(Object name) {
+    private final AmbiguousName name;
 
+    public PackageOrTypeName(Object name) {
+        this.name = (AmbiguousName) name;
     }
 
     @Override
     public void accept(Visitor visitor) {
         visitor.packageOrTypeName(this);
+    }
+
+    public String toPath() {
+        return name.toPath();
     }
 
 }
