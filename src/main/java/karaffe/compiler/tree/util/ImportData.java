@@ -18,7 +18,7 @@ public class ImportData {
     public ImportData(PackageOrTypeName packageOrTypeName) {
         String path = packageOrTypeName.toPath();
         this.fullName = path;
-        String[] split = path.split(".");
+        String[] split = path.split("\\.");
         this.shortName = split[split.length - 1];
     }
 
