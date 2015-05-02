@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import karaffe.compiler.tree.util.ImportData;
 import org.objectweb.asm.Type;
 
 public class ClassResolver {
@@ -103,6 +104,10 @@ public class ClassResolver {
 
     public void addImport(String shortName, String fullName) throws ClassNotFoundException {
         importMap.put(shortName, Class.forName(fullName));
+    }
+
+    public void addImport(ImportData importData) throws ClassNotFoundException {
+        importMap.put(importData.shortName(), Class.forName(importData.fullName()));
     }
 
     public void clear() {
