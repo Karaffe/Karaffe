@@ -3,17 +3,17 @@
  */
 package karaffe.compiler.tree.imports;
 
-import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
+import karaffe.compiler.tree.name.PackageOrTypeName;
+import karaffe.compiler.tree.util.ImportData;
 import karaffe.compiler.visitor.Visitor;
 
 public class SimpleImport extends AbstractNode {
 
-    private final AST name;
+    private final ImportData importData;
 
     public SimpleImport(Object n) {
-        this.name = (AST) n;
-        addChildren(name);
+        this.importData = new ImportData((PackageOrTypeName) n);
     }
 
     @Override
@@ -23,7 +23,15 @@ public class SimpleImport extends AbstractNode {
 
     @Override
     public String toString() {
-        return "(SimpleImport:" + name + ")";
+        return "(SimpleImport:" + importData.fullName() + ")";
+    }
+
+    public String fullName() {
+        return importData.fullName();
+    }
+
+    public String shortName() {
+        return importData.shortName();
     }
 
 }
