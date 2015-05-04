@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 import karaffe.compiler.KCompiler;
 import karaffe.compiler.tree.AST;
+import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.Annotation;
 import karaffe.compiler.tree.AnnotationList;
 import karaffe.compiler.tree.ErrorNode;
@@ -432,6 +433,10 @@ public class Parser extends java_cup.runtime.lr_parser {
 
     public List<ErrorNode> errors() {
         return errorList;
+    }
+
+    public AbstractNode setSymbol(AbstractNode node) {
+        return node.setSymbol(stack.peek());
     }
 
     /** Cup generated class to encapsulate user supplied action code. */
@@ -1017,7 +1022,10 @@ public class Parser extends java_cup.runtime.lr_parser {
                 case 41: // ClassModifier ::= ABSTRACT
                 {
                     Object RESULT = null;
-                    RESULT = new AbstractModifier();
+                    int aleft = ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).left;
+                    int aright = ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).right;
+                    Object a = (Object) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+                    RESULT = setSymbol(new AbstractModifier());
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("ClassModifier", 14, ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
