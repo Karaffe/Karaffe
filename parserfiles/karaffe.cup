@@ -99,6 +99,10 @@ parser code {:
         return errorList;
     }
 
+    public AbstractNode setSymbol(AbstractNode node) {
+        return node.setSymbol(stack.peek());
+    }
+
 :}
 
 terminal 
