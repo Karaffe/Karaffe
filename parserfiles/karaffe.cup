@@ -310,8 +310,8 @@ ClassModifier ::= PUBLIC
                     {:RESULT = new PrivateModifier();:}
                 | FINAL
                     {:RESULT = new FinalModifier();:}
-                | ABSTRACT
-                    {:RESULT = new AbstractModifier();:}
+                | ABSTRACT:a
+                    {:RESULT = setSymbol(new AbstractModifier());:}
                 | STATIC
                     {:RESULT = new StaticModifier();:}
                 ;
