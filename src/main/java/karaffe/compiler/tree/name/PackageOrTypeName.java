@@ -23,4 +23,7 @@ public class PackageOrTypeName extends AbstractNode {
         return name.toPath();
     }
 
+    public String toPath(String string) {
+        return name.toPath(string);
+    }
 }
