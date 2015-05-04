@@ -3,7 +3,10 @@
  */
 package karaffe.compiler;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -47,7 +50,19 @@ public class KCompiler {
     }
 
     public static List<ToDo> compileBySource(String src) {
-        return new KCompiler(new File(".")).compile(src);
+        File file;
+        try {
+            file = File.createTempFile("krf", "");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (FileWriter writer = new FileWriter(file);
+                BufferedWriter bufferedWriter = new BufferedWriter(writer);) {
+            bufferedWriter.write(src);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return new KCompiler(file).compile();
     }
 
 }
