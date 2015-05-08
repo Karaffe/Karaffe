@@ -56,7 +56,9 @@ public class KCompiler {
                     BufferedWriter bufferedWriter = new BufferedWriter(writer);) {
                 bufferedWriter.write(src);
             }
-            return new KCompiler(file).compile();
+            List<ToDo> tds = new KCompiler(file).compile();
+            file.delete();
+            return tds;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
