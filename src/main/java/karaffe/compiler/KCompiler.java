@@ -50,19 +50,16 @@ public class KCompiler {
     }
 
     public static List<ToDo> compileBySource(String src) {
-        File file;
         try {
-            file = File.createTempFile("krf", "");
+            File file = File.createTempFile("krf", "");
+            try (FileWriter writer = new FileWriter(file);
+                    BufferedWriter bufferedWriter = new BufferedWriter(writer);) {
+                bufferedWriter.write(src);
+            }
+            return new KCompiler(file).compile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        try (FileWriter writer = new FileWriter(file);
-                BufferedWriter bufferedWriter = new BufferedWriter(writer);) {
-            bufferedWriter.write(src);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-        return new KCompiler(file).compile();
     }
 
 }
