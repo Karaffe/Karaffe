@@ -22,6 +22,7 @@ public class CompileUnit extends AbstractNode implements Supplier<List<ByteCode>
     private final Optional<AST> packageDecl;
     private final Optional<AST> importDecl;
     private final Optional<AST> classDeclList;
+    private final List<ByteCode> byteCodes;
 
     public CompileUnit(File f, Object p, Object i, Object c) {
         this.file = new FileNode(f);
@@ -32,6 +33,14 @@ public class CompileUnit extends AbstractNode implements Supplier<List<ByteCode>
         addChildren(packageDecl);
         addChildren(importDecl);
         addChildren(classDeclList);
+        List<ClassNode> classNodes = new ArrayList<>();
+        classDeclList.ifPresent(l -> classNodes.addAll(ClassDeclList.class.cast(l).get()));
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        this.byteCodes = new ArrayList<>();
+        classNodes.forEach(n -> {
+            n.accept(classWriter);
+            byteCodes.add(new ByteCode(classWriter.toByteArray(), n.name + ".class", packageDecl.map(pkg -> PackageDecl.class.cast(pkg).toPath(File.separator)).orElse("")));
+        });
     }
 
     @Override
@@ -62,14 +71,6 @@ public class CompileUnit extends AbstractNode implements Supplier<List<ByteCode>
 
     @Override
     public List<ByteCode> get() {
-        List<ClassNode> classNodes = new ArrayList<>();
-        classDeclList.ifPresent(l -> classNodes.addAll(ClassDeclList.class.cast(l).get()));
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        List<ByteCode> byteCodes = new ArrayList<>();
-        classNodes.forEach(n -> {
-            n.accept(classWriter);
-            byteCodes.add(new ByteCode(classWriter.toByteArray(), n.name + ".class", packageDecl.map(p -> PackageDecl.class.cast(p).toPath(File.separator)).orElse("")));
-        });
         return byteCodes;
     }
 
