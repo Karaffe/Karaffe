@@ -33,8 +33,7 @@ public class KCompiler {
     }
 
     public List<ToDo> compile() {
-        compile(file.getAbsolutePath());
-        return todoList;
+        return compile(file.getAbsolutePath());
     }
 
     private List<ToDo> compile(String path) {
