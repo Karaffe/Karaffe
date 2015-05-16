@@ -3,7 +3,11 @@
  */
 package karaffe.compiler.phase.parser;
 
-import java.io.StringReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import java.util.function.Function;
 import karaffe.compiler.tree.AST;
@@ -38,13 +42,19 @@ public class TestUtil {
     }
 
     public static Optional<AST> testCodeWithoutErrorCheck(String code) {
-        Parser parser = new Parser(new Lexer(new StringReader(code)));
-        parser.setPath("TEST_CODE");
         try {
-            AST compileUnit = parser.compileUnit();
-            return Optional.of(compileUnit);
-        } catch (Exception e) {
-            e.printStackTrace();
+            File file = File.createTempFile("krf", "");
+            Files.write(file.toPath(), code.getBytes(), StandardOpenOption.APPEND);
+            Parser parser = new Parser(new Lexer(new FileReader(file)));
+            parser.setPath(file.getAbsolutePath());
+            try {
+                AST compileUnit = parser.compileUnit();
+                return Optional.of(compileUnit);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Optional.empty();
+            }
+        } catch (IOException ex) {
             return Optional.empty();
         }
     }
