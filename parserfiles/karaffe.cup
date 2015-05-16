@@ -1,6 +1,7 @@
 package karaffe.compiler.phase.parser;
 
 import karaffe.compiler.KCompiler;
+import karaffe.compiler.phase.*;
 import karaffe.compiler.tree.*;
 import karaffe.compiler.tree.imports.*;
 import karaffe.compiler.tree.compileunits.*;
@@ -53,6 +54,27 @@ parser code {:
 
     public AbstractNode setSymbol(AbstractNode node) {
         return node.setSymbol(stack.peek());
+    }
+
+    private void genErrWithPosition(String msg, int line, int column) {
+        KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, genMessage(msg,line,column)));
+    }
+
+    private void genWarnWithPosition(String msg, int line, int column) {
+        KCompiler.todoList.add(new ToDo(ToDo.Type.WARNING, genMessage(msg,line,column)));
+    }
+
+    private String genMessage(String msg, int line, int column) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(msg).append("\n");
+        sb.append(filePath).append("\n");
+        sb.append("Line:").append(line).append(", Column:").append(column).append("\n");
+        sb.append(codeList.get(line - 1)).append("\n");
+        for (int i = 0; i < column - 1; i++) {
+            sb.append(" ");
+        }
+        sb.append("^").append("\n");
+        return sb.toString();
     }
 
 :}
@@ -126,8 +148,6 @@ TypeParameter;
 
 CompileUnit ::= PackageDecl:p ImportDeclList:i ClassDeclList:c
                     {:RESULT = new CompileUnit(new java.io.File(filePath), p, i, c);:}
-              | error:err
-                    {:RESULT = new ErrorNode(lexer.line(),lexer.column(),"CompileUnit", err);:}
               ;
 
 PackageDecl ::= PACKAGE AmbiguousName:name
@@ -139,9 +159,7 @@ PackageDecl ::= PACKAGE AmbiguousName:name
                             hoge package ...
                             ^^^^
                         */
-                        ErrorNode node = new ErrorNode(lexer.line(), lexer.column(), "PackageDecl.Before.Package",err,p);
-                        errorList.add(node);
-                        RESULT = node;
+                        genErrWithPosition("packageの前がおかしい", errleft, errright);
                     :}
               | PACKAGE:p error:err
                     {:
@@ -149,9 +167,7 @@ PackageDecl ::= PACKAGE AmbiguousName:name
                             package .
                                     ^
                         */
-                        ErrorNode node = new ErrorNode(lexer.line(), lexer.column(), "PackageDecl.After.Package",p,err);
-                        errorList.add(node);
-                        RESULT = node;
+                        genErrWithPosition("packageの後がおかしい", errleft, errright);
                     :}
               | PACKAGE:p AmbiguousName:name error:err
                     {:
@@ -161,9 +177,7 @@ PackageDecl ::= PACKAGE AmbiguousName:name
                             package hoge.fuga.piyo fff
                                                    ^^^
                         */
-                        ErrorNode node = new ErrorNode(lexer.line(), lexer.column(), "PackageDecl.After.Identifier",p,name,err);
-                        errorList.add(node);
-                        RESULT = node;
+                        genErrWithPosition("パッケージ宣言の直後がおかしいです", errleft, errright);
                     :}
               | 
               ;
@@ -239,7 +253,12 @@ ClassDecl ::= SimpleClassDecl:c
             ;
 
 SimpleClassDecl ::= AnnotationList:a ClassModifierList:m CLASS Identifier:id AutoDeclBlock:b ExtendsOrImplements:ex ClassBodyBlock:body
-                        {:RESULT = new SimpleClassDecl(a, m, id, b, ex, body);:}
+                        {:
+                            if (Character.isLowerCase(((Identifier) id).get().charAt(0)))  {
+                                genWarnWithPosition("クラス名は大文字から始める必要があります", idleft, idright);           
+                            }
+                            RESULT = new SimpleClassDecl(a, m, id, b, ex, body);
+                        :}
                   ;
 
 AnnotationList ::= Annotation:a AnnotationList:l
