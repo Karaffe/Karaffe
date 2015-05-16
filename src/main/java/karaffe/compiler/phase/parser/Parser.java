@@ -3,12 +3,13 @@
 //----------------------------------------------------
 package karaffe.compiler.phase.parser;
 
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import karaffe.compiler.KCompiler;
+import karaffe.compiler.phase.ToDo;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.Annotation;
@@ -357,67 +358,11 @@ public class Parser extends java_cup.runtime.lr_parser {
     private final List<ErrorNode> errorList = new ArrayList<>();
     private Lexer lexer;
     private String filePath;
+    private List<String> codeList;
 
     Parser(Lexer lexer) {
         super(lexer);
         this.lexer = lexer;
-    }
-
-    public static void main(String[] args) {
-        Reader reader;
-        String path;
-        if (args.length == 0) {
-            path = "Unavailable(Standard Input)";
-            System.out.println("Karaffe " + KCompiler.VERSION + " [Standard Input Mode]");
-            System.out.println("Type :help for help");
-            System.out.print("> ");
-            Scanner scanner = new Scanner(System.in);
-            StringBuilder source = new StringBuilder();
-            while (scanner.hasNextLine()) {
-                String next = scanner.nextLine();
-                if (next.equals(":exit")) {
-                    System.out.println("Bye");
-                    break;
-                }
-                if (isShouldAppend(next)) {
-                    source.append(next).append("\n");
-                }
-                reader = new StringReader(source.toString());
-                Parser parser = new Parser(new Lexer(reader));
-                parser.setPath(path);
-                try {
-                    System.out.println("Generated AST:\n" + parser.compileUnit()); //debug
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                source.setLength(0); //Clear Text
-                System.out.print("> ");
-            }
-        } else if (args.length == 1) {
-            try {
-                reader = new java.io.FileReader(args[0]);
-                path = args[0];
-                Parser parser = new Parser(new Lexer(reader));
-                System.out.println(parser.compileUnit());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            return;
-        }
-    }
-
-    private static boolean isShouldAppend(String line) {
-        switch (line) {
-            case ":help":
-                System.out.println("");
-                System.out.println("Karaffe Compiler HelpPage:\n"
-                        + ":exit");
-                System.out.println("");
-                return false;
-            default:
-                return true;
-        }
     }
 
     public AST compileUnit() throws Exception {
@@ -429,6 +374,11 @@ public class Parser extends java_cup.runtime.lr_parser {
 
     public void setPath(String path) {
         this.filePath = path;
+        try {
+            codeList = Files.readAllLines(new File(path).toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<ErrorNode> errors() {
@@ -437,6 +387,27 @@ public class Parser extends java_cup.runtime.lr_parser {
 
     public AbstractNode setSymbol(AbstractNode node) {
         return node.setSymbol(stack.peek());
+    }
+
+    private void genErrWithPosition(String msg, int line, int column) {
+        KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, genMessage(msg, line, column)));
+    }
+
+    private void genWarnWithPosition(String msg, int line, int column) {
+        KCompiler.todoList.add(new ToDo(ToDo.Type.WARNING, genMessage(msg, line, column)));
+    }
+
+    private String genMessage(String msg, int line, int column) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(msg).append("\n");
+        sb.append(filePath).append("\n");
+        sb.append("Line:").append(line).append(", Column:").append(column).append("\n");
+        sb.append(codeList.get(line - 1)).append("\n");
+        for (int i = 0; i < column - 1; i++) {
+            sb.append(" ");
+        }
+        sb.append("^").append("\n");
+        return sb.toString();
     }
 
     /** Cup generated class to encapsulate user supplied action code. */
@@ -501,7 +472,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     int errleft = ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).left;
                     int errright = ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).right;
                     Object err = (Object) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-                    RESULT = new ErrorNode(lexer.line(), lexer.column(), "CompileUnit", err);
+                    genErrWithPosition("invalid file", errright, errleft);
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("CompileUnit", 16, ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
@@ -533,9 +504,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                      hoge package ...
                      ^^^^
                      */
-                    ErrorNode node = new ErrorNode(lexer.line(), lexer.column(), "PackageDecl.Before.Package", err, p);
-                    errorList.add(node);
-                    RESULT = node;
+                    genErrWithPosition("packageの前がおかしい", errleft, errright);
 
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("PackageDecl", 30, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
@@ -556,9 +525,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                      package .
                      ^
                      */
-                    ErrorNode node = new ErrorNode(lexer.line(), lexer.column(), "PackageDecl.After.Package", p, err);
-                    errorList.add(node);
-                    RESULT = node;
+                    genErrWithPosition("packageの後がおかしい", errleft, errright);
 
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("PackageDecl", 30, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
@@ -584,9 +551,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                      package hoge.fuga.piyo fff
                      ^^^
                      */
-                    ErrorNode node = new ErrorNode(lexer.line(), lexer.column(), "PackageDecl.After.Identifier", p, name, err);
-                    errorList.add(node);
-                    RESULT = node;
+                    genErrWithPosition("パッケージ宣言の直後がおかしいです", errleft, errright);
 
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("PackageDecl", 30, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 2)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
@@ -926,7 +891,12 @@ public class Parser extends java_cup.runtime.lr_parser {
                     int bodyleft = ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).left;
                     int bodyright = ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).right;
                     Object body = (Object) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+
+                    if (Character.isLowerCase(((Identifier) id).get().charAt(0))) {
+                        genWarnWithPosition("クラス名は大文字から始める必要があります", idleft, idright);
+                    }
                     RESULT = new SimpleClassDecl(a, m, id, b, ex, body);
+
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("SimpleClassDecl", 33, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 6)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
