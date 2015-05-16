@@ -18,7 +18,7 @@ public class Main {
                 .map(KCompiler::new)
                 .map(KCompiler::compile)
                 .forEach(l -> {
-                    l.forEach(System.out::println);
+                    l.forEach(System.out::print);
                 });
     }
 }
