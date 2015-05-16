@@ -4,11 +4,9 @@
 package karaffe.compiler.phase.gencode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import karaffe.compiler.tree.AST;
-import karaffe.compiler.tree.ErrorNode;
 import karaffe.compiler.tree.compileunits.CompileUnit;
 
 public class ClassGen implements Function<AST, List<ByteCode>> {
@@ -21,14 +19,7 @@ public class ClassGen implements Function<AST, List<ByteCode>> {
 
     @Override
     public List<ByteCode> apply(AST ast) {
-        if (ast instanceof CompileUnit) {
-            CompileUnit compileUnit = (CompileUnit) ast;
-            return compileUnit.get();
-        } else if (ast instanceof ErrorNode) {
-            ErrorNode errorNode = (ErrorNode) ast;
-            return Collections.emptyList();
-        }
-        return Collections.emptyList();
+        return ((CompileUnit) ast).get();
     }
 
 }
