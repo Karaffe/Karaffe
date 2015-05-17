@@ -3,8 +3,13 @@
  */
 package karaffe.compiler.phase.parser;
 
+import java.util.List;
 import static karaffe.compiler.phase.parser.TestUtil.testCode;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 
 public class ClassDeclTest {
 
@@ -31,12 +36,14 @@ public class ClassDeclTest {
 
     @Test
     public void testSimpleClassDeclFinalModifier() {
-        testCode("final class Id {}");
+        List<ClassNode> classNodes = testCode("final class Id {}").getClassDeclList().get();
+        assertThat(classNodes.get(0).access, is(Opcodes.ACC_FINAL));
     }
 
     @Test
     public void testSimpleClassDeclPublicAbstractModifier() {
-        testCode("public abstract class Id {}");
+        List<ClassNode> classNodes = testCode("public abstract class Id {}").getClassDeclList().get();
+        assertThat(classNodes.get(0).access, is(Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT));
     }
 
     @Test
