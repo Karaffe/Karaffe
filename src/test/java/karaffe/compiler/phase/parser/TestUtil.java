@@ -12,12 +12,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.ErrorNode;
+import karaffe.compiler.tree.compileunits.CompileUnit;
 import karaffe.compiler.visitor.VisitorAdaptor;
 import static org.junit.Assert.fail;
 
 public class TestUtil {
 
-    public static AST testCode(String code) {
+    public static CompileUnit testCode(String code) {
         try {
             Optional<AST> maybeCompileUnit = testCodeWithoutErrorCheck(code);
             AST compileUnit = maybeCompileUnit.orElseThrow(AssertionError::new);
@@ -33,7 +34,7 @@ public class TestUtil {
                 }
 
             });
-            return compileUnit;
+            return (CompileUnit) compileUnit;
         } catch (Throwable e) {
             e.printStackTrace();
             fail(e.toString());
