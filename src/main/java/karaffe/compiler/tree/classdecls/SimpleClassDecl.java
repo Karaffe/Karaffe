@@ -14,6 +14,7 @@ import karaffe.compiler.phase.ToDo;
 import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.Identifier;
+import karaffe.compiler.tree.modifiers.ModifierList;
 import karaffe.compiler.visitor.Visitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -29,14 +30,14 @@ import org.objectweb.asm.tree.MethodNode;
 public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode> {
 
     private final Optional<AST> annotationList;
-    private final Optional<AST> modifierList;
+    private final Optional<ModifierList> modifierList;
     private final Identifier identifier;
     private final Optional<AST> autoDeclList;
     private final Optional<AST> body;
 
     public SimpleClassDecl(Object a, Object m, Object id, Object b, Object ex, Object bd) {
         this.annotationList = Optional.ofNullable((AST) a);
-        this.modifierList = Optional.ofNullable((AST) m);
+        this.modifierList = Optional.ofNullable((ModifierList) m);
         this.identifier = (Identifier) id;
         this.autoDeclList = Optional.ofNullable((AST) b);
         this.body = Optional.ofNullable((AST) bd);
@@ -58,7 +59,12 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
     }
 
     public int access() {
-        return Opcodes.ACC_PUBLIC;
+        Integer acc
+                = modifierList
+                .map(modlist -> modlist.get())
+                .map(modifierData -> modifierData.get())
+                .orElse(Opcodes.ACC_PUBLIC);
+        return acc;
     }
 
     public String name() {
