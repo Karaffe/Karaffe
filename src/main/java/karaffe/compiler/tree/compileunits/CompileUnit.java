@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import karaffe.compiler.phase.gencode.ByteCode;
 import karaffe.compiler.tree.AST;
@@ -63,6 +64,10 @@ public class CompileUnit extends AbstractNode implements Supplier<List<ByteCode>
 
     public boolean hasClassDecl() {
         return classDeclList.isPresent();
+    }
+
+    public ClassDeclList getClassDeclList() {
+        return (ClassDeclList) classDeclList.get();
     }
 
     public boolean isEmpty() {
