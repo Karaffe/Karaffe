@@ -24,7 +24,7 @@ public abstract class AbstractNode implements AST {
         children.add(Objects.requireNonNull(ast));
     }
 
-    public void addChildren(Optional<AST> ast) {
+    public void addChildren(Optional<? extends AST> ast) {
         Objects.requireNonNull(ast).ifPresent(children::add);
     }
 
