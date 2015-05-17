@@ -27,11 +27,11 @@ public class FieldDecl extends AbstractNode implements Supplier<FieldNode> {
         this.identifier = (AST) id;
         this.type = (karaffe.compiler.tree.type.Type) t;
         this.initializer = Optional.ofNullable((AST) init);
-        addChildren(annotationList);
-        addChildren(modifierList);
-        addChildren(identifier);
-        addChildren(type);
-        addChildren(initializer);
+        addChild(annotationList);
+        addChild(modifierList);
+        addChild(identifier);
+        addChild(type);
+        addChild(initializer);
     }
 
     @Override

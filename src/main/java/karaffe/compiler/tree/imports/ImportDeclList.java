@@ -16,8 +16,8 @@ public class ImportDeclList extends AbstractNode {
     public ImportDeclList(Object i, Object l) {
         this.import_ = (AST) i;
         this.importList = Optional.ofNullable((AST) l);
-        addChildren(import_);
-        addChildren(importList);
+        addChild(import_);
+        addChild(importList);
     }
 
     @Override

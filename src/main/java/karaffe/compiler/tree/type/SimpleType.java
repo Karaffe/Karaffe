@@ -16,7 +16,7 @@ public class SimpleType extends AbstractNode implements Supplier<org.objectweb.a
 
     public SimpleType(Object s) {
         this.simpleType = (AST) s;
-        addChildren(simpleType);
+        addChild(simpleType);
     }
 
     @Override

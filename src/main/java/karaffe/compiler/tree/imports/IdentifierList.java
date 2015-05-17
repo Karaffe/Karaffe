@@ -20,8 +20,8 @@ public class IdentifierList extends AbstractNode {
     public IdentifierList(Object i, Object l) {
         this.id = (AST) i;
         this.list = Optional.ofNullable((AST) l);
-        addChildren(id);
-        addChildren(list);
+        addChild(id);
+        addChild(list);
     }
 
     @Override

@@ -15,8 +15,8 @@ public class AliasImport extends AbstractNode {
     public AliasImport(Object n, Object i) {
         this.beforeAmbiguousName = (AST) n;
         this.identifier = (AST) i;
-        addChildren(beforeAmbiguousName);
-        addChildren(identifier);
+        addChild(beforeAmbiguousName);
+        addChild(identifier);
     }
 
     @Override

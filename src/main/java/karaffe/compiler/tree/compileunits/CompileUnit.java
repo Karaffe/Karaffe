@@ -30,10 +30,10 @@ public class CompileUnit extends AbstractNode implements Supplier<List<ByteCode>
         this.packageDecl = Optional.ofNullable((AST) p);
         this.importDecl = Optional.ofNullable((AST) i);
         this.classDeclList = Optional.ofNullable((AST) c);
-        addChildren(file);
-        addChildren(packageDecl);
-        addChildren(importDecl);
-        addChildren(classDeclList);
+        addChild(file);
+        addChild(packageDecl);
+        addChild(importDecl);
+        addChild(classDeclList);
         List<ClassNode> classNodes = new ArrayList<>();
         classDeclList.ifPresent(l -> classNodes.addAll(ClassDeclList.class.cast(l).get()));
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);

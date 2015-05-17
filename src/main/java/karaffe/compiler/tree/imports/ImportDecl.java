@@ -13,7 +13,7 @@ public class ImportDecl extends AbstractNode {
 
     public ImportDecl(Object i) {
         this.importDecl = (AST) i;
-        addChildren(importDecl);
+        addChild(importDecl);
     }
 
     @Override

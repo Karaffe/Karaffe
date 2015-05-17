@@ -15,7 +15,7 @@ public class ClassDecl extends AbstractNode implements Supplier<ClassNode> {
 
     public ClassDecl(Object c) {
         this.classDecl = (AST) c;
-        addChildren(classDecl);
+        addChild(classDecl);
     }
 
     @Override

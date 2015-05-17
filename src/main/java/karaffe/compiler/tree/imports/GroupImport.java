@@ -15,8 +15,8 @@ public class GroupImport extends AbstractNode {
     public GroupImport(Object name, Object idList) {
         this.ambiguousName = (AST) name;
         this.otherImports = (AST) idList;
-        addChildren(ambiguousName);
-        addChildren(otherImports);
+        addChild(ambiguousName);
+        addChild(otherImports);
     }
 
     @Override

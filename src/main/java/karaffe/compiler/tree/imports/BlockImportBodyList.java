@@ -16,8 +16,8 @@ public class BlockImportBodyList extends AbstractNode {
     public BlockImportBodyList(Object b, Object l) {
         this.body = (AST) b;
         this.list = Optional.ofNullable((AST) l);
-        addChildren(body);
-        addChildren(list);
+        addChild(body);
+        addChild(list);
     }
 
     @Override

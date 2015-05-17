@@ -17,8 +17,8 @@ public class ParameterizedType extends AbstractNode implements Supplier<org.obje
     public ParameterizedType(Object i, Object t) {
         this.identifier = (AST) i;
         this.type = (AST) t;
-        addChildren(identifier);
-        addChildren(type);
+        addChild(identifier);
+        addChild(type);
     }
 
     @Override

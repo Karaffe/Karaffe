@@ -24,8 +24,8 @@ public class ClassBody extends AbstractNode implements Supplier<List<? extends F
     public ClassBody(Object f, Object b) {
         this.body = (AST) f;
         this.classBody = Optional.ofNullable((AST) b);
-        addChildren(body);
-        addChildren(classBody);
+        addChild(body);
+        addChild(classBody);
     }
 
     @Override

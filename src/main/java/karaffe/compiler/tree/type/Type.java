@@ -15,7 +15,7 @@ public class Type extends AbstractNode implements Supplier<org.objectweb.asm.Typ
 
     public Type(Object t) {
         this.simpleTypeOrParameterized = Optional.ofNullable((AST) t);
-        addChildren(simpleTypeOrParameterized);
+        addChild(simpleTypeOrParameterized);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class AutoDecl extends AbstractNode implements Supplier<FieldNode> {
     public AutoDecl(Object id, Object t) {
         this.id = (AST) id;
         this.type = (karaffe.compiler.tree.type.Type) t;
-        addChildren(this.id);
-        addChildren(this.type);
+        addChild(this.id);
+        addChild(this.type);
     }
 
     @Override

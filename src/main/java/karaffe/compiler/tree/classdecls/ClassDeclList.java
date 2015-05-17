@@ -20,8 +20,8 @@ public class ClassDeclList extends AbstractNode implements Supplier<List<ClassNo
     public ClassDeclList(Object c, Object l) {
         this.classDecl = (AST) c;
         this.classDeclList = Optional.ofNullable((AST) l);
-        addChildren(classDecl);
-        addChildren(classDeclList);
+        addChild(classDecl);
+        addChild(classDeclList);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class AutoDeclBlock extends AbstractNode implements Supplier<List<FieldNo
 
     public AutoDeclBlock(Object l) {
         this.autoDeclList = Optional.ofNullable((AST) l);
-        addChildren(autoDeclList);
+        addChild(autoDeclList);
     }
 
     @Override

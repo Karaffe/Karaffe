@@ -14,7 +14,7 @@ public class BlockImport extends AbstractNode {
 
     public BlockImport(Object b) {
         this.body = Optional.ofNullable((AST) b);
-        addChildren(body);
+        addChild(body);
     }
 
     @Override

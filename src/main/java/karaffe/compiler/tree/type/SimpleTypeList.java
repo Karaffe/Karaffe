@@ -16,8 +16,8 @@ public class SimpleTypeList extends AbstractNode {
     public SimpleTypeList(Object t, Object l) {
         this.type = (AST) t;
         this.typeList = Optional.ofNullable((AST) l);
-        addChildren(type);
-        addChildren(typeList);
+        addChild(type);
+        addChild(typeList);
     }
 
     @Override

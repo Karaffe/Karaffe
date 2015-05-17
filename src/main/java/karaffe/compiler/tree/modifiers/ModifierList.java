@@ -18,8 +18,8 @@ public class ModifierList extends AbstractNode implements Supplier<ModifierData>
     public ModifierList(Object m, Object l) {
         this.modifier = (Supplier<ModifierData>) m;
         this.modifierList = Optional.ofNullable((ModifierList) l);
-        addChildren((AST) modifier);
-        addChildren(modifierList);
+        addChild((AST) modifier);
+        addChild(modifierList);
     }
 
     @Override

@@ -41,11 +41,11 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
         this.identifier = (Identifier) id;
         this.autoDeclList = Optional.ofNullable((AST) b);
         this.body = Optional.ofNullable((AST) bd);
-        addChildren(annotationList);
-        addChildren(modifierList);
-        addChildren(identifier);
-        addChildren(autoDeclList);
-        addChildren(body);
+        addChild(annotationList);
+        addChild(modifierList);
+        addChild(identifier);
+        addChild(autoDeclList);
+        addChild(body);
     }
 
     @Override

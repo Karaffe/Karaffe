@@ -14,8 +14,8 @@ public class AnnotationList extends AbstractNode {
     public AnnotationList(Object a, Object l) {
         this.annotation = (AST) a;
         this.annotationList = Optional.ofNullable((AST) l);
-        addChildren(annotation);
-        addChildren(annotationList);
+        addChild(annotation);
+        addChild(annotationList);
     }
 
     @Override

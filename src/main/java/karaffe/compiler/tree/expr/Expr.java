@@ -13,7 +13,7 @@ public class Expr extends AbstractNode {
 
     public Expr(Object e) {
         this.expr = (AST) e;
-        addChildren(expr);
+        addChild(expr);
     }
 
     @Override
