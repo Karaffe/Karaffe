@@ -70,8 +70,7 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
     public int access() {
         Integer acc
                 = modifierList
-                .map(modlist -> modlist.get())
-                .map(modifierData -> modifierData.get())
+                .map(l -> l.get().get())
                 .orElse(Opcodes.ACC_PUBLIC);
         return acc;
     }
