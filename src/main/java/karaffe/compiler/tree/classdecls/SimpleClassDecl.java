@@ -41,13 +41,13 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
             Object modifiers,
             Object name,
             Object autoDecl,
-            Object superOrInterfaces_,
+            Object sOrI,
             Object bd) {
         this.annotationList = Optional.ofNullable((AST) annotations);
         this.modifierList = Optional.ofNullable((ModifierList) modifiers);
         this.identifier = (Identifier) name;
         this.autoDeclList = Optional.ofNullable((AST) autoDecl);
-        this.superOrInterfaces = Optional.ofNullable((AST) superOrInterfaces_);
+        this.superOrInterfaces = Optional.ofNullable((AST) sOrI);
         this.body = Optional.ofNullable((AST) bd);
         addChild(annotationList);
         addChild(modifierList);
