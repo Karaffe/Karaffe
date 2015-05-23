@@ -28,6 +28,12 @@ public abstract class AbstractNode implements AST {
         Objects.requireNonNull(ast).ifPresent(children::add);
     }
 
+    public void addChildren(AST... asts) {
+        for (AST ast : asts) {
+            addChild(ast);
+        }
+    }
+
     public AbstractNode setSymbol(Object symbol) {
         this.symbol = Optional.of(Symbol.class.cast(symbol));
         return this;
