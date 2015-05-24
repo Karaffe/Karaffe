@@ -20,7 +20,7 @@ import karaffe.compiler.phase.scope.ScopePhase;
 
 public class KCompiler {
 
-    public static final String VERSION = "0.0.0";
+    public static final String VERSION = "0.0.0b2";
     public static final List<ToDo> todoList = new ArrayList<>();
 
     private final File file;
