@@ -376,7 +376,7 @@ TypeParameter ::= LBRACKET SimpleTypeList:l RBRACKET
                 ;
 
 SimpleTypeList ::= SimpleType:s
-                    {:RESULT = new SimpleType(s);:}
+                    {:RESULT = new SimpleTypeList(s);:}
                  | SimpleType:s COMMA SimpleTypeList:l
                     {:RESULT = new SimpleTypeList(s, l);:}
                  ;
