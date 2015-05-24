@@ -7,12 +7,12 @@ import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.visitor.Visitor;
 
-public class ExtendsOrImplements extends AbstractNode {
+public class SuperTypeOrInterfaces extends AbstractNode {
 
     private final AST t;
 
-    public ExtendsOrImplements(Object t) {
         this.t = (AST) t;
+    public SuperTypeOrInterfaces(Object t) {
     }
 
     @Override

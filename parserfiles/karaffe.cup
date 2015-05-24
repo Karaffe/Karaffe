@@ -123,7 +123,7 @@ ClassModifier,
 ClassModifierList,
 CompileUnit,
 Expr,
-ExtendsOrImplements,
+SuperTypeOrInterfaces,
 FieldDecl,
 FieldModifier,
 FieldModifierList,
@@ -252,7 +252,7 @@ ClassDecl ::= SimpleClassDecl:c
                 {:RESULT = new ClassDecl(c);:}
             ;
 
-SimpleClassDecl ::= AnnotationList:a ClassModifierList:m CLASS Identifier:id AutoDeclBlock:b ExtendsOrImplements:ex ClassBodyBlock:body
+SimpleClassDecl ::= AnnotationList:a ClassModifierList:m CLASS Identifier:id AutoDeclBlock:b SuperTypeOrInterfaces:ex ClassBodyBlock:body
                         {:
                             if (Character.isLowerCase(((Identifier) id).get().charAt(0)))  {
                                 genWarnWithPosition("クラス名は大文字から始める必要があります", idleft, idright);           
@@ -303,8 +303,8 @@ AutoDecl ::= Identifier:id Type:t
                 {:RESULT = new AutoDecl(id, t);:}
            ;
 
-ExtendsOrImplements ::= LT SimpleTypeList:t
-                            {:RESULT = new ExtendsOrImplements(t);:}
+SuperTypeOrInterfaces ::= LT SimpleTypeList:t
+                            {:RESULT = new SuperTypeOrInterfaces(t);:}
                       |
                       ;
 
