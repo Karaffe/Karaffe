@@ -118,6 +118,20 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
         methods.add(ctor);
     }
 
+    private void makeDefaultCtor(ClassNode classNode) {
+        MethodNode ctor = new MethodNode();
+        ctor.access = Opcodes.ACC_PUBLIC;
+        ctor.name = "<init>";
+        ctor.desc = Type.getMethodDescriptor(Type.VOID_TYPE);
+        ctor.exceptions = Collections.emptyList();
+        InsnList insnList = new InsnList();
+        insnList.add(new IntInsnNode(Opcodes.ALOAD, 0));
+        insnList.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, superName(), "<init>", Type.getMethodDescriptor(Type.VOID_TYPE), false));
+        insnList.add(new InsnNode(Opcodes.RETURN));
+        ctor.instructions = insnList;
+        classNode.methods.add(ctor);
+    }
+
     public MethodNode makeProperty(ClassNode classNode, FieldNode f) {
         MethodNode methodNode = new MethodNode();
         methodNode.access = Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL;
