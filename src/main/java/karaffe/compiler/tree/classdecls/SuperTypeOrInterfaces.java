@@ -3,16 +3,17 @@
  */
 package karaffe.compiler.tree.classdecls;
 
-import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
+import karaffe.compiler.tree.type.SimpleType;
+import karaffe.compiler.tree.type.SimpleTypeList;
 import karaffe.compiler.visitor.Visitor;
 
 public class SuperTypeOrInterfaces extends AbstractNode {
 
-    private final AST t;
+    private final SimpleTypeList t;
 
-        this.t = (AST) t;
     public SuperTypeOrInterfaces(Object t) {
+        this.t = (SimpleTypeList) t;
     }
 
     @Override
