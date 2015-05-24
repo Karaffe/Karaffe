@@ -88,11 +88,19 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
     }
 
     public String[] interfaces() {
-        return null;
+        if (superOrInterfaces.isPresent()) {
+            return interfacesList().toArray(new String[]{});
+        } else {
+            return null;
+        }
     }
 
     public List<String> interfacesList() {
-        return new ArrayList<>();
+        if (superOrInterfaces.isPresent()) {
+            return ASTConverter.superOrInterfacesToInterfaces.apply(superOrInterfaces.get());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     private void makeCtor(ClassNode classNode, List<MethodNode> methods, List<FieldNode> fields) {
