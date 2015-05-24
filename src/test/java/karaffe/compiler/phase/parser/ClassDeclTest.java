@@ -3,12 +3,16 @@
  */
 package karaffe.compiler.phase.parser;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import static karaffe.compiler.phase.parser.TestUtil.testCode;
+import karaffe.compiler.tree.compileunits.CompileUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 
 public class ClassDeclTest {
@@ -108,8 +112,16 @@ public class ClassDeclTest {
     }
 
     @Test
-    public void testExtendsOrImplements() {
-        testCode("class User < java.io.Serializable {}");
+    public void testClassNode() {
+        CompileUnit compileUnit = testCode("class MyList < ArrayList, java.io.Serializable, Cloneable {}");
+        List<ClassNode> classNodes = compileUnit.getClassDeclList().get();
+        assertThat(classNodes.size(), is(1));
+        ClassNode node = classNodes.get(0);
+        assertThat(node.superName, is(Type.getInternalName(ArrayList.class)));
+        assertThat(node.interfaces.size(), is(2));
+        List<String> interfaces = node.interfaces;
+        assertThat(interfaces.get(0), is(Type.getInternalName(Serializable.class)));
+        assertThat(interfaces.get(1), is(Type.getInternalName(Cloneable.class)));
     }
 
 }
