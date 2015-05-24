@@ -13,7 +13,7 @@ import karaffe.compiler.tree.classdecls.AutoDeclList;
 import karaffe.compiler.tree.classdecls.ClassBody;
 import karaffe.compiler.tree.classdecls.ClassDecl;
 import karaffe.compiler.tree.classdecls.ClassDeclList;
-import karaffe.compiler.tree.classdecls.ExtendsOrImplements;
+import karaffe.compiler.tree.classdecls.SuperTypeOrInterfaces;
 import karaffe.compiler.tree.classdecls.FieldDecl;
 import karaffe.compiler.tree.classdecls.SimpleClassDecl;
 import karaffe.compiler.tree.classdecls.Initializer;
@@ -249,7 +249,7 @@ public class VisitorAdaptor implements Visitor {
     }
 
     @Override
-    public void extendsOrImplements(ExtendsOrImplements aThis) {
+    public void extendsOrImplements(SuperTypeOrInterfaces aThis) {
         aThis.childrenAccept(this);
     }
 
