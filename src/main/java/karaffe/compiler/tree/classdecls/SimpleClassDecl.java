@@ -182,6 +182,9 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
         }
         classNode.fields = fields;
         classNode.methods = methods;
+        if (methods.isEmpty()) {
+            makeDefaultCtor(classNode);
+        }
         return classNode;
     }
 }
