@@ -15,6 +15,7 @@ import karaffe.compiler.tree.AST;
 import karaffe.compiler.tree.AbstractNode;
 import karaffe.compiler.tree.Identifier;
 import karaffe.compiler.tree.modifiers.ModifierList;
+import karaffe.compiler.tree.util.ASTConverter;
 import karaffe.compiler.visitor.Visitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -84,7 +85,11 @@ public class SimpleClassDecl extends AbstractNode implements Supplier<ClassNode>
     }
 
     public String superName() {
-        return Type.getInternalName(Object.class);
+        if (superOrInterfaces.isPresent()) {
+            return ASTConverter.superOrInterfacesToSuperTypeInternalName.apply(superOrInterfaces.get());
+        } else {
+            return Type.getInternalName(Object.class);
+        }
     }
 
     public String[] interfaces() {
