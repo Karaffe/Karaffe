@@ -20,4 +20,16 @@ public class SuperTypeOrInterfaces extends AbstractNode {
     public void accept(Visitor visitor) {
         visitor.extendsOrImplements(this);
     }
+
+    public SimpleType getFirst() {
+        return t.first();
+    }
+
+    public SimpleTypeList nextSimpleTypeList() {
+        return t.next();
+    }
+
+    public boolean hasNext() {
+        return t.hasNext();
+    }
 }
