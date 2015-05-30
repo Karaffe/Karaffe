@@ -60,7 +60,14 @@ public class ASTConverter {
                     }
                 })
                 .filter(Objects::nonNull)
-                .filter(Class::isInterface)
+                .filter(clazz -> {
+                    if (clazz.isInterface()) {
+                        return true;
+                    } else {
+                        KCompiler.todoList.add(new ToDo(ToDo.Type.ERROR, "インターフェースではありません。" + clazz.getCanonicalName()));
+                        return false;
+                    }
+                })
                 .map(Type::getInternalName)
                 .collect(toList());
         return interfaces;
