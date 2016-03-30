@@ -2,7 +2,11 @@ package karaffe.core;
 
 public interface Equals {
 
-    public boolean equals(JavaPrimitiveType that);
+    public default boolean equals(JavaPrimitiveType that) {
+        return !notEquals(that);
+    }
 
-    public boolean notEquals(JavaPrimitiveType that);
+    public default boolean notEquals(JavaPrimitiveType that) {
+        return !equals(that);
+    }
 }

@@ -1,12 +1,12 @@
 package karaffe.core;
 
-public interface ComparableOp {
+public interface ComparableOp<T extends JavaPrimitiveType> {
 
-    public boolean lessThan(Int that);
+    public boolean lessThan(T that);
 
-    public boolean greaterThan(Int that);
+    public boolean greaterThan(T that);
 
-    public boolean lessThanEqualTo(Int that);
+    public boolean lessThanEqualTo(T that);
 
-    public boolean greaterThanEqualTo(Int that);
+    public boolean greaterThanEqualTo(T that);
 }

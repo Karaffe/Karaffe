@@ -2,10 +2,7 @@ package karaffe.core;
 
 import java.util.Objects;
 
-public class Int implements
-    JavaPrimitiveType,
-    ComparableOp,
-    Equals {
+public class Int implements SimplePrimitive<Int> {
 
     private final int value;
 
@@ -19,7 +16,9 @@ public class Int implements
 
     @Override
     public boolean equals(JavaPrimitiveType that) {
-        Objects.requireNonNull(that);
+        if ( that == null ) {
+            return false;
+        }
         return this.value == that.toInt();
     }
 
