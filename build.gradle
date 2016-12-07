@@ -5,7 +5,7 @@ apply plugin: 'eu.appsatori.fatjar'
 apply plugin: 'antlr'
 
 group = 'org.karaffe'
-version = '1.0'
+version = '0.1'
 
 description = """"""
 
