@@ -1,8 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'jacoco'
-apply plugin: 'eu.appsatori.fatjar'
-apply plugin: 'antlr'
+plugins {
+  id 'eu.appsatori.fatjar' version '0.3'
+  id 'java'
+  id 'maven'
+  id 'antlr'
+}
 
 group = 'org.karaffe'
 version = '0.1'
