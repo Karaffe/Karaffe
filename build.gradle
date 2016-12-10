@@ -18,6 +18,7 @@ repositories {
 
 ext {
   antlrVersion = '4.5.3'
+  args4jVersion = '2.33'
   junitVersion = '4.11'
 }
 
@@ -26,6 +27,7 @@ dependencies {
     compile group: 'org.antlr', name: 'antlr4', version: antlrVersion
     compile group: 'org.antlr', name: 'antlr4-maven-plugin', version: antlrVersion
     antlr "org.antlr:antlr4:$antlrVersion"
+    compile group: 'args4j', name: 'args4j', version: args4jVersion
 }
 
 buildscript {
