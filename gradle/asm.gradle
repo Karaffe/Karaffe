@@ -1,0 +1,18 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.Path
+
+def krfHome = java.lang.System.getenv()['KRF_HOME'] ?: "krf"
+task installLocal(type: Copy) {
+  from './build/libs/fatjar-' + version + '.jar'
+  into krfHome
+  rename ('fatjar-' + version + '.jar', 'KaraffeCompiler.jar')
+}
+
+fatJar {
+    baseName = 'fatjar'
+    manifest {
+        attributes('Main-Class': 'org.karaffe.compiler.Main')
+    }
+}
+
