@@ -2,7 +2,6 @@ plugins {
   id 'eu.appsatori.fatjar' version '0.3'
   id 'java'
   id 'maven'
-  id 'antlr'
 }
 
 group = 'org.karaffe'
@@ -23,11 +22,10 @@ ext {
 }
 
 dependencies {
-    compile group: 'org.antlr', name: 'antlr4-maven-plugin', version: antlrVersion
-    antlr "org.antlr:antlr4:$antlrVersion"
     compile group: 'args4j', name: 'args4j', version: args4jVersion
 }
 
 apply from: 'gradle/asm.gradle'
+apply from: 'gradle/antlr.gradle'
 apply from: 'gradle/quality.gradle'
 

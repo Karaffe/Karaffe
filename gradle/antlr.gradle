@@ -1,0 +1,21 @@
+apply plugin: 'antlr'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.antlr', name: 'antlr4-maven-plugin', version: antlrVersion
+    antlr "org.antlr:antlr4:$antlrVersion"
+}
+
+def destDir = file("${projectDir}/src/main/java/org/karaffe/compiler/antlr/")
+
+clean {
+    delete destDir
+}
+
+generateGrammarSource {
+  outputDirectory = destDir
+}
+
