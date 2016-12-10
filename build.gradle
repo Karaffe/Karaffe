@@ -8,8 +8,7 @@ plugins {
 group = 'org.karaffe'
 version = '0.1'
 
-description = """"""
-
+description = """Karaffe Compiler""" 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
