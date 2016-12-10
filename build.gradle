@@ -28,4 +28,4 @@ dependencies {
 apply from: 'gradle/asm.gradle'
 apply from: 'gradle/antlr.gradle'
 apply from: 'gradle/quality.gradle'
-
+apply from: 'gradle/directories.gradle'
