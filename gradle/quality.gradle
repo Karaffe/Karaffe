@@ -7,7 +7,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
                 fileTree(dir: it,
-                    exclude: ['**/org/karaffe/antlr/**'])
+                    exclude: ['**/org/karaffe/compiler/antlr/**'])
             })
     }
 }
