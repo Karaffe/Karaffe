@@ -17,5 +17,6 @@ clean {
 
 generateGrammarSource {
   outputDirectory = destDir
+  arguments += ["-visitor", "-listener", "-package", "org.karaffe.compiler.antlr"]
 }
 

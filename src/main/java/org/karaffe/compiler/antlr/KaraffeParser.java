@@ -1,4 +1,5 @@
 // Generated from Karaffe.g4 by ANTLR 4.5.3
+package org.karaffe.compiler.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -101,6 +102,11 @@ public class KaraffeParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).exitProg(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KaraffeVisitor ) return ((KaraffeVisitor<? extends T>)visitor).visitProg(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ProgContext prog() throws RecognitionException {
@@ -158,6 +164,11 @@ public class KaraffeParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).exitExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KaraffeVisitor ) return ((KaraffeVisitor<? extends T>)visitor).visitExpr(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
