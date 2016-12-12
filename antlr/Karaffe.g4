@@ -10,11 +10,15 @@ statement
   ;
 
 classDecl 
-  : 'class' className classBody
+  : 'class' className classBodyBlock?
+  ;
+
+classBodyBlock
+  : LBRACE classBody* RBRACE
   ;
 
 classBody
-  : LBRACE RBRACE
+  : statement
   ;
 
 className 
