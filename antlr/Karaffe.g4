@@ -1,7 +1,6 @@
 grammar Karaffe;
 
 //Parser
-
 compileUnit 
   : statement* EOF
   ;
@@ -39,4 +38,8 @@ IdentifierHead
 fragment
 IdentifierBody 
   : [a-zA-Z_0-9]
+  ;
+
+SP
+  : [ \t\r\n]+ -> skip
   ;
