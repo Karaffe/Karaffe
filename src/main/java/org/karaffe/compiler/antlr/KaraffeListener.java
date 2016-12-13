@@ -8,23 +8,63 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface KaraffeListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link KaraffeParser#prog}.
+	 * Enter a parse tree produced by {@link KaraffeParser#compileUnit}.
 	 * @param ctx the parse tree
 	 */
-	void enterProg(KaraffeParser.ProgContext ctx);
+	void enterCompileUnit(KaraffeParser.CompileUnitContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KaraffeParser#prog}.
+	 * Exit a parse tree produced by {@link KaraffeParser#compileUnit}.
 	 * @param ctx the parse tree
 	 */
-	void exitProg(KaraffeParser.ProgContext ctx);
+	void exitCompileUnit(KaraffeParser.CompileUnitContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link KaraffeParser#expr}.
+	 * Enter a parse tree produced by {@link KaraffeParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpr(KaraffeParser.ExprContext ctx);
+	void enterStatement(KaraffeParser.StatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KaraffeParser#expr}.
+	 * Exit a parse tree produced by {@link KaraffeParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpr(KaraffeParser.ExprContext ctx);
+	void exitStatement(KaraffeParser.StatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KaraffeParser#classDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassDecl(KaraffeParser.ClassDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KaraffeParser#classDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassDecl(KaraffeParser.ClassDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KaraffeParser#classBodyBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassBodyBlock(KaraffeParser.ClassBodyBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KaraffeParser#classBodyBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassBodyBlock(KaraffeParser.ClassBodyBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KaraffeParser#classBody}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassBody(KaraffeParser.ClassBodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KaraffeParser#classBody}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassBody(KaraffeParser.ClassBodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KaraffeParser#className}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassName(KaraffeParser.ClassNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KaraffeParser#className}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassName(KaraffeParser.ClassNameContext ctx);
 }

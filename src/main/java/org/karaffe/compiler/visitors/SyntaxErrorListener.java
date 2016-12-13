@@ -21,39 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler;
+package org.karaffe.compiler.visitors;
 
-import java.io.IOException;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.BufferedTokenStream;
-import org.karaffe.compiler.antlr.KaraffeLexer;
-import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.arg.CommandLineOptions;
-import org.karaffe.compiler.arg.CommandLineParser;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 
-public class Main {
+/**
+ *
+ * @author noko
+ */
+public class SyntaxErrorListener extends BaseErrorListener {
 
-    public static void main(String... args) {
-
-        CommandLineParser cmdLineParser = new CommandLineParser(args);
-        if (args.length == 0) {
-            cmdLineParser.printUsage();
-            return;
-        }
-        CommandLineOptions options = cmdLineParser.parse();
-
-        if (options.hasVersion()) {
-            cmdLineParser.printUsage();
-        }
-
-        try {
-            ANTLRFileStream antlrfs = new ANTLRFileStream(args[0]);
-            KaraffeLexer lexer = new KaraffeLexer(antlrfs);
-            KaraffeParser parser = new KaraffeParser(new BufferedTokenStream(lexer));
-        } catch (IOException e) {
-
-        }
-        options.eachFile(System.out::println);
+    @Override
+    public void syntaxError(Recognizer<?, ?> rcgnzr, Object o, int i, int i1, String string, RecognitionException re) {
+        System.out.println("Syntax Error detected");
     }
 
 }

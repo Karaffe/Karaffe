@@ -11,15 +11,39 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface KaraffeVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link KaraffeParser#prog}.
+	 * Visit a parse tree produced by {@link KaraffeParser#compileUnit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProg(KaraffeParser.ProgContext ctx);
+	T visitCompileUnit(KaraffeParser.CompileUnitContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link KaraffeParser#expr}.
+	 * Visit a parse tree produced by {@link KaraffeParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr(KaraffeParser.ExprContext ctx);
+	T visitStatement(KaraffeParser.StatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#classDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassDecl(KaraffeParser.ClassDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#classBodyBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassBodyBlock(KaraffeParser.ClassBodyBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#classBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassBody(KaraffeParser.ClassBodyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#className}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassName(KaraffeParser.ClassNameContext ctx);
 }

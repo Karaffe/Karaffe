@@ -21,39 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler;
+package org.karaffe.compiler.visitors;
 
-import java.io.IOException;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.BufferedTokenStream;
-import org.karaffe.compiler.antlr.KaraffeLexer;
+import org.karaffe.compiler.antlr.KaraffeBaseListener;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.arg.CommandLineOptions;
-import org.karaffe.compiler.arg.CommandLineParser;
 
-public class Main {
+/**
+ *
+ * @author noko
+ */
+public class ClassDeclListener extends KaraffeBaseListener {
 
-    public static void main(String... args) {
-
-        CommandLineParser cmdLineParser = new CommandLineParser(args);
-        if (args.length == 0) {
-            cmdLineParser.printUsage();
-            return;
-        }
-        CommandLineOptions options = cmdLineParser.parse();
-
-        if (options.hasVersion()) {
-            cmdLineParser.printUsage();
-        }
-
-        try {
-            ANTLRFileStream antlrfs = new ANTLRFileStream(args[0]);
-            KaraffeLexer lexer = new KaraffeLexer(antlrfs);
-            KaraffeParser parser = new KaraffeParser(new BufferedTokenStream(lexer));
-        } catch (IOException e) {
-
-        }
-        options.eachFile(System.out::println);
+    @Override
+    public void enterClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
+        KaraffeParser.ClassNameContext className = classDeclContext.className();
     }
-
 }
