@@ -21,37 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.visitors;
-
-import java.util.ArrayList;
-import java.util.List;
-import org.karaffe.compiler.antlr.KaraffeBaseListener;
-import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.tree.ClassDecl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.karaffe.compiler.tree;
 
 /**
  *
  * @author noko
  */
-public class ClassDeclListener extends KaraffeBaseListener {
+public class ClassDecl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclListener.class);
+    private final String name;
 
-    private final List<ClassDecl> classDecls = new ArrayList<>();
-
-    @Override
-    public void exitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
-        LOGGER.info("enter class decl");
-        String className = classDeclContext.className().getText();
-        LOGGER.debug("className : " + className);
-        KaraffeParser.ClassBodyBlockContext classBodyBlock = classDeclContext.classBodyBlock();
-        ClassDecl classDecl = new ClassDecl(className);
-        classDecls.add(classDecl);
+    public ClassDecl(String name) {
+        this.name = name;
     }
 
-    public List<ClassDecl> getDeclaredClasses() {
-        return classDecls;
+    public String getName() {
+        return name;
     }
 }

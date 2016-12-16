@@ -27,14 +27,20 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.karaffe.compiler.antlr.KaraffeLexer;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.arg.CommandLineOptions;
 import org.karaffe.compiler.arg.CommandLineParser;
+import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.visitors.ClassDeclListener;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 import org.slf4j.LoggerFactory;
 
 public class Main {
@@ -66,11 +72,7 @@ public class Main {
             return;
         }
 
-        if (options.isParallelMode()) {
-            options.parallelEachFile(Main::compileFile);
-        } else {
-            options.eachFile(Main::compileFile);
-        }
+        options.eachFile(Main::compileFile);
     }
 
     private static void compileFile(File f) {
@@ -80,11 +82,33 @@ public class Main {
             KaraffeParser parser = new KaraffeParser(new BufferedTokenStream(lexer));
             parser.removeErrorListeners();
             parser.removeParseListeners();
-            parser.addParseListener(new ClassDeclListener());
+            ClassDeclListener classDeclListener = new ClassDeclListener();
+            parser.addParseListener(classDeclListener);
             parser.compileUnit();
+
+            List<ClassDecl> classDecls = classDeclListener.getDeclaredClasses();
+            classDecls.stream().map(Main::convert).forEach(c -> {
+                ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+                c.accept(writer);
+                byte[] byteCode = writer.toByteArray();
+                try {
+                    Files.write(new File(c.name + ".class").toPath(), byteCode);
+                } catch (IOException ex) {
+                    LOGGER.error("IOError", ex);
+                }
+            });
+
         } catch (IOException e) {
             LOGGER.error("file not found.", e);
         }
+    }
+
+    private static ClassNode convert(ClassDecl classDecl) {
+        ClassNode classNode = new ClassNode();
+        classNode.name = classDecl.getName();
+        classNode.version = Opcodes.V1_8;
+        classNode.sourceFile = classDecl.getName() + ".krf";
+        return classNode;
     }
 
 }

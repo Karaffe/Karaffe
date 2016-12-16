@@ -26,12 +26,16 @@ package org.karaffe.compiler.arg;
 import org.karaffe.compiler.Constants;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author noko
  */
 public class CommandLineParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineParser.class);
 
     private final String[] args;
     private final CmdLineParser parser;
@@ -45,10 +49,11 @@ public class CommandLineParser {
 
     public CommandLineOptions parse() {
         try {
+            LOGGER.debug("try parse");
             parser.parseArgument(args);
+            LOGGER.debug("parse ok");
         } catch (CmdLineException ex) {
-            System.out.println("bad option: ");
-            System.out.println(ex.getMessage());
+            LOGGER.error("bad option: " + ex);
         }
         return options;
     }

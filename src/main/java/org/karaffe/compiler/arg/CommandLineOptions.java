@@ -77,12 +77,6 @@ public class CommandLineOptions {
         LOGGER.info("finished");
     }
 
-    public void parallelEachFile(Consumer<File> consumer) {
-        LOGGER.info("start parallel mode");
-        sourceFiles.parallelStream().forEach(consumer);
-        LOGGER.info("finished");
-    }
-
     @Override
     public String toString() {
         return "CommandLineOptions{"
