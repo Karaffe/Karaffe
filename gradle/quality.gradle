@@ -1,3 +1,7 @@
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: junitVersion
+}
+
 apply plugin: 'jacoco'
 jacocoTestReport {
     reports {
@@ -12,6 +16,3 @@ jacocoTestReport {
     }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: junitVersion
-}
