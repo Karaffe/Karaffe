@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -36,23 +38,64 @@ import org.kohsuke.args4j.Option;
  */
 public class CommandLineOptions {
 
-    @Option(name = "-v", aliases = "--version", usage = "Show compiler version")
+    @Option(name = "--version", aliases = "-version", usage = "Show compiler version")
     private boolean hasVersion;
+
+    @Option(name = "-vv", aliases = "--debug", usage = "log in debug mode")
+    private boolean isDebugMode;
+
+    @Option(name = "-v", aliases = "--verbose", usage = "log in verbose mode")
+    private boolean isVerboseMode;
+
+    @Option(name = "--parallel", usage = "build in parallel")
+    private boolean isParallelMode;
 
     @Argument
     private List<File> sourceFiles = new ArrayList<>();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineOptions.class);
 
     public boolean hasVersion() {
         return hasVersion;
     }
 
+    public boolean isDebugMode() {
+        return isDebugMode;
+    }
+
+    public boolean isVerboseMode() {
+        return isVerboseMode;
+    }
+
+    public boolean isParallelMode() {
+        return isParallelMode;
+    }
+
     public void eachFile(Consumer<File> consumer) {
+        LOGGER.info("start");
         sourceFiles.forEach(consumer);
+        LOGGER.info("finished");
+    }
+
+    public void parallelEachFile(Consumer<File> consumer) {
+        LOGGER.info("start parallel mode");
+        sourceFiles.parallelStream().forEach(consumer);
+        LOGGER.info("finished");
     }
 
     @Override
     public String toString() {
-        return "CommandLineOptions{" + "hasVersion=" + hasVersion + ", sourceFiles=" + sourceFiles + '}';
+        return "CommandLineOptions{"
+                + "hasVersion="
+                + hasVersion
+                + ", isDebugMode="
+                + isDebugMode
+                + ", isVerboseMode="
+                + isVerboseMode
+                + ", isParallelMode="
+                + isParallelMode
+                + ", sourceFiles="
+                + sourceFiles + '}';
     }
 
 }
