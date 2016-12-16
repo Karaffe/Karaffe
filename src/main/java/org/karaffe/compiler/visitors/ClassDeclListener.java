@@ -25,6 +25,8 @@ package org.karaffe.compiler.visitors;
 
 import org.karaffe.compiler.antlr.KaraffeBaseListener;
 import org.karaffe.compiler.antlr.KaraffeParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,8 +34,12 @@ import org.karaffe.compiler.antlr.KaraffeParser;
  */
 public class ClassDeclListener extends KaraffeBaseListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclListener.class);
+
     @Override
     public void enterClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
+        LOGGER.info("enter class decl");
         KaraffeParser.ClassNameContext className = classDeclContext.className();
+        LOGGER.debug("className : " + className.getText());
     }
 }
