@@ -2,8 +2,7 @@ plugins {
   id 'eu.appsatori.fatjar' version '0.3'
   id 'java'
   id 'maven'
-}
-
+} 
 group = 'org.karaffe'
 version = '0.1'
 
@@ -25,8 +24,8 @@ dependencies {
     compile group: 'args4j', name: 'args4j', version: args4jVersion
 }
 
-apply from: 'gradle/asm.gradle'
 apply from: 'gradle/antlr.gradle'
-apply from: 'gradle/quality.gradle'
+apply from: 'gradle/asm.gradle'
 apply from: 'gradle/directories.gradle'
 apply from: 'gradle/log.gradle'
+apply from: 'gradle/quality.gradle'
