@@ -37,7 +37,7 @@ public class ClassDeclListener extends KaraffeBaseListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclListener.class);
 
     @Override
-    public void enterClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
+    public void exitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
         LOGGER.info("enter class decl");
         KaraffeParser.ClassNameContext className = classDeclContext.className();
         LOGGER.debug("className : " + className.getText());

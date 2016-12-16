@@ -23,18 +23,25 @@
  */
 package org.karaffe.compiler;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.karaffe.compiler.antlr.KaraffeLexer;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.arg.CommandLineOptions;
 import org.karaffe.compiler.arg.CommandLineParser;
+import org.karaffe.compiler.visitors.ClassDeclListener;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
-    public static void main(String... args) {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
+    public static void main(String... args) {
         CommandLineParser cmdLineParser = new CommandLineParser(args);
         if (args.length == 0) {
             cmdLineParser.printUsage();
@@ -42,18 +49,42 @@ public class Main {
         }
         CommandLineOptions options = cmdLineParser.parse();
 
-        if (options.hasVersion()) {
-            cmdLineParser.printUsage();
+        Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        if (options.isDebugMode()) {
+            root.setLevel(Level.ALL);
+        } else if (options.isVerboseMode()) {
+            root.setLevel(Level.INFO);
         }
 
+        LOGGER.info("compiler initialized.");
+        LOGGER.debug("args : " + Arrays.asList(args));
+        LOGGER.debug("parsed options : " + options);
+
+        if (options.hasVersion()) {
+            LOGGER.debug("show version");
+            cmdLineParser.printUsage();
+            return;
+        }
+
+        if (options.isParallelMode()) {
+            options.parallelEachFile(Main::compileFile);
+        } else {
+            options.eachFile(Main::compileFile);
+        }
+    }
+
+    private static void compileFile(File f) {
         try {
-            ANTLRFileStream antlrfs = new ANTLRFileStream(args[0]);
+            ANTLRFileStream antlrfs = new ANTLRFileStream(f.getAbsolutePath());
             KaraffeLexer lexer = new KaraffeLexer(antlrfs);
             KaraffeParser parser = new KaraffeParser(new BufferedTokenStream(lexer));
+            parser.removeErrorListeners();
+            parser.removeParseListeners();
+            parser.addParseListener(new ClassDeclListener());
+            parser.compileUnit();
         } catch (IOException e) {
-
+            LOGGER.error("file not found.", e);
         }
-        options.eachFile(System.out::println);
     }
 
 }

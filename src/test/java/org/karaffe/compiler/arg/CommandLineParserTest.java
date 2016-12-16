@@ -23,6 +23,7 @@
  */
 package org.karaffe.compiler.arg;
 
+import java.util.function.Function;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -36,14 +37,33 @@ public class CommandLineParserTest {
      * Test of parse method, of class CommandLineParser.
      */
     @Test
-    public void testParse() {
-        System.out.println("parse");
-        CommandLineParser instance = new CommandLineParser("-v");
-        CommandLineOptions result = instance.parse();
-        assertTrue(result.hasVersion());
-        result.eachFile(t -> {
-            fail(t.toString());
-        });
+    public void testParseVersionFlag() {
+        checkFlagIsTrue(CommandLineOptions::hasVersion, "--version");
+        checkFlagIsTrue(CommandLineOptions::hasVersion, "-version");
+    }
+
+    @Test
+    public void testParseDebugModeFlag() {
+        checkFlagIsTrue(CommandLineOptions::isDebugMode, "--debug");
+        checkFlagIsTrue(CommandLineOptions::isDebugMode, "-vv");
+    }
+
+    @Test
+    public void testParseVerboseMode() {
+        checkFlagIsTrue(CommandLineOptions::isVerboseMode, "-v");
+        checkFlagIsTrue(CommandLineOptions::isVerboseMode, "--verbose");
+    }
+
+    @Test
+    public void testParseParallelMode() {
+        checkFlagIsTrue(CommandLineOptions::isParallelMode, "--parallel");
+    }
+
+    private void checkFlagIsTrue(Function<CommandLineOptions, Boolean> function, String... options) {
+        CommandLineParser instance = new CommandLineParser(options);
+        CommandLineOptions parsed = instance.parse();
+        Boolean result = function.apply(parsed);
+        assertTrue(result);
     }
 
 }
