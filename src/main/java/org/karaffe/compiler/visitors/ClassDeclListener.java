@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.karaffe.compiler.antlr.KaraffeBaseListener;
 import org.karaffe.compiler.antlr.KaraffeParser;
+import org.karaffe.compiler.report.Report;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +41,25 @@ public class ClassDeclListener extends KaraffeBaseListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclListener.class);
 
     private final List<ClassDecl> classDecls = new ArrayList<>();
+    private final List<Report> reports = new ArrayList<>();
 
     @Override
     public void exitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
         LOGGER.info("enter class decl");
-        String className = classDeclContext.className().getText();
+        KaraffeParser.ClassNameContext classNameContext = classDeclContext.className();
+        String className = classNameContext.getText();
         LOGGER.debug("className : " + className);
+        if (Character.isLowerCase(className.charAt(0))) {
+            Report report
+                    = Report.builder()
+                            .title("The class name must begin with an uppercase letter.")
+                            .type("Error")
+                            .line(classNameContext.getStart().getLine())
+                            .column(classNameContext.getStart().getCharPositionInLine())
+                            .endColumn(classNameContext.getStart().getCharPositionInLine() + className.length() - 1)
+                            .build();
+            reports.add(report);
+        }
         KaraffeParser.ClassBodyBlockContext classBodyBlock = classDeclContext.classBodyBlock();
         ClassDecl classDecl = new ClassDecl(className);
         classDecls.add(classDecl);
@@ -53,5 +67,13 @@ public class ClassDeclListener extends KaraffeBaseListener {
 
     public List<ClassDecl> getDeclaredClasses() {
         return classDecls;
+    }
+
+    public List<Report> getReports() {
+        return reports;
+    }
+
+    public boolean hasError() {
+        return !reports.isEmpty();
     }
 }

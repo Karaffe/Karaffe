@@ -21,15 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler;
+package org.karaffe.compiler.runner;
 
-import org.karaffe.compiler.runner.CompilerRunner;
+import java.io.File;
+import java.util.Map;
+import org.karaffe.compiler.tree.ClassDecl;
 
-public class Main {
+/**
+ *
+ * @author noko
+ */
+public interface ClassDeclCompileResult {
 
-    public static void main(String... args) {
-        CompilerRunner runner = new CompilerRunner();
-        runner.run(args);
-    }
-
+    public Map<File, ClassDecl> getCompileResult();
 }

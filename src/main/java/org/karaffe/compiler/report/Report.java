@@ -21,15 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler;
+package org.karaffe.compiler.report;
 
-import org.karaffe.compiler.runner.CompilerRunner;
+import lombok.Builder;
 
-public class Main {
+/**
+ *
+ * @author noko
+ */
+@Builder
+public class Report {
 
-    public static void main(String... args) {
-        CompilerRunner runner = new CompilerRunner();
-        runner.run(args);
+    private final String title;
+    private final String type;
+    private final int line;
+    private final int column;
+    private final int endColumn;
+
+    public String getTitle() {
+        return title;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public int getEndColumn() {
+        return endColumn;
+    }
+
+    public static class Builder {
+
+    }
 }

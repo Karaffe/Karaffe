@@ -26,7 +26,7 @@ package org.karaffe.compiler.arg;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.Stream;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
@@ -71,10 +71,12 @@ public class CommandLineOptions {
         return isParallelMode;
     }
 
-    public void eachFile(Consumer<File> consumer) {
-        LOGGER.info("start");
-        sourceFiles.forEach(consumer);
-        LOGGER.info("finished");
+    public Stream<File> getStream() {
+        return sourceFiles.stream();
+    }
+
+    public Stream<File> getParallelStream() {
+        return sourceFiles.parallelStream();
     }
 
     @Override

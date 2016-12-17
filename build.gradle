@@ -22,6 +22,7 @@ ext {
 
 dependencies {
     compile group: 'args4j', name: 'args4j', version: args4jVersion
+    compileOnly "org.projectlombok:lombok:1.16.12"
 }
 
 apply from: 'gradle/antlr.gradle'
