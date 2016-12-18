@@ -50,6 +50,8 @@ public class CommandLineOptions {
     @Option(name = "--parallel", usage = "build in parallel")
     private boolean isParallelMode;
 
+    private boolean isArgumentsError;
+
     @Argument
     private List<File> sourceFiles = new ArrayList<>();
 
@@ -77,6 +79,14 @@ public class CommandLineOptions {
 
     public Stream<File> getParallelStream() {
         return sourceFiles.parallelStream();
+    }
+
+    public void setArgumentsError() {
+        this.isArgumentsError = true;
+    }
+
+    public boolean isArgumentsError() {
+        return isArgumentsError;
     }
 
     @Override

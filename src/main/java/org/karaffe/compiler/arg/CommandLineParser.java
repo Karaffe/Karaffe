@@ -54,6 +54,7 @@ public class CommandLineParser {
             LOGGER.debug("parse ok");
         } catch (CmdLineException ex) {
             LOGGER.error("bad option: " + ex);
+            options.setArgumentsError();
         }
         return options;
     }
