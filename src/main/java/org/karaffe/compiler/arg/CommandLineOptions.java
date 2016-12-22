@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -54,8 +52,6 @@ public class CommandLineOptions {
 
     @Argument
     private List<File> sourceFiles = new ArrayList<>();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineOptions.class);
 
     public boolean hasVersion() {
         return hasVersion;

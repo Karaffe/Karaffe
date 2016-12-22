@@ -2,6 +2,7 @@ plugins {
   id 'eu.appsatori.fatjar' version '0.3'
   id 'java'
   id 'maven'
+  id 'application'
 } 
 group = 'org.karaffe'
 version = '0.1'
@@ -12,6 +13,7 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+//    jcenter()
 }
 
 ext {
@@ -21,8 +23,9 @@ ext {
 }
 
 dependencies {
-    compile group: 'args4j', name: 'args4j', version: args4jVersion
-    compileOnly "org.projectlombok:lombok:1.16.12"
+  compile group: 'args4j', name: 'args4j', version: args4jVersion
+  compileOnly "org.projectlombok:lombok:1.16.12"
+  testCompile "org.mockito:mockito-core:2.+"
 }
 
 apply from: 'gradle/antlr.gradle'
@@ -30,3 +33,12 @@ apply from: 'gradle/asm.gradle'
 apply from: 'gradle/directories.gradle'
 apply from: 'gradle/log.gradle'
 apply from: 'gradle/quality.gradle'
+
+if( !JavaVersion.current().java8Compatible ) {
+  def errorString = """
+****************************************
+      JDK 8+ is required!
+****************************************
+  """
+  throw new GradleException(errorString)
+}

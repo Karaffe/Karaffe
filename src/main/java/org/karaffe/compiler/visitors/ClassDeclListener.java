@@ -49,6 +49,7 @@ public class ClassDeclListener extends KaraffeBaseListener {
         KaraffeParser.ClassNameContext classNameContext = classDeclContext.className();
         String className = classNameContext.getText();
         LOGGER.debug("className : " + className);
+        ClassDecl classDecl = new ClassDecl(className);
         if (Character.isLowerCase(className.charAt(0))) {
             Report report
                     = Report.builder()
@@ -59,9 +60,10 @@ public class ClassDeclListener extends KaraffeBaseListener {
                             .endColumn(classNameContext.getStart().getCharPositionInLine() + className.length() - 1)
                             .build();
             reports.add(report);
+            classDecl.errored();
         }
         KaraffeParser.ClassBodyBlockContext classBodyBlock = classDeclContext.classBodyBlock();
-        ClassDecl classDecl = new ClassDecl(className);
+
         classDecls.add(classDecl);
     }
 

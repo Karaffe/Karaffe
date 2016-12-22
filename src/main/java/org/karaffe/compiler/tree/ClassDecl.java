@@ -30,6 +30,7 @@ package org.karaffe.compiler.tree;
 public class ClassDecl {
 
     private final String name;
+    private boolean hasError;
 
     public ClassDecl(String name) {
         this.name = name;
@@ -38,4 +39,13 @@ public class ClassDecl {
     public String getName() {
         return name;
     }
+
+    public void errored() {
+        this.hasError = true;
+    }
+
+    public boolean hasError() {
+        return hasError;
+    }
+
 }

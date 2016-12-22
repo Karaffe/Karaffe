@@ -21,22 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler;
+package org.karaffe.compiler.runner;
+
+import java.io.File;
+import java.io.IOException;
+import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.karaffe.stdlib.Either;
 
 /**
  *
  * @author noko
  */
-public enum Constants {
-    INSTANCE,;
-    public static final String VERSION = "0.1";
-    public static final String NEW_LINE = System.lineSeparator();
-    public static final String VERSION_INFO_STRING;
+public class CharStreamFactory {
 
-    static {
-        StringBuilder versionInfo = new StringBuilder();
-        versionInfo.append("Karaffe Compiler ").append(Constants.VERSION).append(" (").append(System.getProperty("java.vm.name")).append(", ").append(System.getProperty("java.runtime.version")).append(")").append(Constants.NEW_LINE);
-        versionInfo.append("Usage: krfc <options> <source files|build.krf>").append(Constants.NEW_LINE);
-        VERSION_INFO_STRING = versionInfo.toString();
+    public static Either<IOException, CharStream> createFromAbsolutePath(String absolutePath) {
+        try {
+            return Either.right(new ANTLRFileStream(absolutePath));
+        } catch (IOException ex) {
+            return Either.left(ex);
+        }
     }
+
+    public static Either<IOException, CharStream> createFromFile(File f) {
+        return createFromAbsolutePath(f.getAbsolutePath());
+    }
+
+    public static CharStream createFromSource(String sourceFile) {
+        return new ANTLRInputStream(sourceFile);
+    }
+
 }

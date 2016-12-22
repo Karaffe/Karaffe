@@ -21,22 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler;
+package org.karaffe.compiler.runner;
 
 /**
  *
  * @author noko
  */
-public enum Constants {
-    INSTANCE,;
-    public static final String VERSION = "0.1";
-    public static final String NEW_LINE = System.lineSeparator();
-    public static final String VERSION_INFO_STRING;
+public interface DebugModeListener {
 
-    static {
-        StringBuilder versionInfo = new StringBuilder();
-        versionInfo.append("Karaffe Compiler ").append(Constants.VERSION).append(" (").append(System.getProperty("java.vm.name")).append(", ").append(System.getProperty("java.runtime.version")).append(")").append(Constants.NEW_LINE);
-        versionInfo.append("Usage: krfc <options> <source files|build.krf>").append(Constants.NEW_LINE);
-        VERSION_INFO_STRING = versionInfo.toString();
-    }
+    public void onDebugMode();
 }

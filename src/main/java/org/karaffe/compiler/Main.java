@@ -23,13 +23,25 @@
  */
 package org.karaffe.compiler;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import org.karaffe.compiler.runner.CompilerRunner;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
     public static void main(String... args) {
-        CompilerRunner runner = new CompilerRunner();
-        runner.run(args);
+        CompilerRunner runner = new CompilerRunner(args);
+        runner.addDebugModeListener(() -> {
+            Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            root.setLevel(Level.ALL);
+        });
+        runner.addVerboseModeListener(() -> {
+            Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            root.setLevel(Level.INFO);
+        });
+
+        runner.run();
     }
 
 }
