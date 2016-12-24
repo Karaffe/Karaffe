@@ -23,14 +23,23 @@
  */
 package org.karaffe.compiler.exception;
 
+import org.karaffe.compiler.arg.ArgumentsParser;
+
 /**
  *
  * @author noko
  */
 public class CommandLineException extends KaraffeCompilerException {
 
-    public CommandLineException(ExceptionMessages message) {
+    private final ArgumentsParser parser;
+
+    public CommandLineException(ExceptionMessages message, ArgumentsParser parser) {
         super(ExceptionType.ERROR, message, null, false, null, -1, -1, false, -1);
+        this.parser = parser;
+    }
+
+    public ArgumentsParser getParser() {
+        return parser;
     }
 
 }

@@ -53,18 +53,13 @@ public class ArgumentsParser {
         try {
             if (args == null || args.length == 0) {
                 options.setArgumentsError();
-                throw new CommandLineException(ExceptionMessages.EMPTY_ARG);
-//                reports.add(Report.builder().title("arg error").type(ReportType.ERROR).hasLineInfo(false).place("").build());
-                //return options;
+                throw new CommandLineException(ExceptionMessages.EMPTY_ARG, this);
             }
             LOGGER.debug("try parse");
             parser.parseArgument(args);
             LOGGER.debug("parse ok");
         } catch (CmdLineException ex) {
-            throw new CommandLineException(ExceptionMessages.BAD_ARG.additionalInfo(ex.getLocalizedMessage()));
-            //            LOGGER.error("bad option: " + ex);
-            //          reports.add(Report.builder().title(ex.getMessage()).type(ReportType.ERROR).hasLineInfo(false).place("").build());
-            //  options.setArgumentsError();
+            throw new CommandLineException(ExceptionMessages.BAD_ARG.additionalInfo(ex.getLocalizedMessage()), this);
         }
         return options;
     }

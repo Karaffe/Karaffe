@@ -25,13 +25,10 @@ package org.karaffe.compiler;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.FileAppender;
 import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.arg.ArgumentsParser;
 import org.karaffe.compiler.arg.CompilerConfigurations;
+import org.karaffe.compiler.exception.CommandLineException;
 import org.karaffe.compiler.exception.KaraffeCompilerException;
 import org.karaffe.compiler.runner.CompilerRunner;
 import org.slf4j.LoggerFactory;
@@ -51,20 +48,8 @@ public class Main {
 
             Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
             if (config.hasLogOutputFile()) {
-                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-                loggerContext.reset();
-                PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-                encoder.setContext(loggerContext);
-                encoder.setPattern("%d{HH:mm:ss.SSS} [%-36thread] %-5level %logger{36} --- %msg%n");
-                encoder.start();
-
-                FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
-                fileAppender.setFile(config.getLogFile().getAbsolutePath());
-                fileAppender.setContext(loggerContext);
-                fileAppender.setEncoder(encoder);
-                fileAppender.setAppend(true);
-                fileAppender.start();
-                rootLogger.addAppender(fileAppender);
+                System.setOut(config.getLogStream());
+                System.setErr(config.getLogStream());
             }
 
             if (config.isVerboseMode()) {
@@ -80,6 +65,10 @@ public class Main {
             ExitStatus exitStatus = runner.run();
             log.info("end compiler : " + exitStatus);
             System.exit(exitStatus.toInt());
+        } catch (CommandLineException e) {
+            System.err.println(e);
+            e.getParser().printUsage();
+            System.exit(-1);
         } catch (KaraffeCompilerException e) {
             System.err.println(e);
             System.exit(-1);
