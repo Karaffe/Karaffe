@@ -119,17 +119,7 @@ public class CompilerConfigurations implements KaraffeFileStream {
 
     @Override
     public String toString() {
-        return "CommandLineOptions{"
-                + "hasVersion="
-                + hasVersion
-                + ", isDebugMode="
-                + isDebugMode
-                + ", isVerboseMode="
-                + isVerboseMode
-                + ", isParallelMode="
-                + isParallelMode
-                + ", sourceFiles="
-                + sourceFiles + '}';
+        return "CompilerConfigurations{" + "hasVersion=" + hasVersion + ", isDebugMode=" + isDebugMode + ", isVerboseMode=" + isVerboseMode + ", isParallelMode=" + isParallelMode + ", logFile=" + logFile + ", isArgumentsError=" + isArgumentsError + ", sourceFiles=" + sourceFiles + '}';
     }
 
     @Override
