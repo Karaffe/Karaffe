@@ -23,6 +23,8 @@
  */
 package org.karaffe.compiler.exception;
 
+import org.karaffe.compiler.Constants;
+
 /**
  *
  * @author noko
@@ -49,7 +51,6 @@ public class KaraffeCompilerException extends RuntimeException {
         this.message = message;
         this.place = place;
         this.isAvailableSourceCode = isAvailableSourceCode;
-        this.sourceCode = sourceCode;
         this.line = line;
         this.column = column;
         this.hasColumnEnd = hasColumnEnd;
@@ -66,6 +67,14 @@ public class KaraffeCompilerException extends RuntimeException {
                 throw new IllegalArgumentException("columnEnd -1");
             }
         }
+        if (sourceCode == null) {
+            this.sourceCode = null;
+        } else if (sourceCode.contains(Constants.NEW_LINE)) {
+            String[] sp = sourceCode.split(Constants.NEW_LINE);
+            this.sourceCode = sp[0];
+        } else {
+            this.sourceCode = sourceCode;
+        }
     }
 
     @Override
@@ -73,15 +82,15 @@ public class KaraffeCompilerException extends RuntimeException {
         StringBuilder sb = new StringBuilder();
         sb.append(type).append(":").append(message);
         if (place != null) {
-            sb.append("¥n").append(place);
+            sb.append(Constants.NEW_LINE).append(place);
             if (isAvailableSourceCode) {
                 sb.append(" at ").append(line).append(":").append(column);
                 if (this.hasColumnEnd) {
                     sb.append("~").append(columnEnd);
                 }
-                sb.append("¥n");
+                sb.append(Constants.NEW_LINE);
             }
-            sb.append(sourceCode).append("¥n");
+            sb.append(sourceCode).append(Constants.NEW_LINE);
             for (int i = 0; i < column; i++) {
                 sb.append(" ");
             }
@@ -91,7 +100,7 @@ public class KaraffeCompilerException extends RuntimeException {
                     sb.append("~");
                 }
             }
-            sb.append("¥n");
+            sb.append(Constants.NEW_LINE);
         }
 
         return sb.toString();

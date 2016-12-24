@@ -24,6 +24,7 @@
 package org.karaffe.compiler.exception;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 
 /**
  *
@@ -41,7 +42,7 @@ public class SourceCodeException extends KaraffeCompilerException {
                 message,
                 context.getStart().getTokenSource().getSourceName(),
                 true,
-                context.getText(),
+                context.getStart().getInputStream().getText(new Interval(context.getStart().getStartIndex(), context.getStop().getStopIndex())),
                 context.getStart().getLine(),
                 context.getStart().getCharPositionInLine(),
                 context.getStart().getCharPositionInLine() != context.getStop().getCharPositionInLine(),
