@@ -21,19 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.io;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.TokenSource;
-import org.karaffe.compiler.antlr.KaraffeLexer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+import org.karaffe.io.KaraffeFile;
 
 /**
  *
  * @author noko
  */
-public class TokenSourceFactory {
+public class LocalFileStream implements KaraffeFileStream {
 
-    public static TokenSource create(CharStream charStream) {
-        return new KaraffeLexer(charStream);
+    private final List<KaraffeFile> karaffeFiles;
+
+    public LocalFileStream(KaraffeFile... files) {
+        this(new ArrayList<>(Arrays.asList(files)));
     }
+
+    public LocalFileStream(List<KaraffeFile> files) {
+        this.karaffeFiles = files;
+    }
+
+    @Override
+    public Stream<KaraffeFile> getFileStream() {
+        return karaffeFiles.stream();
+    }
+
 }

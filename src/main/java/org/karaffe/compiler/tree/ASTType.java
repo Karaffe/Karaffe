@@ -21,19 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
-
-import org.karaffe.compiler.antlr.KaraffeParser;
+package org.karaffe.compiler.tree;
 
 /**
  *
  * @author noko
  */
-public class ParserInvoker {
-
-    private final KaraffeParser parser;
-
-    public ParserInvoker(KaraffeParser parser) {
-        this.parser = parser;
-    }
+public enum ASTType {
+    CLASS_DECL;
 }

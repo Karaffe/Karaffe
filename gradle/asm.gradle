@@ -24,7 +24,7 @@ task installLocal(type: Copy, dependsOn: fatJar) {
 }
 
 fatJar {
-    baseName = 'Karaffe-lang'
+    baseName = 'fatJar'
     manifest {
         attributes('Main-Class': 'org.karaffe.compiler.Main')
     }

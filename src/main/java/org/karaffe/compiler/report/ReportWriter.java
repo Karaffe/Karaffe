@@ -23,8 +23,9 @@
  */
 package org.karaffe.compiler.report;
 
+import java.io.PrintStream;
 import java.util.List;
-import org.karaffe.compiler.Constants;
+import org.karaffe.io.KaraffeFile;
 
 /**
  *
@@ -32,19 +33,44 @@ import org.karaffe.compiler.Constants;
  */
 public class ReportWriter {
 
-    public void printReports(String fileName, List<String> sources, List<Report> reports) {
+    private final PrintStream writer;
+
+    public ReportWriter() {
+        this(System.err);
+    }
+
+    public ReportWriter(PrintStream writer) {
+        this.writer = writer;
+    }
+
+    public void printReport(KaraffeFile file, List<Report> reports) {
+        List<String> sources = file.getSource();
         reports.forEach(r -> {
-            System.out.println(r.getType() + ": " + r.getTitle() + Constants.NEW_LINE + fileName + " at " + r.getLine() + ":" + r.getColumn() + "~" + r.getEndColumn());
-            String line = sources.get(r.getLine() - 1);
-            System.out.println(line);
-            for (int i = 0; i < r.getColumn(); i++) {
-                System.out.print(' ');
+            if (r.hasLineInfo()) {
+                writer.println(r.getType() + ": " + r.getTitle());
+                writer.println(r.getPlace() + " at " + r.getLine() + ":" + r.getColumn() + "~" + r.getEndColumn());
+                String line = sources.get(r.getLine() - 1);
+                System.out.println(line);
+                for (int i = 0; i < r.getColumn(); i++) {
+                    writer.print(' ');
+                }
+                System.out.print('^');
+                for (int i = 0; i < r.getEndColumn() - r.getColumn(); i++) {
+                    writer.print('~');
+                }
+                writer.println();
+            } else {
+                writer.println(r.getType() + ": " + r.getTitle());
+                writer.println(r.getPlace());
             }
-            System.out.print('^');
-            for (int i = 0; i < r.getEndColumn() - r.getColumn(); i++) {
-                System.out.print('~');
-            }
-            System.out.println();
         });
     }
+
+    public void printReport(List<Report> reports) {
+        reports.forEach(r -> {
+            writer.println(r.getType() + ": " + r.getTitle());
+            writer.println(r.getPlace());
+        });
+    }
+
 }

@@ -25,9 +25,11 @@ package org.karaffe.compiler.visitors;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.karaffe.compiler.antlr.KaraffeBaseListener;
+import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.report.ReportType;
+import org.karaffe.compiler.report.Reporter;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +38,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author noko
  */
-public class ClassDeclListener extends KaraffeBaseListener {
+public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> implements Reporter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclVisitor.class);
 
-    private final List<ClassDecl> classDecls = new ArrayList<>();
     private final List<Report> reports = new ArrayList<>();
 
     @Override
-    public void exitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
+    public ClassDecl visitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
         LOGGER.info("enter class decl");
         KaraffeParser.ClassNameContext classNameContext = classDeclContext.className();
         String className = classNameContext.getText();
@@ -54,7 +55,7 @@ public class ClassDeclListener extends KaraffeBaseListener {
             Report report
                     = Report.builder()
                             .title("The class name must begin with an uppercase letter.")
-                            .type("Error")
+                            .type(ReportType.ERROR)
                             .line(classNameContext.getStart().getLine())
                             .column(classNameContext.getStart().getCharPositionInLine())
                             .endColumn(classNameContext.getStart().getCharPositionInLine() + className.length() - 1)
@@ -63,14 +64,10 @@ public class ClassDeclListener extends KaraffeBaseListener {
             classDecl.errored();
         }
         KaraffeParser.ClassBodyBlockContext classBodyBlock = classDeclContext.classBodyBlock();
-
-        classDecls.add(classDecl);
+        return classDecl;
     }
 
-    public List<ClassDecl> getDeclaredClasses() {
-        return classDecls;
-    }
-
+    @Override
     public List<Report> getReports() {
         return reports;
     }

@@ -21,13 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.compiler.data;
+
+import java.util.List;
+import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.tree.CompileUnit;
 
 /**
  *
  * @author noko
  */
-public interface VerboseModeListener {
+public class ParseResult {
 
-    public void onVerboseMode();
+    private final List<Report> reports;
+    private final CompileUnit compileUnit;
+
+    public ParseResult(List<Report> reports, CompileUnit compileUnit) {
+        this.reports = reports;
+        this.compileUnit = compileUnit;
+    }
+
+    public List<Report> getReports() {
+        return reports;
+    }
+
+    public CompileUnit getCompileUnit() {
+        return compileUnit;
+    }
+
 }

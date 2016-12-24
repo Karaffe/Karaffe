@@ -21,36 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
-
-import java.io.File;
-import java.io.IOException;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Test;
-import org.karaffe.compiler.ExitStatus;
-import org.karaffe.io.KaraffeFileStream;
+package org.karaffe.compiler;
 
 /**
  *
  * @author noko
  */
-public class CompilerRunnerTest {
+public enum ExitStatus {
 
-    @Test
-    public void testRun() {
-        CompilerRunner runner = new CompilerRunner();
-        ExitStatus exitStatus = runner.run();
-        assertThat(exitStatus, is(ExitStatus.EX_IOERR));
+    EX_OK("successful termination", 0),
+    EX_USAGE("command line usage error", 64),
+    EX_DATAERR("data format error", 65),
+    EX_NOINPUT("cannot open input", 66),
+    EX_NOUSER("addressee unknown", 67),
+    EX_NOHOST("host name unknown", 68),
+    EX_UNAVAILABLE("service unavailable", 69),
+    EX_SOFTWARE("internal software error", 70),
+    EX_OSERR("system error (e.g., can't fork)", 71),
+    EX_OSFILE("critical OS file missing", 72),
+    EX_CANTCREAT("can't create (user) output file", 73),
+    EX_IOERR("input/output error", 74),
+    EX_TEMPFAIL("temp failure; user is invited to retry", 75),
+    EX_PROTOCOL("remote error in protocol", 76),
+    EX_NOPERM("permission denied", 77),
+    EX_CONFIG("configuration error", 78),;
+    private final String message;
+    private final int exitCode;
+
+    private ExitStatus(String message, int exitCode) {
+        this.message = message;
+        this.exitCode = exitCode;
     }
 
-    @Test
-    public void testRun2() throws IOException {
-        File f = File.createTempFile("karaffe-junit-", ".krf");
-        KaraffeFileStream fileStream = KaraffeFileStream.of(f);
-        CompilerRunner runner = new CompilerRunner(fileStream);
-        ExitStatus exitStatus = runner.run();
-        assertThat(exitStatus, is(ExitStatus.EX_OK));
-        f.delete();
+    public int toInt() {
+        return exitCode;
     }
+
+    @Override
+    public String toString() {
+        return exitCode + " = " + message;
+    }
+
 }

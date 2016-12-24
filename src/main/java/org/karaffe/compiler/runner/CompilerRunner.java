@@ -23,21 +23,14 @@
  */
 package org.karaffe.compiler.runner;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.TokenSource;
-import org.antlr.v4.runtime.TokenStream;
-import org.karaffe.compiler.Constants;
-import org.karaffe.compiler.antlr.KaraffeBaseListener;
-import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.arg.CommandLineOptions;
-import org.karaffe.compiler.arg.CommandLineParser;
-import org.karaffe.stdlib.Either;
+import org.karaffe.compiler.ExitStatus;
+import org.karaffe.compiler.arg.CompilerConfigurations;
+import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.report.ReportWriter;
+import org.karaffe.compiler.tree.CompileUnit;
+import org.karaffe.io.KaraffeFileStream;
 
 /**
  *
@@ -46,66 +39,44 @@ import org.karaffe.stdlib.Either;
 @Slf4j
 public class CompilerRunner {
 
-    private final String[] args;
-    private final List<DebugModeListener> debugModeListeners = new ArrayList<>();
-    private final List<VerboseModeListener> verboseModeListeners = new ArrayList<>();
-    private final List<KaraffeBaseListener> parserListeners = new ArrayList<>();
-    private final List<ANTLRErrorListener> errorListeners = new ArrayList<>();
+    private final KaraffeFileStream files;
+    private final ReportWriter reportWriter;
 
-    public CompilerRunner(String... args) {
-        this.args = args;
+    public CompilerRunner() {
+        this.files = KaraffeFileStream.emptyStream();
+        this.reportWriter = new ReportWriter();
     }
 
-    public void addDebugModeListener(DebugModeListener listener) {
-        this.debugModeListeners.add(listener);
+    public CompilerRunner(KaraffeFileStream fileStream) {
+        this.files = fileStream;
+        this.reportWriter = new ReportWriter();
     }
 
-    public void addVerboseModeListener(VerboseModeListener listener) {
-        this.verboseModeListeners.add(listener);
-    }
-
-    public void addParserListener(KaraffeBaseListener listener) {
-        this.parserListeners.add(listener);
-    }
-
-    public void addErrorListener(ANTLRErrorListener listener) {
-        this.errorListeners.add(listener);
-    }
-
-    public void run() {
-        CommandLineParser cmdLineParser = new CommandLineParser(args);
-        CommandLineOptions options = cmdLineParser.parse();
-
-        if (options.isDebugMode()) {
-            debugModeListeners.forEach(DebugModeListener::onDebugMode);
-        } else if (options.isVerboseMode()) {
-            verboseModeListeners.forEach(VerboseModeListener::onVerboseMode);
+    public CompilerRunner(CompilerConfigurations config) {
+        this.files = config;
+        if (config.hasLogOutputFile()) {
+            this.reportWriter = new ReportWriter(config.getLogStream());
+        } else {
+            this.reportWriter = new ReportWriter();
         }
-
-        log.info("compiler initialized.");
-        log.debug("args : " + Arrays.asList(args));
-        log.debug("parsed options : " + options);
-
-        if (options.hasVersion()) {
-            log.debug("show version");
-            System.out.println(Constants.VERSION_INFO_STRING);
-            return;
-        }
-
-        options.getStream().forEach(f -> {
-            Either<IOException, CharStream> charStreamEither = CharStreamFactory.createFromAbsolutePath(f.getAbsolutePath());
-            charStreamEither.apply(
-                    left -> {
-                        log.error("IOError", left);
-                    },
-                    right -> {
-                        TokenSource tokenSource = TokenSourceFactory.create(right);
-                        TokenStream tokenStream = TokenStreamFactory.create(tokenSource);
-                        KaraffeParser parser = new KaraffeParser(tokenStream);
-                        parserListeners.forEach(parser::addParseListener);
-                        errorListeners.forEach(parser::addErrorListener);
-                        parser.compileUnit();
-                    });
-        });
     }
+
+    public ExitStatus run() {
+        if (files.isEmpty()) {
+            return ExitStatus.EX_IOERR;
+        }
+        files.getFileStream()
+                .map(f -> {
+                    return new Parser(f);
+                })
+                .map(parser -> parser.getCompileUnit())
+                .map(r -> {
+                    CompileUnit compileUnit = r.getCompileUnit();
+                    List<Report> reports = r.getReports();
+                    reportWriter.printReport(compileUnit.getFile(), reports);
+                    return compileUnit;
+                });
+        return ExitStatus.EX_OK;
+    }
+
 }

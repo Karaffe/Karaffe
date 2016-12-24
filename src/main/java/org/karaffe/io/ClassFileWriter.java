@@ -23,12 +23,18 @@
  */
 package org.karaffe.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import lombok.extern.slf4j.Slf4j;
+import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.report.ReportType;
+import org.karaffe.compiler.report.Reporter;
 import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.CompileUnit;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -38,21 +44,32 @@ import org.objectweb.asm.tree.ClassNode;
  * @author noko
  */
 @Slf4j
-public class ClassFileWriter {
+public class ClassFileWriter implements Reporter {
+
+    private final CompileUnit compileUnit;
+    private final BiConsumer<String, byte[]> writer;
+    private final List<Report> reports = new ArrayList<>();
+
+    public ClassFileWriter(CompileUnit compileUnit) {
+        this.compileUnit = compileUnit;
+        this.writer = (name, byteCode) -> {
+            try {
+                Files.write(Paths.get(name), byteCode);
+            } catch (IOException ex) {
+                Report report = Report.builder().title("").type(ReportType.ERROR).build();
+                reports.add(report);
+            }
+        };
+    }
 
     public void writeClassDeclsToClassFile(List<ClassDecl> classDecls) {
-        classDecls
-                .stream()
+        compileUnit.classDeclStream()
                 .map(c -> convert(c))
                 .forEach(c -> {
-                    ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-                    c.accept(writer);
-                    byte[] byteCode = writer.toByteArray();
-                    try {
-                        Files.write(new File(c.name + ".class").toPath(), byteCode);
-                    } catch (IOException ex) {
-                        log.error("IOError", ex);
-                    }
+                    ClassWriter classVisitor = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+                    c.accept(classVisitor);
+                    byte[] byteCode = classVisitor.toByteArray();
+                    this.writer.accept(c.name + ".class", byteCode);
                 });
     }
 
@@ -62,5 +79,10 @@ public class ClassFileWriter {
         classNode.version = Opcodes.V1_8;
         classNode.sourceFile = classDecl.getName() + ".krf";
         return classNode;
+    }
+
+    @Override
+    public List<Report> getReports() {
+        return reports;
     }
 }

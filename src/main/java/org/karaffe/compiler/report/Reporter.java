@@ -21,36 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.compiler.report;
 
-import java.io.File;
-import java.io.IOException;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Test;
-import org.karaffe.compiler.ExitStatus;
-import org.karaffe.io.KaraffeFileStream;
+import java.util.List;
 
 /**
  *
  * @author noko
  */
-public class CompilerRunnerTest {
+public interface Reporter {
 
-    @Test
-    public void testRun() {
-        CompilerRunner runner = new CompilerRunner();
-        ExitStatus exitStatus = runner.run();
-        assertThat(exitStatus, is(ExitStatus.EX_IOERR));
-    }
-
-    @Test
-    public void testRun2() throws IOException {
-        File f = File.createTempFile("karaffe-junit-", ".krf");
-        KaraffeFileStream fileStream = KaraffeFileStream.of(f);
-        CompilerRunner runner = new CompilerRunner(fileStream);
-        ExitStatus exitStatus = runner.run();
-        assertThat(exitStatus, is(ExitStatus.EX_OK));
-        f.delete();
-    }
+    public List<Report> getReports();
 }

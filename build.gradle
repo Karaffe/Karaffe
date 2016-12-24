@@ -25,7 +25,12 @@ ext {
 dependencies {
   compile group: 'args4j', name: 'args4j', version: args4jVersion
   compileOnly "org.projectlombok:lombok:1.16.12"
+  compile "org.functionaljava:functionaljava:4.6"
+  compile "org.functionaljava:functionaljava-java8:4.6"
+  compile "org.functionaljava:functionaljava-quickcheck:4.6"
+  compile "org.functionaljava:functionaljava-java-core:4.6"
   testCompile "org.mockito:mockito-core:2.+"
+  
 }
 
 apply from: 'gradle/antlr.gradle'

@@ -21,17 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.io;
 
-import java.io.File;
-import java.util.Map;
-import org.karaffe.compiler.tree.ClassDecl;
+import java.util.stream.Stream;
+import org.karaffe.io.KaraffeFile;
 
 /**
  *
  * @author noko
  */
-public interface ClassDeclCompileResult {
+public class EmptyStream implements KaraffeFileStream {
 
-    public Map<File, ClassDecl> getCompileResult();
+    @Override
+    public Stream<KaraffeFile> getFileStream() {
+        return Stream.empty();
+    }
+
 }

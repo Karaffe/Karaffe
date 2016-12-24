@@ -21,35 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.io;
 
-import java.io.File;
+import fj.data.Either;
 import java.io.IOException;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CharStream;
-import org.karaffe.stdlib.Either;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  *
  * @author noko
  */
-public class CharStreamFactory {
+public class KaraffeFile {
 
-    public static Either<IOException, CharStream> createFromAbsolutePath(String absolutePath) {
+    private final Path filePath;
+    private final List<String> source;
+
+    public KaraffeFile(Path filePath) throws IOException {
+        this.filePath = filePath;
+        this.source = Files.readAllLines(filePath);
+    }
+
+    public static Either<IOException, KaraffeFile> of(Path path) {
         try {
-            return Either.right(new ANTLRFileStream(absolutePath));
-        } catch (IOException ex) {
-            return Either.left(ex);
+            return Either.right(new KaraffeFile(path));
+        } catch (IOException e) {
+            return Either.left(e);
         }
     }
 
-    public static Either<IOException, CharStream> createFromFile(File f) {
-        return createFromAbsolutePath(f.getAbsolutePath());
+    public Path getFilePath() {
+        return filePath;
     }
 
-    public static CharStream createFromSource(String sourceFile) {
-        return new ANTLRInputStream(sourceFile);
+    public List<String> getSource() {
+        return source;
+    }
+
+    public String getFileName() {
+        return filePath.getFileName().toString();
+    }
+
+    public String getLine(int index) {
+        if (index <= 0 || index >= source.size()) {
+            throw new IllegalArgumentException("out of range : " + index);
+        }
+        return source.get(index - 1);
     }
 
 }

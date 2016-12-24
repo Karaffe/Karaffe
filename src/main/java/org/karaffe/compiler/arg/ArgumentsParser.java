@@ -23,7 +23,12 @@
  */
 package org.karaffe.compiler.arg;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.karaffe.compiler.Constants;
+import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.report.ReportType;
+import org.karaffe.compiler.report.Reporter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
@@ -33,27 +38,34 @@ import org.slf4j.LoggerFactory;
  *
  * @author noko
  */
-public class CommandLineParser {
+public class ArgumentsParser implements Reporter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentsParser.class);
 
     private final String[] args;
     private final CmdLineParser parser;
-    private final CommandLineOptions options;
+    private final CompilerConfigurations options;
+    private final List<Report> reports = new ArrayList<>();
 
-    public CommandLineParser(String... args) {
+    public ArgumentsParser(String... args) {
         this.args = args;
-        this.options = new CommandLineOptions();
+        this.options = new CompilerConfigurations();
         this.parser = new CmdLineParser(this.options);
     }
 
-    public CommandLineOptions parse() {
+    public CompilerConfigurations parse() {
         try {
+            if (args == null || args.length == 0) {
+                options.setArgumentsError();
+                reports.add(Report.builder().title("arg error").type(ReportType.ERROR).hasLineInfo(false).place("").build());
+                return options;
+            }
             LOGGER.debug("try parse");
             parser.parseArgument(args);
             LOGGER.debug("parse ok");
         } catch (CmdLineException ex) {
             LOGGER.error("bad option: " + ex);
+            reports.add(Report.builder().title(ex.getMessage()).type(ReportType.ERROR).hasLineInfo(false).place("").build());
             options.setArgumentsError();
         }
         return options;
@@ -68,5 +80,10 @@ public class CommandLineParser {
         System.out.println(usage.toString());
         parser.printUsage(System.out);
         System.err.println();
+    }
+
+    @Override
+    public List<Report> getReports() {
+        return reports;
     }
 }

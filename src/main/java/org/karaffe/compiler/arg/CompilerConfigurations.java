@@ -24,9 +24,19 @@
 package org.karaffe.compiler.arg;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
+import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.report.ReportType;
+import org.karaffe.compiler.report.Reporter;
+import org.karaffe.io.KaraffeFile;
+import org.karaffe.io.KaraffeFileStream;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
@@ -34,7 +44,8 @@ import org.kohsuke.args4j.Option;
  *
  * @author noko
  */
-public class CommandLineOptions {
+@Slf4j
+public class CompilerConfigurations implements KaraffeFileStream, Reporter {
 
     @Option(name = "--version", aliases = "-version", usage = "Show compiler version")
     private boolean hasVersion;
@@ -48,10 +59,15 @@ public class CommandLineOptions {
     @Option(name = "--parallel", usage = "build in parallel")
     private boolean isParallelMode;
 
+    @Option(name = "--log-output", usage = "log message to FILE")
+    private File logFile;
+
     private boolean isArgumentsError;
 
     @Argument
     private List<File> sourceFiles = new ArrayList<>();
+
+    private final List<Report> reports = new ArrayList<>();
 
     public boolean hasVersion() {
         return hasVersion;
@@ -69,11 +85,53 @@ public class CommandLineOptions {
         return isParallelMode;
     }
 
-    public Stream<File> getStream() {
-        return sourceFiles.stream();
+    @Override
+    public boolean hasFile() {
+        return !sourceFiles.isEmpty();
     }
 
-    public Stream<File> getParallelStream() {
+    public boolean hasLogOutputFile() {
+        return logFile != null;
+    }
+
+    public File getLogFile() {
+        return logFile;
+    }
+
+    public PrintStream getLogStream() {
+        try {
+            return new PrintStream(logFile);
+        } catch (FileNotFoundException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
+
+    @Override
+    public Stream<KaraffeFile> getFileStream() {
+        List<KaraffeFile> karaffeFiles = sourceFiles
+                .stream()
+                .map(File::toPath)
+                .map(KaraffeFile::of)
+                .map(e -> {
+                    return e.bimap(left -> {
+                        Report report = Report
+                                .builder()
+                                .title("IOError : " + left.getLocalizedMessage())
+                                .type(ReportType.ERROR).build();
+                        reports.add(report);
+                        return null;
+                    }, right -> {
+                        return right;
+                    });
+                })
+                .filter(e -> e.isRight())
+                .map(e -> e.right().value())
+                .collect(toList());
+
+        return karaffeFiles.stream();
+    }
+
+    public Stream<File> getFileParallelStream() {
         return sourceFiles.parallelStream();
     }
 
@@ -98,6 +156,16 @@ public class CommandLineOptions {
                 + isParallelMode
                 + ", sourceFiles="
                 + sourceFiles + '}';
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return sourceFiles.isEmpty();
+    }
+
+    @Override
+    public List<Report> getReports() {
+        return reports;
     }
 
 }

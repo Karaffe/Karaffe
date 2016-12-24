@@ -33,17 +33,23 @@ import lombok.Builder;
 public class Report {
 
     private final String title;
-    private final String type;
+    private final String place;
+    private final ReportType type;
     private final int line;
     private final int column;
     private final int endColumn;
+    private final boolean hasLineInfo;
 
     public String getTitle() {
         return title;
     }
 
+    public String getPlace() {
+        return place;
+    }
+
     public String getType() {
-        return type;
+        return type.toString();
     }
 
     public int getLine() {
@@ -58,7 +64,8 @@ public class Report {
         return endColumn;
     }
 
-    public static class Builder {
-
+    public boolean hasLineInfo() {
+        return hasLineInfo;
     }
+
 }

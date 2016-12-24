@@ -25,45 +25,43 @@ package org.karaffe.compiler.visitors;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
+import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
+import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.report.Report;
 import org.karaffe.compiler.report.Reporter;
+import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.CompileUnit;
+import org.karaffe.io.KaraffeFile;
 
 /**
  *
  * @author noko
  */
-@Slf4j
-public class SyntaxErrorListener extends BaseErrorListener implements Reporter {
+public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> implements Reporter {
 
     private final List<Report> reports = new ArrayList<>();
-    private final String fileName;
+    private final KaraffeFile file;
 
-    public SyntaxErrorListener() {
-        this("unknown file");
-    }
-
-    public SyntaxErrorListener(String fileName) {
-        this.fileName = fileName;
-    }
-
-    @Override
-    public void syntaxError(Recognizer<?, ?> rcgnzr, Object o, int i, int i1, String string, RecognitionException re) {
-        log.error("Recognizer : {} , Object : {} , int i : {}, int i1 : {} , String : {} , Exception : {}", rcgnzr, o, i, i1, string, re);
-        Report report = Report
-                .builder()
-                .title("Syntax Error")
-                .place(fileName)
-                .build();
-        reports.add(report);
+    public CompileUnitVisitor(KaraffeFile file) {
+        this.file = file;
     }
 
     @Override
     public List<Report> getReports() {
         return reports;
+    }
+
+    @Override
+    public CompileUnit visitCompileUnit(KaraffeParser.CompileUnitContext compileUnitContext) {
+        CompileUnit compileUnit = new CompileUnit(file);
+        List<KaraffeParser.StatementContext> statementContexts = compileUnitContext.statement();
+        for (KaraffeParser.StatementContext context : statementContexts) {
+            ClassDeclVisitor classDeclVisitor = new ClassDeclVisitor();
+            ClassDecl classDecl = context.accept(classDeclVisitor);
+            reports.addAll(classDeclVisitor.getReports());
+            compileUnit.addStatement(classDecl);
+        }
+        return compileUnit;
     }
 
 }

@@ -31,37 +31,53 @@ import org.junit.Test;
  *
  * @author noko
  */
-public class CommandLineParserTest {
+public class ArgumentsParserTest {
 
     /**
      * Test of parse method, of class CommandLineParser.
      */
     @Test
     public void testParseVersionFlag() {
-        checkFlagIsTrue(CommandLineOptions::hasVersion, "--version");
-        checkFlagIsTrue(CommandLineOptions::hasVersion, "-version");
+        checkFlagIsTrue(CompilerConfigurations::hasVersion, "--version");
+        checkFlagIsTrue(CompilerConfigurations::hasVersion, "-version");
     }
 
     @Test
     public void testParseDebugModeFlag() {
-        checkFlagIsTrue(CommandLineOptions::isDebugMode, "--debug");
-        checkFlagIsTrue(CommandLineOptions::isDebugMode, "-vv");
+        checkFlagIsTrue(CompilerConfigurations::isDebugMode, "--debug");
+        checkFlagIsTrue(CompilerConfigurations::isDebugMode, "-vv");
     }
 
     @Test
     public void testParseVerboseMode() {
-        checkFlagIsTrue(CommandLineOptions::isVerboseMode, "-v");
-        checkFlagIsTrue(CommandLineOptions::isVerboseMode, "--verbose");
+        checkFlagIsTrue(CompilerConfigurations::isVerboseMode, "-v");
+        checkFlagIsTrue(CompilerConfigurations::isVerboseMode, "--verbose");
     }
 
     @Test
     public void testParseParallelMode() {
-        checkFlagIsTrue(CommandLineOptions::isParallelMode, "--parallel");
+        checkFlagIsTrue(CompilerConfigurations::isParallelMode, "--parallel");
     }
 
-    private void checkFlagIsTrue(Function<CommandLineOptions, Boolean> function, String... options) {
-        CommandLineParser instance = new CommandLineParser(options);
-        CommandLineOptions parsed = instance.parse();
+    @Test
+    public void testParseLogOutputMode() {
+        checkFlagIsTrue(CompilerConfigurations::hasLogOutputFile, "--log-output", "hoge");
+    }
+
+    @Test
+    public void testParseFail1() {
+        checkFlagIsTrue(c -> {
+            return c.isArgumentsError();
+        }, "-ddddd");
+        checkFlagIsTrue(c -> {
+            assert !c.getReports().isEmpty() : "error is not reported";
+            return true;
+        }, "-ddddd");
+    }
+
+    private void checkFlagIsTrue(Function<CompilerConfigurations, Boolean> function, String... options) {
+        ArgumentsParser instance = new ArgumentsParser(options);
+        CompilerConfigurations parsed = instance.parse();
         Boolean result = function.apply(parsed);
         assertTrue(result);
     }

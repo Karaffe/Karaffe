@@ -27,7 +27,7 @@ package org.karaffe.compiler.tree;
  *
  * @author noko
  */
-public class ClassDecl {
+public class ClassDecl implements Statement {
 
     private final String name;
     private boolean hasError;
@@ -36,6 +36,7 @@ public class ClassDecl {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -46,6 +47,11 @@ public class ClassDecl {
 
     public boolean hasError() {
         return hasError;
+    }
+
+    @Override
+    public ASTType getType() {
+        return ASTType.CLASS_DECL;
     }
 
 }

@@ -21,13 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.compiler.tree;
 
 /**
  *
  * @author noko
  */
-public interface DebugModeListener {
+public interface Statement {
 
-    public void onDebugMode();
+    public String getName();
+
+    public ASTType getType();
 }

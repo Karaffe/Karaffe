@@ -21,36 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.compiler.visitors;
 
-import java.io.File;
-import java.io.IOException;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Test;
-import org.karaffe.compiler.ExitStatus;
-import org.karaffe.io.KaraffeFileStream;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
+import org.karaffe.compiler.antlr.KaraffeParser;
+import org.karaffe.compiler.report.Report;
+import org.karaffe.compiler.report.Reporter;
+import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.Statement;
 
 /**
  *
  * @author noko
  */
-public class CompilerRunnerTest {
+@Slf4j
+public class StatementVisitor extends KaraffeBaseVisitor<Statement> implements Reporter {
 
-    @Test
-    public void testRun() {
-        CompilerRunner runner = new CompilerRunner();
-        ExitStatus exitStatus = runner.run();
-        assertThat(exitStatus, is(ExitStatus.EX_IOERR));
+    private final List<Report> reports = new ArrayList<>();
+
+    @Override
+    public Statement visitClassDecl(KaraffeParser.ClassDeclContext ctx) {
+        ClassDeclVisitor visitor = new ClassDeclVisitor();
+        ClassDecl classDecl = ctx.accept(visitor);
+        reports.addAll(visitor.getReports());
+        return classDecl;
     }
 
-    @Test
-    public void testRun2() throws IOException {
-        File f = File.createTempFile("karaffe-junit-", ".krf");
-        KaraffeFileStream fileStream = KaraffeFileStream.of(f);
-        CompilerRunner runner = new CompilerRunner(fileStream);
-        ExitStatus exitStatus = runner.run();
-        assertThat(exitStatus, is(ExitStatus.EX_OK));
-        f.delete();
+    @Override
+    public List<Report> getReports() {
+        return reports;
     }
+
 }

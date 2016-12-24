@@ -21,19 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.runner;
+package org.karaffe.compiler.tree;
 
-import org.antlr.v4.runtime.BufferedTokenStream;
-import org.antlr.v4.runtime.TokenSource;
-import org.antlr.v4.runtime.TokenStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+import org.karaffe.io.KaraffeFile;
 
 /**
  *
  * @author noko
  */
-public class TokenStreamFactory {
+public class CompileUnit {
 
-    public static TokenStream create(TokenSource source) {
-        return new BufferedTokenStream(source);
+    private final KaraffeFile file;
+    private final List<Statement> statements = new ArrayList<>();
+
+    public CompileUnit(KaraffeFile file) {
+        this.file = file;
+    }
+
+    public KaraffeFile getFile() {
+        return file;
+    }
+
+    public void addStatement(Statement statement) {
+        this.statements.add(statement);
+    }
+
+    public Stream<ClassDecl> classDeclStream() {
+        return statements
+                .stream()
+                .filter(s -> s.getType() == ASTType.CLASS_DECL)
+                .map(ClassDecl.class::cast);
     }
 }
