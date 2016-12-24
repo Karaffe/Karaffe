@@ -29,7 +29,6 @@ import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
-import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.karaffe.io.KaraffeFile;
@@ -61,8 +60,8 @@ public class CompilerConfigurations implements KaraffeFileStream {
 
     private boolean isArgumentsError;
 
-    @Argument
-    private List<File> sourceFiles = new ArrayList<>();
+    @Argument(handler = KaraffeFileHandler.class, multiValued = true)
+    private List<KaraffeFile> sourceFiles = new ArrayList<>();
 
     public boolean hasVersion() {
         return hasVersion;
@@ -103,16 +102,10 @@ public class CompilerConfigurations implements KaraffeFileStream {
 
     @Override
     public Stream<KaraffeFile> getFileStream() {
-        List<KaraffeFile> karaffeFiles = sourceFiles
-                .stream()
-                .map(File::toPath)
-                .map(KaraffeFile::of)
-                .collect(toList());
-
-        return karaffeFiles.stream();
+        return sourceFiles.stream();
     }
 
-    public Stream<File> getFileParallelStream() {
+    public Stream<KaraffeFile> getFileParallelStream() {
         return sourceFiles.parallelStream();
     }
 
