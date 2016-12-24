@@ -23,34 +23,35 @@
  */
 package org.karaffe.compiler.visitors;
 
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.exception.ExceptionMessages;
-import org.karaffe.compiler.exception.NamingException;
 import org.karaffe.compiler.tree.ClassDecl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.karaffe.compiler.tree.Statement;
 
 /**
  *
  * @author noko
  */
+@Slf4j
 public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclVisitor.class);
 
     @Override
     public ClassDecl visitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
-        LOGGER.info("enter class decl");
-        KaraffeParser.ClassNameContext classNameContext = classDeclContext.className();
-        String className = classNameContext.getText();
-        LOGGER.debug("className : " + className);
+        log.info("enter class decl");
+        String className = classDeclContext.className().accept(new ClassNameVisitor());
         ClassDecl classDecl = new ClassDecl(className);
-        if (Character.isLowerCase(className.charAt(0))) {
-            throw new NamingException(ExceptionMessages.CLASS_NAME_MUSTBE_PASCAL_CASE, classDeclContext);
+        if (classDeclContext.classBodyBlock() != null) {
+            List<KaraffeParser.ClassBodyContext> classBodyContexts = classDeclContext.classBodyBlock().classBody();
+            for (KaraffeParser.ClassBodyContext bodyContext : classBodyContexts) {
+                Statement statement = bodyContext.accept(new StatementVisitor());
+                classDecl.addStatement(statement);
+            }
         }
-        KaraffeParser.ClassBodyBlockContext classBodyBlock = classDeclContext.classBodyBlock();
+        log.info("end class decl");
         return classDecl;
     }
+
 
 }

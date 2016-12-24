@@ -23,6 +23,9 @@
  */
 package org.karaffe.compiler.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author noko
@@ -30,9 +33,12 @@ package org.karaffe.compiler.tree;
 public class ClassDecl implements Statement {
 
     private final String name;
-    private boolean hasError;
+    private final List<Statement> statements = new ArrayList<>();
 
     public ClassDecl(String name) {
+        if (name == null) {
+            throw new NullPointerException("null class name");
+        }
         this.name = name;
     }
 
@@ -41,17 +47,13 @@ public class ClassDecl implements Statement {
         return name;
     }
 
-    public void errored() {
-        this.hasError = true;
-    }
-
-    public boolean hasError() {
-        return hasError;
-    }
-
     @Override
     public ASTType getType() {
         return ASTType.CLASS_DECL;
+    }
+
+    public void addStatement(Statement statement) {
+        this.statements.add(statement);
     }
 
 }

@@ -72,6 +72,10 @@ public class Main {
         } catch (KaraffeCompilerException e) {
             System.err.println(e);
             System.exit(-1);
+        } catch (Exception e) {
+            System.err.println("Compiler internal error : " + e.getLocalizedMessage());
+            e.printStackTrace();
+            System.exit(-1);
         }
     }
 }

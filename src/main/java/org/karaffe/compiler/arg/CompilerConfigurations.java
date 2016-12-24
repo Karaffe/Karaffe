@@ -127,4 +127,9 @@ public class CompilerConfigurations implements KaraffeFileStream {
         return sourceFiles.isEmpty();
     }
 
+    public static CompilerConfigurations getDefaultConfig() {
+        CompilerConfigurations config = new CompilerConfigurations();
+        return config;
+    }
+
 }

@@ -23,11 +23,12 @@
  */
 package org.karaffe.compiler.runner;
 
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.ExitStatus;
 import org.karaffe.compiler.arg.CompilerConfigurations;
 import org.karaffe.io.ClassFileWriter;
-import org.karaffe.io.KaraffeFileStream;
+import org.karaffe.io.KaraffeFile;
 
 /**
  *
@@ -36,31 +37,30 @@ import org.karaffe.io.KaraffeFileStream;
 @Slf4j
 public class CompilerRunner {
 
-    private final KaraffeFileStream files;
+    private final CompilerConfigurations config;
 
     public CompilerRunner() {
-        this.files = KaraffeFileStream.emptyStream();
-    }
-
-    public CompilerRunner(KaraffeFileStream fileStream) {
-        this.files = fileStream;
+        this.config = CompilerConfigurations.getDefaultConfig();
     }
 
     public CompilerRunner(CompilerConfigurations config) {
-        this.files = config;
+        this.config = config;
     }
 
     public ExitStatus run() {
-        if (files.isEmpty()) {
+        if (config.isEmpty()) {
             return ExitStatus.EX_IOERR;
         }
-        files.getFileStream()
-                .map(f -> {
-                    return new Parser(f);
-                })
-                .map(parser -> parser.parse())
-                .map(compileUnit -> new ClassFileWriter(compileUnit))
-                .forEach(writer -> writer.writeClassDeclsToClassFile());
+        Stream<KaraffeFile> fileStream;
+        if (config.isParallelMode()) {
+            fileStream = config.getFileParallelStream();
+        } else {
+            fileStream = config.getFileStream();
+        }
+        fileStream.map(Parser::new)
+                .map(Parser::parse)
+                .map(ClassFileWriter::new)
+                .forEach(ClassFileWriter::writeClassDeclsToClassFile);
         return ExitStatus.EX_OK;
     }
 
