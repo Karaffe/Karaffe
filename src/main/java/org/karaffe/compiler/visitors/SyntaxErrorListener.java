@@ -23,23 +23,21 @@
  */
 package org.karaffe.compiler.visitors;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.Reporter;
+import org.karaffe.compiler.exception.ExceptionMessages;
+import org.karaffe.compiler.exception.ExceptionType;
+import org.karaffe.compiler.exception.SyntaxErrorException;
 
 /**
  *
  * @author noko
  */
 @Slf4j
-public class SyntaxErrorListener extends BaseErrorListener implements Reporter {
+public class SyntaxErrorListener extends BaseErrorListener {
 
-    private final List<Report> reports = new ArrayList<>();
     private final String fileName;
 
     public SyntaxErrorListener() {
@@ -52,18 +50,7 @@ public class SyntaxErrorListener extends BaseErrorListener implements Reporter {
 
     @Override
     public void syntaxError(Recognizer<?, ?> rcgnzr, Object o, int i, int i1, String string, RecognitionException re) {
-        log.error("Recognizer : {} , Object : {} , int i : {}, int i1 : {} , String : {} , Exception : {}", rcgnzr, o, i, i1, string, re);
-        Report report = Report
-                .builder()
-                .title("Syntax Error")
-                .place(fileName)
-                .build();
-        reports.add(report);
-    }
-
-    @Override
-    public List<Report> getReports() {
-        return reports;
+        throw new SyntaxErrorException(ExceptionType.ERROR, ExceptionMessages.SYNTAX_ERROR);
     }
 
 }

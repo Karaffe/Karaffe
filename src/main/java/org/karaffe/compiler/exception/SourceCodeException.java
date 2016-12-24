@@ -21,26 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.visitors;
+package org.karaffe.compiler.exception;
 
-import lombok.extern.slf4j.Slf4j;
-import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
-import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.tree.ClassDecl;
-import org.karaffe.compiler.tree.Statement;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 /**
  *
  * @author noko
  */
-@Slf4j
-public class StatementVisitor extends KaraffeBaseVisitor<Statement> {
+public class SourceCodeException extends KaraffeCompilerException {
 
-    @Override
-    public Statement visitClassDecl(KaraffeParser.ClassDeclContext ctx) {
-        ClassDeclVisitor visitor = new ClassDeclVisitor();
-        ClassDecl classDecl = ctx.accept(visitor);
-        return classDecl;
+    public SourceCodeException(ExceptionType type, ExceptionMessages message) {
+        super(type, message);
+    }
+
+    public SourceCodeException(ExceptionType type, ExceptionMessages message, ParserRuleContext context) {
+        super(
+                type,
+                message,
+                context.getStart().getTokenSource().getSourceName(),
+                true,
+                context.getText(),
+                context.getStart().getLine(),
+                context.getStart().getCharPositionInLine(),
+                context.getStart().getCharPositionInLine() != context.getStop().getCharPositionInLine(),
+                context.getStop().getCharPositionInLine());
     }
 
 }

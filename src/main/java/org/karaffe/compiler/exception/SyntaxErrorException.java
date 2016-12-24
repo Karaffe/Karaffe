@@ -21,15 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.report;
+package org.karaffe.compiler.exception;
 
-import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 /**
  *
  * @author noko
  */
-public interface Reporter {
+public class SyntaxErrorException extends SourceCodeException {
 
-    public List<Report> getReports();
+    public SyntaxErrorException(ExceptionType type, ExceptionMessages message) {
+        super(type, message);
+    }
+
+    public SyntaxErrorException(ExceptionType type, ExceptionMessages message, ParserRuleContext context) {
+        super(type, message, context);
+    }
+
 }

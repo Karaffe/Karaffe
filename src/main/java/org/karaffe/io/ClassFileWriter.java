@@ -24,15 +24,11 @@
 package org.karaffe.io;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import lombok.extern.slf4j.Slf4j;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.ReportType;
-import org.karaffe.compiler.report.Reporter;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.tree.CompileUnit;
 import org.objectweb.asm.ClassWriter;
@@ -44,11 +40,10 @@ import org.objectweb.asm.tree.ClassNode;
  * @author noko
  */
 @Slf4j
-public class ClassFileWriter implements Reporter {
+public class ClassFileWriter {
 
     private final CompileUnit compileUnit;
     private final BiConsumer<String, byte[]> writer;
-    private final List<Report> reports = new ArrayList<>();
 
     public ClassFileWriter(CompileUnit compileUnit) {
         this.compileUnit = compileUnit;
@@ -56,13 +51,12 @@ public class ClassFileWriter implements Reporter {
             try {
                 Files.write(Paths.get(name), byteCode);
             } catch (IOException ex) {
-                Report report = Report.builder().title("").type(ReportType.ERROR).build();
-                reports.add(report);
+                throw new UncheckedIOException(ex);
             }
         };
     }
 
-    public void writeClassDeclsToClassFile(List<ClassDecl> classDecls) {
+    public void writeClassDeclsToClassFile() {
         compileUnit.classDeclStream()
                 .map(c -> convert(c))
                 .forEach(c -> {
@@ -81,8 +75,4 @@ public class ClassFileWriter implements Reporter {
         return classNode;
     }
 
-    @Override
-    public List<Report> getReports() {
-        return reports;
-    }
 }

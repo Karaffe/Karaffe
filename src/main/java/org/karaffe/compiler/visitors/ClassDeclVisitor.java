@@ -23,13 +23,10 @@
  */
 package org.karaffe.compiler.visitors;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.ReportType;
-import org.karaffe.compiler.report.Reporter;
+import org.karaffe.compiler.exception.ExceptionMessages;
+import org.karaffe.compiler.exception.NamingException;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +35,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author noko
  */
-public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> implements Reporter {
+public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassDeclVisitor.class);
-
-    private final List<Report> reports = new ArrayList<>();
 
     @Override
     public ClassDecl visitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
@@ -52,27 +47,10 @@ public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> implements R
         LOGGER.debug("className : " + className);
         ClassDecl classDecl = new ClassDecl(className);
         if (Character.isLowerCase(className.charAt(0))) {
-            Report report
-                    = Report.builder()
-                            .title("The class name must begin with an uppercase letter.")
-                            .type(ReportType.ERROR)
-                            .line(classNameContext.getStart().getLine())
-                            .column(classNameContext.getStart().getCharPositionInLine())
-                            .endColumn(classNameContext.getStart().getCharPositionInLine() + className.length() - 1)
-                            .build();
-            reports.add(report);
-            classDecl.errored();
+            throw new NamingException(ExceptionMessages.CLASS_NAME_MUSTBE_PASCAL_CASE, classDeclContext);
         }
         KaraffeParser.ClassBodyBlockContext classBodyBlock = classDeclContext.classBodyBlock();
         return classDecl;
     }
 
-    @Override
-    public List<Report> getReports() {
-        return reports;
-    }
-
-    public boolean hasError() {
-        return !reports.isEmpty();
-    }
 }

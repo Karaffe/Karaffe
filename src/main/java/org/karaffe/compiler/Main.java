@@ -29,13 +29,10 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.arg.ArgumentsParser;
 import org.karaffe.compiler.arg.CompilerConfigurations;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.ReportType;
-import org.karaffe.compiler.report.ReportWriter;
+import org.karaffe.compiler.exception.KaraffeCompilerException;
 import org.karaffe.compiler.runner.CompilerRunner;
 import org.slf4j.LoggerFactory;
 
@@ -43,59 +40,49 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     public static void main(String... args) {
-        ArgumentsParser parser = new ArgumentsParser(args);
-        CompilerConfigurations config = parser.parse();
+        try {
+            ArgumentsParser parser = new ArgumentsParser(args);
+            CompilerConfigurations config = parser.parse();
 
-        if (config.hasVersion()) {
-            parser.printUsage();
-            System.exit(ExitStatus.EX_OK.toInt());
-        }
+            if (config.hasVersion()) {
+                parser.printUsage();
+                System.exit(ExitStatus.EX_OK.toInt());
+            }
 
-        Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        if (config.hasLogOutputFile()) {
-            LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-            loggerContext.reset();
-            PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-            encoder.setContext(loggerContext);
-            encoder.setPattern("%d{HH:mm:ss.SSS} [%-36thread] %-5level %logger{36} --- %msg%n");
-            encoder.start();
+            Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            if (config.hasLogOutputFile()) {
+                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+                loggerContext.reset();
+                PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+                encoder.setContext(loggerContext);
+                encoder.setPattern("%d{HH:mm:ss.SSS} [%-36thread] %-5level %logger{36} --- %msg%n");
+                encoder.start();
 
-            FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
-            fileAppender.setFile(config.getLogFile().getAbsolutePath());
-            fileAppender.setContext(loggerContext);
-            fileAppender.setEncoder(encoder);
-            fileAppender.setAppend(true);
-            fileAppender.start();
-            rootLogger.addAppender(fileAppender);
-        }
+                FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
+                fileAppender.setFile(config.getLogFile().getAbsolutePath());
+                fileAppender.setContext(loggerContext);
+                fileAppender.setEncoder(encoder);
+                fileAppender.setAppend(true);
+                fileAppender.start();
+                rootLogger.addAppender(fileAppender);
+            }
 
-        if (config.isVerboseMode()) {
-            rootLogger.setLevel(Level.INFO);
-        } else if (config.isDebugMode()) {
-            rootLogger.setLevel(Level.ALL);
-        } else {
-            rootLogger.setLevel(Level.OFF);
-        }
+            if (config.isVerboseMode()) {
+                rootLogger.setLevel(Level.INFO);
+            } else if (config.isDebugMode()) {
+                rootLogger.setLevel(Level.ALL);
+            } else {
+                rootLogger.setLevel(Level.OFF);
+            }
 
-        log.info("start compiler");
-        ReportWriter argReportWriter = new ReportWriter();
-        List<Report> reports = config.getReports();
-        if (config.isArgumentsError()) {
-            reports.addAll(parser.getReports());
-            reports.addAll(config.getReports());
-            Report report = Report.builder().title("arg error").type(ReportType.ERROR).place("").hasLineInfo(false).build();
-            reports.add(report);
-            argReportWriter.printReport(reports);
-            System.exit(ExitStatus.EX_USAGE.toInt());
+            log.info("start compiler");
+            CompilerRunner runner = new CompilerRunner(config);
+            ExitStatus exitStatus = runner.run();
+            log.info("end compiler : " + exitStatus);
+            System.exit(exitStatus.toInt());
+        } catch (KaraffeCompilerException e) {
+            System.err.println(e);
+            System.exit(-1);
         }
-        if (!reports.isEmpty()) {
-            argReportWriter.printReport(reports);
-            parser.printUsage();
-            System.exit(ExitStatus.EX_USAGE.toInt());
-        }
-        CompilerRunner runner = new CompilerRunner(config);
-        ExitStatus exitStatus = runner.run();
-        log.info("end compiler : " + exitStatus);
-        System.exit(exitStatus.toInt());
     }
 }

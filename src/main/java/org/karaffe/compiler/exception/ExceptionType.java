@@ -21,51 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.report;
-
-import lombok.Builder;
+package org.karaffe.compiler.exception;
 
 /**
  *
  * @author noko
  */
-@Builder
-public class Report {
-
-    private final String title;
-    private final String place;
-    private final ReportType type;
-    private final int line;
-    private final int column;
-    private final int endColumn;
-    private final boolean hasLineInfo;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public String getType() {
-        return type.toString();
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    public boolean hasLineInfo() {
-        return hasLineInfo;
-    }
-
+public enum ExceptionType {
+    ERROR,
+    WARNING,
+    INFO,;
 }

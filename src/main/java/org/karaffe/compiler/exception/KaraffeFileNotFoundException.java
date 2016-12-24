@@ -21,20 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.report;
+package org.karaffe.compiler.exception;
 
 /**
  *
  * @author noko
  */
-public enum ReportType {
-    ERROR(20),
-    WARNING(10),
-    INFO(0),;
-    private final int level;
+public class KaraffeFileNotFoundException extends KaraffeFileIOException {
 
-    private ReportType(int level) {
-        this.level = level;
-
+    public KaraffeFileNotFoundException() {
+        this(ExceptionMessages.FILE_NOT_FOUND);
     }
+
+    public KaraffeFileNotFoundException(ExceptionMessages message) {
+        super(message);
+    }
+
 }

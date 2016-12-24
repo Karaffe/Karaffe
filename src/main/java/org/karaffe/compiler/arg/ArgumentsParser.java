@@ -23,12 +23,9 @@
  */
 package org.karaffe.compiler.arg;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.karaffe.compiler.Constants;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.ReportType;
-import org.karaffe.compiler.report.Reporter;
+import org.karaffe.compiler.exception.CommandLineException;
+import org.karaffe.compiler.exception.ExceptionMessages;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
@@ -38,14 +35,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author noko
  */
-public class ArgumentsParser implements Reporter {
+public class ArgumentsParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentsParser.class);
 
     private final String[] args;
     private final CmdLineParser parser;
     private final CompilerConfigurations options;
-    private final List<Report> reports = new ArrayList<>();
 
     public ArgumentsParser(String... args) {
         this.args = args;
@@ -57,16 +53,18 @@ public class ArgumentsParser implements Reporter {
         try {
             if (args == null || args.length == 0) {
                 options.setArgumentsError();
-                reports.add(Report.builder().title("arg error").type(ReportType.ERROR).hasLineInfo(false).place("").build());
-                return options;
+                throw new CommandLineException(ExceptionMessages.EMPTY_ARG);
+//                reports.add(Report.builder().title("arg error").type(ReportType.ERROR).hasLineInfo(false).place("").build());
+                //return options;
             }
             LOGGER.debug("try parse");
             parser.parseArgument(args);
             LOGGER.debug("parse ok");
         } catch (CmdLineException ex) {
-            LOGGER.error("bad option: " + ex);
-            reports.add(Report.builder().title(ex.getMessage()).type(ReportType.ERROR).hasLineInfo(false).place("").build());
-            options.setArgumentsError();
+            throw new CommandLineException(ExceptionMessages.BAD_ARG.additionalInfo(ex.getLocalizedMessage()));
+            //            LOGGER.error("bad option: " + ex);
+            //          reports.add(Report.builder().title(ex.getMessage()).type(ReportType.ERROR).hasLineInfo(false).place("").build());
+            //  options.setArgumentsError();
         }
         return options;
     }
@@ -82,8 +80,4 @@ public class ArgumentsParser implements Reporter {
         System.err.println();
     }
 
-    @Override
-    public List<Report> getReports() {
-        return reports;
-    }
 }

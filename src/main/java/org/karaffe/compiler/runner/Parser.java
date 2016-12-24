@@ -24,15 +24,12 @@
 package org.karaffe.compiler.runner;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.List;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.karaffe.compiler.antlr.KaraffeLexer;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.data.ParseResult;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.Reporter;
+import org.karaffe.compiler.exception.ExceptionMessages;
+import org.karaffe.compiler.exception.KaraffeFileIOException;
 import org.karaffe.compiler.tree.CompileUnit;
 import org.karaffe.compiler.visitors.CompileUnitVisitor;
 import org.karaffe.compiler.visitors.SyntaxErrorListener;
@@ -42,20 +39,12 @@ import org.karaffe.io.KaraffeFile;
  *
  * @author noko
  */
-public class Parser implements Reporter {
+public class Parser {
 
     private final KaraffeFile file;
 
-    private List<Report> reports;
-
     public Parser(KaraffeFile file) {
         this.file = file;
-    }
-
-    public ParseResult getCompileUnit() {
-        CompileUnit compileUnit = parse();
-        List<Report> result = getReports();
-        return new ParseResult(result, compileUnit);
     }
 
     public CompileUnit parse() {
@@ -66,19 +55,10 @@ public class Parser implements Reporter {
             CompileUnitVisitor visitor = new CompileUnitVisitor(file);
             CompileUnit compileUnit = parser.compileUnit().accept(visitor);
             parser.addErrorListener(new SyntaxErrorListener(file.getFileName()));
-            this.reports = visitor.getReports();
             return compileUnit;
         } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
+            throw new KaraffeFileIOException(ExceptionMessages.FILE_NOT_FOUND.additionalInfo(ex.getLocalizedMessage()));
         }
-    }
-
-    @Override
-    public List<Report> getReports() {
-        if (this.reports == null) {
-            throw new IllegalStateException("Cannot call getReports() method before calling parse() method.");
-        }
-        return this.reports;
     }
 
     public KaraffeFile getFile() {

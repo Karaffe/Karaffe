@@ -23,12 +23,10 @@
  */
 package org.karaffe.io;
 
-import fj.data.Either;
 import java.io.File;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
-import org.karaffe.io.KaraffeFile;
 
 public interface KaraffeFileStream {
 
@@ -52,13 +50,6 @@ public interface KaraffeFileStream {
                 .of(files)
                 .map(File::toPath)
                 .map(KaraffeFile::of)
-                .map(either -> {
-                    return either.bimap(left -> {
-                        return null;
-                    }, right -> right);
-                })
-                .filter(Either::isRight)
-                .map(e -> e.right().value())
                 .collect(toList());
         return new LocalFileStream(f);
     }

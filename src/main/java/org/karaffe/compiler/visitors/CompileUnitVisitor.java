@@ -23,12 +23,9 @@
  */
 package org.karaffe.compiler.visitors;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.Reporter;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.tree.CompileUnit;
 import org.karaffe.io.KaraffeFile;
@@ -37,18 +34,12 @@ import org.karaffe.io.KaraffeFile;
  *
  * @author noko
  */
-public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> implements Reporter {
+public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> {
 
-    private final List<Report> reports = new ArrayList<>();
     private final KaraffeFile file;
 
     public CompileUnitVisitor(KaraffeFile file) {
         this.file = file;
-    }
-
-    @Override
-    public List<Report> getReports() {
-        return reports;
     }
 
     @Override
@@ -58,7 +49,6 @@ public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> implemen
         for (KaraffeParser.StatementContext context : statementContexts) {
             ClassDeclVisitor classDeclVisitor = new ClassDeclVisitor();
             ClassDecl classDecl = context.accept(classDeclVisitor);
-            reports.addAll(classDeclVisitor.getReports());
             compileUnit.addStatement(classDecl);
         }
         return compileUnit;

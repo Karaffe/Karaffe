@@ -23,11 +23,12 @@
  */
 package org.karaffe.io;
 
-import fj.data.Either;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.karaffe.compiler.exception.ExceptionMessages;
+import org.karaffe.compiler.exception.KaraffeFileNotFoundException;
 
 /**
  *
@@ -43,11 +44,11 @@ public class KaraffeFile {
         this.source = Files.readAllLines(filePath);
     }
 
-    public static Either<IOException, KaraffeFile> of(Path path) {
+    public static KaraffeFile of(Path path) {
         try {
-            return Either.right(new KaraffeFile(path));
+            return new KaraffeFile(path);
         } catch (IOException e) {
-            return Either.left(e);
+            throw new KaraffeFileNotFoundException(ExceptionMessages.FILE_NOT_FOUND.additionalInfo(e.getMessage()));
         }
     }
 
@@ -60,7 +61,7 @@ public class KaraffeFile {
     }
 
     public String getFileName() {
-        return filePath.getFileName().toString();
+        return filePath.toAbsolutePath().toString();
     }
 
     public String getLine(int index) {

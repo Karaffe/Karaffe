@@ -26,6 +26,7 @@ package org.karaffe.compiler.arg;
 import java.util.function.Function;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.karaffe.compiler.exception.CommandLineException;
 
 /**
  *
@@ -64,15 +65,15 @@ public class ArgumentsParserTest {
         checkFlagIsTrue(CompilerConfigurations::hasLogOutputFile, "--log-output", "hoge");
     }
 
-    @Test
+    @Test(expected = CommandLineException.class)
     public void testParseFail1() {
-        checkFlagIsTrue(c -> {
-            return c.isArgumentsError();
-        }, "-ddddd");
-        checkFlagIsTrue(c -> {
-            assert !c.getReports().isEmpty() : "error is not reported";
-            return true;
-        }, "-ddddd");
+        checkArgs("-dddd");
+    }
+
+    private CompilerConfigurations checkArgs(String... args) {
+        ArgumentsParser parser = new ArgumentsParser(args);
+        CompilerConfigurations config = parser.parse();
+        return config;
     }
 
     private void checkFlagIsTrue(Function<CompilerConfigurations, Boolean> function, String... options) {

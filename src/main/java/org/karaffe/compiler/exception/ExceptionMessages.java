@@ -21,32 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.data;
+package org.karaffe.compiler.exception;
 
-import java.util.List;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.tree.CompileUnit;
+import java.util.ResourceBundle;
 
 /**
  *
  * @author noko
  */
-public class ParseResult {
+public enum ExceptionMessages {
 
-    private final List<Report> reports;
-    private final CompileUnit compileUnit;
+    //Arguments
+    EMPTY_ARG("compiler.arg.emptyargs"),
+    BAD_ARG("compiler.arg.badargs"),
+    //Naming
+    CLASS_NAME_MUSTBE_PASCAL_CASE("compiler.err.classnaming.pascalcase"),
+    //IO
+    FILE_NOT_FOUND("compiler.io.file.notfound"),
+    //Source
+    SYNTAX_ERROR("compiler.err.syntax");
 
-    public ParseResult(List<Report> reports, CompileUnit compileUnit) {
-        this.reports = reports;
-        this.compileUnit = compileUnit;
+    private final String messageKey;
+    private String additionalInfo;
+
+    private ExceptionMessages(String messageKey) {
+        this.messageKey = messageKey;
     }
 
-    public List<Report> getReports() {
-        return reports;
+    public ExceptionMessages additionalInfo(String message) {
+        ExceptionMessages.this.additionalInfo = message;
+        return this;
     }
 
-    public CompileUnit getCompileUnit() {
-        return compileUnit;
+    @Override
+    public String toString() {
+        ResourceBundle rs = ResourceBundle.getBundle("compiler_msg");
+        String message = rs.getString(messageKey);
+        return message + " " + (additionalInfo == null ? "" : additionalInfo);
     }
-
 }

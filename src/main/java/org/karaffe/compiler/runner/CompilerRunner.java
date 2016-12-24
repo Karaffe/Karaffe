@@ -23,13 +23,10 @@
  */
 package org.karaffe.compiler.runner;
 
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.ExitStatus;
 import org.karaffe.compiler.arg.CompilerConfigurations;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.ReportWriter;
-import org.karaffe.compiler.tree.CompileUnit;
+import org.karaffe.io.ClassFileWriter;
 import org.karaffe.io.KaraffeFileStream;
 
 /**
@@ -40,25 +37,17 @@ import org.karaffe.io.KaraffeFileStream;
 public class CompilerRunner {
 
     private final KaraffeFileStream files;
-    private final ReportWriter reportWriter;
 
     public CompilerRunner() {
         this.files = KaraffeFileStream.emptyStream();
-        this.reportWriter = new ReportWriter();
     }
 
     public CompilerRunner(KaraffeFileStream fileStream) {
         this.files = fileStream;
-        this.reportWriter = new ReportWriter();
     }
 
     public CompilerRunner(CompilerConfigurations config) {
         this.files = config;
-        if (config.hasLogOutputFile()) {
-            this.reportWriter = new ReportWriter(config.getLogStream());
-        } else {
-            this.reportWriter = new ReportWriter();
-        }
     }
 
     public ExitStatus run() {
@@ -69,13 +58,9 @@ public class CompilerRunner {
                 .map(f -> {
                     return new Parser(f);
                 })
-                .map(parser -> parser.getCompileUnit())
-                .map(r -> {
-                    CompileUnit compileUnit = r.getCompileUnit();
-                    List<Report> reports = r.getReports();
-                    reportWriter.printReport(compileUnit.getFile(), reports);
-                    return compileUnit;
-                });
+                .map(parser -> parser.parse())
+                .map(compileUnit -> new ClassFileWriter(compileUnit))
+                .forEach(writer -> writer.writeClassDeclsToClassFile());
         return ExitStatus.EX_OK;
     }
 

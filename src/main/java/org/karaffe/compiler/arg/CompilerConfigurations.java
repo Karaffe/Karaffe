@@ -32,9 +32,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import org.karaffe.compiler.report.Report;
-import org.karaffe.compiler.report.ReportType;
-import org.karaffe.compiler.report.Reporter;
 import org.karaffe.io.KaraffeFile;
 import org.karaffe.io.KaraffeFileStream;
 import org.kohsuke.args4j.Argument;
@@ -45,7 +42,7 @@ import org.kohsuke.args4j.Option;
  * @author noko
  */
 @Slf4j
-public class CompilerConfigurations implements KaraffeFileStream, Reporter {
+public class CompilerConfigurations implements KaraffeFileStream {
 
     @Option(name = "--version", aliases = "-version", usage = "Show compiler version")
     private boolean hasVersion;
@@ -66,8 +63,6 @@ public class CompilerConfigurations implements KaraffeFileStream, Reporter {
 
     @Argument
     private List<File> sourceFiles = new ArrayList<>();
-
-    private final List<Report> reports = new ArrayList<>();
 
     public boolean hasVersion() {
         return hasVersion;
@@ -112,20 +107,6 @@ public class CompilerConfigurations implements KaraffeFileStream, Reporter {
                 .stream()
                 .map(File::toPath)
                 .map(KaraffeFile::of)
-                .map(e -> {
-                    return e.bimap(left -> {
-                        Report report = Report
-                                .builder()
-                                .title("IOError : " + left.getLocalizedMessage())
-                                .type(ReportType.ERROR).build();
-                        reports.add(report);
-                        return null;
-                    }, right -> {
-                        return right;
-                    });
-                })
-                .filter(e -> e.isRight())
-                .map(e -> e.right().value())
                 .collect(toList());
 
         return karaffeFiles.stream();
@@ -161,11 +142,6 @@ public class CompilerConfigurations implements KaraffeFileStream, Reporter {
     @Override
     public boolean isEmpty() {
         return sourceFiles.isEmpty();
-    }
-
-    @Override
-    public List<Report> getReports() {
-        return reports;
     }
 
 }
