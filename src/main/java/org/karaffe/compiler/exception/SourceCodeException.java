@@ -49,4 +49,8 @@ public class SourceCodeException extends KaraffeCompilerException {
                 errorContext.getStop().getCharPositionInLine());
     }
 
+    public SourceCodeException(ExceptionType type, ExceptionMessages message, String place, boolean isAvailableSourceCode, String sourceCode, int line, int column, boolean hasColumnEnd, int columnEnd) {
+        super(type, message, place, isAvailableSourceCode, sourceCode, line, column, hasColumnEnd, columnEnd);
+    }
+
 }
