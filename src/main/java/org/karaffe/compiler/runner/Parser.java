@@ -24,6 +24,7 @@
 package org.karaffe.compiler.runner;
 
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.karaffe.compiler.antlr.KaraffeLexer;
@@ -32,6 +33,7 @@ import org.karaffe.compiler.exception.ExceptionMessages;
 import org.karaffe.compiler.exception.KaraffeFileIOException;
 import org.karaffe.compiler.tree.CompileUnit;
 import org.karaffe.compiler.visitors.CompileUnitVisitor;
+import org.karaffe.compiler.visitors.ErrorNodeListener;
 import org.karaffe.compiler.visitors.SyntaxErrorListener;
 import org.karaffe.io.KaraffeFile;
 
@@ -39,6 +41,7 @@ import org.karaffe.io.KaraffeFile;
  *
  * @author noko
  */
+@Slf4j
 public class Parser {
 
     private final KaraffeFile file;
@@ -49,12 +52,24 @@ public class Parser {
 
     public CompileUnit parse() {
         try {
+            log.debug("parser initializing...");
             ANTLRFileStream fileStream = new ANTLRFileStream(file.getFileName());
             KaraffeLexer lexer = new KaraffeLexer(fileStream);
+            lexer.removeErrorListeners();
             KaraffeParser parser = new KaraffeParser(new BufferedTokenStream(lexer));
+            parser.removeErrorListeners();
+            parser.removeParseListeners();
+            SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener(file.getFileName());
+            parser.addErrorListener(syntaxErrorListener);
+            lexer.addErrorListener(syntaxErrorListener);
+            ErrorNodeListener errorNodeListener = new ErrorNodeListener();
+            parser.addParseListener(errorNodeListener);
+            log.debug("parser initialized");
+            log.debug("parsing...");
             CompileUnitVisitor visitor = new CompileUnitVisitor(file);
             CompileUnit compileUnit = parser.compileUnit().accept(visitor);
-            parser.addErrorListener(new SyntaxErrorListener(file.getFileName()));
+            compileUnit.setSyntaxErrors(parser.getNumberOfSyntaxErrors());
+            log.debug("parse completed.");
             return compileUnit;
         } catch (IOException ex) {
             throw new KaraffeFileIOException(ExceptionMessages.FILE_NOT_FOUND.additionalInfo(ex.getLocalizedMessage()));
