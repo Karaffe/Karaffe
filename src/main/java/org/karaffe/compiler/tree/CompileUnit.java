@@ -36,6 +36,8 @@ public class CompileUnit {
 
     private final KaraffeFile file;
     private final List<Statement> statements = new ArrayList<>();
+    private int syntaxErrors = -1;
+    private boolean aleadySetSyntaxErrors;
 
     public CompileUnit(KaraffeFile file) {
         this.file = file;
@@ -54,5 +56,13 @@ public class CompileUnit {
                 .stream()
                 .filter(s -> s.getType() == ASTType.CLASS_DECL)
                 .map(ClassDecl.class::cast);
+    }
+
+    public void setSyntaxErrors(int numberOfSyntaxErrors) {
+        if (aleadySetSyntaxErrors) {
+            throw new IllegalStateException();
+        }
+        syntaxErrors = numberOfSyntaxErrors;
+        aleadySetSyntaxErrors = true;
     }
 }
