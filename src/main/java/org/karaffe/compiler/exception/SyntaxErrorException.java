@@ -23,7 +23,9 @@
  */
 package org.karaffe.compiler.exception;
 
+import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 
 /**
  *
@@ -37,6 +39,32 @@ public class SyntaxErrorException extends SourceCodeException {
 
     public SyntaxErrorException(ExceptionType type, ExceptionMessages message, ParserRuleContext context, ParserRuleContext errorContext) {
         super(type, message, context, errorContext);
+    }
+
+    public SyntaxErrorException(ExceptionType type, ExceptionMessages message, CommonToken token) {
+        super(
+                type,
+                message,
+                token.getTokenSource().getSourceName(),
+                true,
+                token.getInputStream().getText(new Interval(token.getStartIndex(), token.getStopIndex())),
+                token.getLine(),
+                token.getCharPositionInLine(),
+                false,
+                -1);
+    }
+
+    public SyntaxErrorException(ExceptionType type, ExceptionMessages message, String sourceName, String lineSourceCode, int line, int charIndex) {
+        super(
+                type,
+                message,
+                sourceName,
+                true,
+                lineSourceCode,
+                line,
+                charIndex,
+                false,
+                -1);
     }
 
 }
