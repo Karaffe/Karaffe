@@ -34,6 +34,7 @@ import org.karaffe.compiler.exception.TypeNotFoundException;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.tree.meta.ClassMetaData;
 import org.karaffe.compiler.tree.meta.Scope;
+import org.karaffe.compiler.type.JavaType;
 import org.karaffe.compiler.type.KType;
 
 /**
@@ -77,6 +78,10 @@ public class SuperOrInterfaceVisitor extends KaraffeBaseVisitor<ClassMetaData> {
                 }
             }
             interfaces.add(kType);
+        }
+
+        if (superType == null) {
+            superType = JavaType.ANY_TYPE;
         }
 
         ClassMetaData metaData = ClassMetaData.builder().superClass(superType).interfaces(interfaces).outerClass(parent).build();
