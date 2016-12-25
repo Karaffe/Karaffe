@@ -23,27 +23,28 @@
  */
 package org.karaffe.compiler.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.karaffe.compiler.tree.meta.ClassMetaData;
+import org.karaffe.compiler.type.KType;
 
 /**
  *
  * @author noko
  */
-public class ClassDecl implements Statement {
+public class FieldDecl implements Statement {
 
-    private final ClassMetaData metaData;
+    private final ClassDecl parent;
     private final String name;
-    private final List<Statement> statements = new ArrayList<>();
-    private boolean hasConstructor;
+    private KType type;
 
-    public ClassDecl(ClassMetaData metaData, String name) {
-        if (metaData == null || name == null) {
-            throw new NullPointerException("metadata : " + metaData + ", name : " + name);
-        }
-        this.metaData = metaData;
+    public FieldDecl(ClassDecl parent, String name) {
+        this.parent = parent;
         this.name = name;
+        this.type = KType.UNRESOLVED;
+    }
+
+    public FieldDecl(ClassDecl parent, String name, KType type) {
+        this.parent = parent;
+        this.name = name;
+        this.type = type;
     }
 
     @Override
@@ -53,23 +54,7 @@ public class ClassDecl implements Statement {
 
     @Override
     public ASTType getType() {
-        return ASTType.CLASS_DECL;
-    }
-
-    public List<Statement> getStatements() {
-        return new ArrayList<>(statements);
-    }
-
-    public void addStatement(Statement statement) {
-        this.statements.add(statement);
-    }
-
-    public String getSuperTypeName() {
-        return metaData.getSuperClass().getInternalName();
-    }
-
-    public boolean isNeedDefaultConstructor() {
-        return !hasConstructor;
+        return ASTType.FIELD_DECL;
     }
 
 }

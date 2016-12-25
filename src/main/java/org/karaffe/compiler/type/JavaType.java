@@ -21,55 +21,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.tree;
+package org.karaffe.compiler.type;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.karaffe.compiler.tree.meta.ClassMetaData;
+import org.karaffe.compiler.exception.TypeNotFoundException;
+import org.objectweb.asm.Type;
 
 /**
  *
  * @author noko
  */
-public class ClassDecl implements Statement {
+public class JavaType implements KType {
 
-    private final ClassMetaData metaData;
-    private final String name;
-    private final List<Statement> statements = new ArrayList<>();
-    private boolean hasConstructor;
+    public static final KType ANY_TYPE = new JavaType("java.lang.Object");
 
-    public ClassDecl(ClassMetaData metaData, String name) {
-        if (metaData == null || name == null) {
-            throw new NullPointerException("metadata : " + metaData + ", name : " + name);
+    private final Type type;
+
+    public JavaType(String fqcn) {
+        try {
+            Class<?> clazz = Class.forName(fqcn);
+            this.type = Type.getType(clazz);
+        } catch (ClassNotFoundException ex) {
+            throw new TypeNotFoundException(fqcn);
         }
-        this.metaData = metaData;
-        this.name = name;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getSimpleName() {
+        return type.getClassName();
     }
 
     @Override
-    public ASTType getType() {
-        return ASTType.CLASS_DECL;
+    public String getInternalName() {
+        return type.getInternalName();
     }
 
-    public List<Statement> getStatements() {
-        return new ArrayList<>(statements);
+    @Override
+    public String getDescriptor() {
+        return type.getDescriptor();
     }
 
-    public void addStatement(Statement statement) {
-        this.statements.add(statement);
+    @Override
+    public Type getASMType() {
+        return type;
     }
 
-    public String getSuperTypeName() {
-        return metaData.getSuperClass().getInternalName();
+    @Override
+    public Class<?> toClass() {
+        try {
+            return Class.forName(type.getClassName());
+        } catch (ClassNotFoundException ex) {
+            throw new TypeNotFoundException(type.getClassName());
+        }
     }
 
-    public boolean isNeedDefaultConstructor() {
-        return !hasConstructor;
+    @Override
+    public TypeCategory getCategory() {
+        return TypeCategory.JAVA_REF_TYPE;
     }
 
 }

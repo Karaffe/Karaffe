@@ -30,7 +30,6 @@ dependencies {
   compile "org.functionaljava:functionaljava-quickcheck:4.6"
   compile "org.functionaljava:functionaljava-java-core:4.6"
   testCompile "org.mockito:mockito-core:2.+"
-  
 }
 
 apply from: 'gradle/antlr.gradle'

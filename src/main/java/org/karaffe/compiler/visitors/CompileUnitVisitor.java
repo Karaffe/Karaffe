@@ -26,9 +26,10 @@ package org.karaffe.compiler.visitors;
 import java.util.List;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.exception.NamingException;
-import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.exception.SourceCodeException;
 import org.karaffe.compiler.tree.CompileUnit;
+import org.karaffe.compiler.tree.Statement;
+import org.karaffe.compiler.tree.meta.Scope;
 import org.karaffe.io.KaraffeFile;
 
 /**
@@ -46,13 +47,15 @@ public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> {
     @Override
     public CompileUnit visitCompileUnit(KaraffeParser.CompileUnitContext compileUnitContext) {
         CompileUnit compileUnit = new CompileUnit(file);
+        Scope scope = new Scope();
+
         List<KaraffeParser.StatementContext> statementContexts = compileUnitContext.statement();
         for (KaraffeParser.StatementContext context : statementContexts) {
-            ClassDeclVisitor classDeclVisitor = new ClassDeclVisitor();
             try {
-                ClassDecl classDecl = context.accept(classDeclVisitor);
-                compileUnit.addStatement(classDecl);
-            } catch (NamingException e) {
+                StatementVisitor statementVisitor = new StatementVisitor(scope);
+                Statement statement = context.accept(statementVisitor);
+                compileUnit.addStatement(statement);
+            } catch (SourceCodeException e) {
                 System.err.println(e);
             }
         }

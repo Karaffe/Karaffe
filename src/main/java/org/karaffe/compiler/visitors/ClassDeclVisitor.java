@@ -29,6 +29,9 @@ import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.tree.Statement;
+import org.karaffe.compiler.tree.meta.ClassMetaData;
+import org.karaffe.compiler.tree.meta.Scope;
+import org.karaffe.compiler.type.JavaType;
 
 /**
  *
@@ -37,21 +40,45 @@ import org.karaffe.compiler.tree.Statement;
 @Slf4j
 public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> {
 
+    private final Scope scope;
+    private final ClassDecl parent;
+
+    public ClassDeclVisitor(Scope scope) {
+        this.scope = scope;
+        this.parent = null;
+    }
+
+    public ClassDeclVisitor(Scope scope, ClassDecl parent) {
+        this.scope = scope;
+        this.parent = parent;
+    }
+
     @Override
     public ClassDecl visitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
         log.info("enter class decl");
         String className = classDeclContext.className().accept(new ClassNameVisitor());
-        ClassDecl classDecl = new ClassDecl(className);
+        ClassMetaData currentMetaData;
+        if (classDeclContext.superOrInterfaceList() == null) {
+            currentMetaData = ClassMetaData.builder().superClass(JavaType.ANY_TYPE).outerClass(parent).build();
+        } else {
+            currentMetaData = classDeclContext.superOrInterfaceList().accept(new SuperOrInterfaceVisitor(scope, parent));
+        }
+
+        ClassDecl classDecl = new ClassDecl(currentMetaData, className);
         if (classDeclContext.classBodyBlock() != null) {
             List<KaraffeParser.ClassBodyContext> classBodyContexts = classDeclContext.classBodyBlock().classBody();
             for (KaraffeParser.ClassBodyContext bodyContext : classBodyContexts) {
-                Statement statement = bodyContext.accept(new StatementVisitor());
+                Statement statement = bodyContext.accept(new ClassBodyVisitor(scope, classDecl));
                 classDecl.addStatement(statement);
             }
         }
+
+        if (classDecl.isNeedDefaultConstructor()) {
+            //Make default constructor
+        }
+
         log.info("end class decl");
         return classDecl;
     }
-
 
 }

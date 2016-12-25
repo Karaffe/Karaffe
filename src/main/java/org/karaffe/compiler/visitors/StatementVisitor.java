@@ -28,6 +28,7 @@ import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.tree.Statement;
+import org.karaffe.compiler.tree.meta.Scope;
 
 /**
  *
@@ -36,10 +37,18 @@ import org.karaffe.compiler.tree.Statement;
 @Slf4j
 public class StatementVisitor extends KaraffeBaseVisitor<Statement> {
 
+    private final Scope scope;
+
+    public StatementVisitor(Scope scope) {
+        this.scope = scope;
+    }
+
     @Override
     public Statement visitClassDecl(KaraffeParser.ClassDeclContext ctx) {
-        ClassDeclVisitor visitor = new ClassDeclVisitor();
+        log.debug("enter : visitClassDecl");
+        ClassDeclVisitor visitor = new ClassDeclVisitor(scope);
         ClassDecl classDecl = ctx.accept(visitor);
+        log.debug("exit  : visitClassDecl");
         return classDecl;
     }
 

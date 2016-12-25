@@ -35,8 +35,8 @@ public class SyntaxErrorException extends SourceCodeException {
         super(type, message);
     }
 
-    public SyntaxErrorException(ExceptionType type, ExceptionMessages message, ParserRuleContext context) {
-        super(type, message, context);
+    public SyntaxErrorException(ExceptionType type, ExceptionMessages message, ParserRuleContext context, ParserRuleContext errorContext) {
+        super(type, message, context, errorContext);
     }
 
 }

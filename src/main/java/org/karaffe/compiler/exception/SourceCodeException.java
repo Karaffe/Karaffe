@@ -36,17 +36,17 @@ public class SourceCodeException extends KaraffeCompilerException {
         super(type, message);
     }
 
-    public SourceCodeException(ExceptionType type, ExceptionMessages message, ParserRuleContext context) {
+    public SourceCodeException(ExceptionType type, ExceptionMessages message, ParserRuleContext context, ParserRuleContext errorContext) {
         super(
                 type,
                 message,
                 context.getStart().getTokenSource().getSourceName(),
                 true,
                 context.getStart().getInputStream().getText(new Interval(context.getStart().getStartIndex(), context.getStop().getStopIndex())),
-                context.getStart().getLine(),
-                context.getStart().getCharPositionInLine(),
-                context.getStart().getCharPositionInLine() != context.getStop().getCharPositionInLine(),
-                context.getStop().getCharPositionInLine());
+                errorContext.getStart().getLine(),
+                errorContext.getStart().getCharPositionInLine(),
+                errorContext.getStart().getCharPositionInLine() != context.getStop().getCharPositionInLine(),
+                errorContext.getStop().getCharPositionInLine());
     }
 
 }

@@ -21,55 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.tree;
+package org.karaffe.compiler.visitors;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.karaffe.compiler.tree.meta.ClassMetaData;
+import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
+import org.karaffe.compiler.antlr.KaraffeParser;
+import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.FieldDecl;
+import org.karaffe.compiler.tree.meta.Scope;
 
 /**
  *
  * @author noko
  */
-public class ClassDecl implements Statement {
+public class FieldDeclVisitor extends KaraffeBaseVisitor<FieldDecl> {
 
-    private final ClassMetaData metaData;
-    private final String name;
-    private final List<Statement> statements = new ArrayList<>();
-    private boolean hasConstructor;
+    private final Scope scope;
+    private final ClassDecl parent;
 
-    public ClassDecl(ClassMetaData metaData, String name) {
-        if (metaData == null || name == null) {
-            throw new NullPointerException("metadata : " + metaData + ", name : " + name);
-        }
-        this.metaData = metaData;
-        this.name = name;
+    public FieldDeclVisitor(Scope scope, ClassDecl parent) {
+        this.scope = scope;
+        this.parent = parent;
+
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public ASTType getType() {
-        return ASTType.CLASS_DECL;
-    }
-
-    public List<Statement> getStatements() {
-        return new ArrayList<>(statements);
-    }
-
-    public void addStatement(Statement statement) {
-        this.statements.add(statement);
-    }
-
-    public String getSuperTypeName() {
-        return metaData.getSuperClass().getInternalName();
-    }
-
-    public boolean isNeedDefaultConstructor() {
-        return !hasConstructor;
+    public FieldDecl visitFieldDecl(KaraffeParser.FieldDeclContext fieldDeclContext) {
+        String name = fieldDeclContext.fieldName().accept(new FieldNameVisitor());
+        FieldDecl fieldDecl = new FieldDecl(parent, name);
+        return fieldDecl;
     }
 
 }

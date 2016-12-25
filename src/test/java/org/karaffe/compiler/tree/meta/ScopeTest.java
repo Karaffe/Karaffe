@@ -21,37 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.visitors;
+package org.karaffe.compiler.tree.meta;
 
-import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
-import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.exception.ExceptionMessages;
-import org.karaffe.compiler.exception.NamingException;
+import java.util.Optional;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.karaffe.compiler.type.KType;
+import org.karaffe.compiler.type.TypeCategory;
 
 /**
  *
  * @author noko
  */
-@Slf4j
-public class ClassNameVisitor extends KaraffeBaseVisitor<String> {
+public class ScopeTest {
 
-    @Override
-    public String visitClassName(KaraffeParser.ClassNameContext ctx) {
-        log.info("enter class name");
-        String className = ctx.getText();
-        log.info("className : " + className);
-        if (Character.isLowerCase(className.charAt(0))) {
-            throw new NamingException(ExceptionMessages.CLASS_NAME_MUSTBE_PASCAL_CASE, ctx.getParent(), ctx);
-        }
-        log.info("end class name");
-        return className;
+    @Test
+    public void testResolve() {
+        Scope scope = new Scope();
+        Optional<KType> resolvedType = scope.resolveType("Any");
+        assertTrue(resolvedType.isPresent());
+        KType kType = resolvedType.get();
+        assertThat(kType.getCategory(), is(TypeCategory.JAVA_REF_TYPE));
     }
-
-    @Override
-    public String visitChildren(RuleNode node) {
-        return super.visitChildren(node); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

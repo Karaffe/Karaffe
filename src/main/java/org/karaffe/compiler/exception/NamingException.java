@@ -31,8 +31,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
  */
 public class NamingException extends SourceCodeException {
 
-    public NamingException(ExceptionMessages message, ParserRuleContext context) {
-        super(ExceptionType.ERROR, message, context);
+    public NamingException(ExceptionMessages message, ParserRuleContext context, ParserRuleContext errorContext) {
+        super(ExceptionType.ERROR, message, context, errorContext);
     }
 
 }

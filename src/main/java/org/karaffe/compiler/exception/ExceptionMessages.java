@@ -39,7 +39,11 @@ public enum ExceptionMessages {
     //IO
     FILE_NOT_FOUND("compiler.io.file.notfound"),
     //Source
-    SYNTAX_ERROR("compiler.err.syntax");
+    SYNTAX_ERROR("compiler.err.syntax"),
+    //Typing
+    TYPE_NOT_FOUND("compiler.err.type.notfound"),
+    TYPE_IS_NOT_INHERITABLE("compiler.err.type.notinheritable"),
+    INNER_CLASS("compiler.err.innerclass"),;
 
     private final String messageKey;
     private String additionalInfo;
@@ -57,6 +61,9 @@ public enum ExceptionMessages {
     public String toString() {
         ResourceBundle rs = ResourceBundle.getBundle("compiler_msg");
         String message = rs.getString(messageKey);
-        return message + " " + (additionalInfo == null ? "" : additionalInfo);
+        if (additionalInfo != null) {
+            message = message.replace("{}", additionalInfo);
+        }
+        return message;
     }
 }

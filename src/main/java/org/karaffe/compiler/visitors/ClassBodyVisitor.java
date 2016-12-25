@@ -24,34 +24,43 @@
 package org.karaffe.compiler.visitors;
 
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.tree.RuleNode;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.exception.ExceptionMessages;
-import org.karaffe.compiler.exception.NamingException;
+import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.FieldDecl;
+import org.karaffe.compiler.tree.Statement;
+import org.karaffe.compiler.tree.meta.Scope;
 
 /**
  *
  * @author noko
  */
 @Slf4j
-public class ClassNameVisitor extends KaraffeBaseVisitor<String> {
+public class ClassBodyVisitor extends KaraffeBaseVisitor<Statement> {
 
-    @Override
-    public String visitClassName(KaraffeParser.ClassNameContext ctx) {
-        log.info("enter class name");
-        String className = ctx.getText();
-        log.info("className : " + className);
-        if (Character.isLowerCase(className.charAt(0))) {
-            throw new NamingException(ExceptionMessages.CLASS_NAME_MUSTBE_PASCAL_CASE, ctx.getParent(), ctx);
-        }
-        log.info("end class name");
-        return className;
+    private final Scope scope;
+    private final ClassDecl parent;
+
+    public ClassBodyVisitor(Scope scope, ClassDecl classDecl) {
+        this.scope = scope;
+        this.parent = classDecl;
     }
 
     @Override
-    public String visitChildren(RuleNode node) {
-        return super.visitChildren(node); //To change body of generated methods, choose Tools | Templates.
+    public Statement visitClassDecl(KaraffeParser.ClassDeclContext ctx) {
+        log.debug("enter : visitClassDecl");
+        ClassDeclVisitor visitor = new ClassDeclVisitor(scope, parent);
+        ClassDecl classDecl = ctx.accept(visitor);
+        log.debug("exit  : visitClassDecl");
+        return classDecl;
     }
 
+    @Override
+    public Statement visitFieldDecl(KaraffeParser.FieldDeclContext ctx) {
+        log.debug("enter : visitFieldDecl");
+        FieldDeclVisitor visitor = new FieldDeclVisitor(scope, parent);
+        FieldDecl fieldDecl = ctx.accept(visitor);
+        log.debug("exit  : visitFieldDecl");
+        return fieldDecl;
+    }
 }

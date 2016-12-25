@@ -72,6 +72,7 @@ public class ClassFileWriter {
         classNode.name = classDecl.getName();
         classNode.version = Opcodes.V1_8;
         classNode.sourceFile = classDecl.getName() + ".krf";
+        classNode.superName = classDecl.getSuperTypeName();
         return classNode;
     }
 

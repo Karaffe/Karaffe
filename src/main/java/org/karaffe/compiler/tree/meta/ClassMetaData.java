@@ -21,55 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.tree;
+package org.karaffe.compiler.tree.meta;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.karaffe.compiler.tree.meta.ClassMetaData;
+import java.util.Optional;
+import lombok.Builder;
+import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.type.KType;
 
 /**
  *
  * @author noko
  */
-public class ClassDecl implements Statement {
+@Builder
+public class ClassMetaData {
 
-    private final ClassMetaData metaData;
-    private final String name;
-    private final List<Statement> statements = new ArrayList<>();
-    private boolean hasConstructor;
+    private final KType superClass;
+    private final ClassDecl outerClass;
+    private List<KType> interfaces = new ArrayList<>();
 
-    public ClassDecl(ClassMetaData metaData, String name) {
-        if (metaData == null || name == null) {
-            throw new NullPointerException("metadata : " + metaData + ", name : " + name);
-        }
-        this.metaData = metaData;
-        this.name = name;
+    public KType getSuperClass() {
+        return superClass;
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public Optional<ClassDecl> getOuterClass() {
+        return Optional.ofNullable(outerClass);
     }
 
-    @Override
-    public ASTType getType() {
-        return ASTType.CLASS_DECL;
-    }
-
-    public List<Statement> getStatements() {
-        return new ArrayList<>(statements);
-    }
-
-    public void addStatement(Statement statement) {
-        this.statements.add(statement);
-    }
-
-    public String getSuperTypeName() {
-        return metaData.getSuperClass().getInternalName();
-    }
-
-    public boolean isNeedDefaultConstructor() {
-        return !hasConstructor;
+    public List<KType> getInterfaces() {
+        return interfaces;
     }
 
 }

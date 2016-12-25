@@ -10,7 +10,11 @@ statement
   ;
 
 classDecl 
-  : 'class' className classBodyBlock?
+  : 'class' className superOrInterfaceList? classBodyBlock?
+  ;
+
+superOrInterfaceList
+  : ':' className (',' className)*
   ;
 
 classBodyBlock
@@ -19,9 +23,34 @@ classBodyBlock
 
 classBody
   : statement
+  | fieldDecl
   ;
 
 className 
+  : Identifier
+  ;
+
+fieldDecl
+  : 'def' fieldName ':' fieldType fieldInitializer
+  ;
+
+fieldName
+  : Identifier
+  ;
+
+fieldType
+  : type
+  ;
+
+fieldInitializer
+  : '=' expr
+  ;
+
+type
+  : Identifier
+  ;
+
+expr
   : Identifier
   ;
 
