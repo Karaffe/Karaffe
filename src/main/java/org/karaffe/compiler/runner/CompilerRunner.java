@@ -49,17 +49,23 @@ public class CompilerRunner {
 
     public ExitStatus run() {
         if (config.isEmpty()) {
+            log.error("Empty filestream. report IOERR");
             return ExitStatus.EX_IOERR;
         }
         Stream<KaraffeFile> fileStream;
         if (config.isParallelMode()) {
+            log.debug("use parallel stream");
             fileStream = config.getFileParallelStream();
         } else {
+            log.debug("use sequential stream");
             fileStream = config.getFileStream();
         }
+        log.debug("compiling... ");
         fileStream.map(Parser::new)
                 .map(Parser::parse)
+                .peek(c -> log.debug("parse finished : {}", c))
                 .map(ClassFileWriter::new)
+                .peek(w -> log.debug("class writer initialized. : {}", w))
                 .forEach(ClassFileWriter::writeClassDeclsToClassFile);
         return ExitStatus.EX_OK;
     }

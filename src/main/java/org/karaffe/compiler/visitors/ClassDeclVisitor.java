@@ -75,6 +75,7 @@ public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> {
 
         if (classDecl.isNeedDefaultConstructor()) {
             //Make default constructor
+            log.warn("{} is need default constructor", classDecl.getName());
         }
 
         log.info("end class decl");
