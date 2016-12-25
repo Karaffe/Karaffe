@@ -23,6 +23,11 @@
  */
 package org.karaffe.compiler.arg;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.function.Function;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -33,6 +38,29 @@ import org.karaffe.compiler.exception.CommandLineException;
  * @author noko
  */
 public class ArgumentsParserTest {
+
+    @Test(expected = CommandLineException.class)
+    public void testEmptyArg() {
+        ArgumentsParser parser = new ArgumentsParser();
+        parser.parse();
+    }
+
+    @Test(expected = CommandLineException.class)
+    public void testNullArg() {
+        ArgumentsParser parser = new ArgumentsParser(null);
+        parser.parse();
+    }
+
+    @Test
+    public void testPrintUsage() throws IOException {
+        File file = File.createTempFile("junit-test-", ".out");
+        PrintStream printStream = new PrintStream(file);
+        ArgumentsParser parser = new ArgumentsParser(printStream);
+        parser.printUsage();
+        List<String> outputs = Files.readAllLines(file.toPath());
+        assertFalse(outputs.isEmpty());
+        file.delete();
+    }
 
     /**
      * Test of parse method, of class CommandLineParser.

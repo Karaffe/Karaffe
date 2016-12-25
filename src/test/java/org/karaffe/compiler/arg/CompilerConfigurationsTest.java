@@ -23,6 +23,11 @@
  */
 package org.karaffe.compiler.arg;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.stream.Stream;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -95,7 +100,7 @@ public class CompilerConfigurationsTest {
     }
 
     @Test
-    public void testIsDebugMode2(){
+    public void testIsDebugMode2() {
         ArgumentsParser parser = new ArgumentsParser("--debug");
         CompilerConfigurations config = parser.parse();
         assertFalse(config.hasVersion());
@@ -110,6 +115,57 @@ public class CompilerConfigurationsTest {
         assertThat(stream.count(), is(0L));
         Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
         assertThat(parallelStream.count(), is(0L));
+    }
+
+    @Test
+    public void testHasLogOutputFile() {
+        ArgumentsParser parser = new ArgumentsParser("--log-output", "fileName");
+        CompilerConfigurations config = parser.parse();
+        assertFalse(config.hasVersion());
+        assertFalse(config.isArgumentsError());
+        assertTrue(config.hasLogOutputFile());
+        assertThat(config.getLogFile().getName(), is("fileName"));
+        assertFalse(config.hasFile());
+        assertFalse(config.isDebugMode());
+        assertTrue(config.isEmpty());
+        assertFalse(config.isParallelMode());
+        assertFalse(config.isVerboseMode());
+        Stream<KaraffeFile> stream = config.getFileStream();
+        assertThat(stream.count(), is(0L));
+        Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
+        assertThat(parallelStream.count(), is(0L));
+    }
+
+    @Test
+    public void testIsEmpty() throws IOException {
+        File file = File.createTempFile("junit-test-", ".krf");
+        ArgumentsParser parser = new ArgumentsParser(file.getAbsolutePath());
+        CompilerConfigurations config = parser.parse();
+        assertFalse(config.hasVersion());
+        assertFalse(config.isArgumentsError());
+        assertFalse(config.hasLogOutputFile());
+        assertTrue(config.hasFile());
+        assertFalse(config.isDebugMode());
+        assertFalse(config.isEmpty());
+        assertFalse(config.isParallelMode());
+        assertFalse(config.isVerboseMode());
+        Stream<KaraffeFile> stream = config.getFileStream();
+        assertThat(stream.count(), is(1L));
+        Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
+        assertThat(parallelStream.count(), is(1L));
+        file.delete();
+    }
+
+    @Test
+    public void testLogStream() throws IOException {
+        File file = File.createTempFile("junit-test-", ".out");
+        ArgumentsParser parser = new ArgumentsParser("--log-output", file.getAbsolutePath());
+        CompilerConfigurations config = parser.parse();
+        PrintStream logStream = config.getLogStream();
+        logStream.println("test");
+        List<String> outputs = Files.readAllLines(file.toPath());
+        assertThat(outputs.get(0), is("test"));
+        file.delete();
     }
 
 }
