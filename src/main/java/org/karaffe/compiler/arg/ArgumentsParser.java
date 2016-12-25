@@ -23,6 +23,7 @@
  */
 package org.karaffe.compiler.arg;
 
+import java.io.PrintStream;
 import org.karaffe.compiler.Constants;
 import org.karaffe.compiler.exception.CommandLineException;
 import org.karaffe.compiler.exception.ExceptionMessages;
@@ -42,11 +43,20 @@ public class ArgumentsParser {
     private final String[] args;
     private final CmdLineParser parser;
     private final CompilerConfigurations options;
+    private final PrintStream printStream;
 
     public ArgumentsParser(String... args) {
         this.args = args;
         this.options = new CompilerConfigurations();
         this.parser = new CmdLineParser(this.options);
+        this.printStream = System.err;
+    }
+
+    public ArgumentsParser(PrintStream printStream, String... args) {
+        this.args = args;
+        this.options = new CompilerConfigurations();
+        this.parser = new CmdLineParser(this.options);
+        this.printStream = printStream;
     }
 
     public CompilerConfigurations parse() {
@@ -70,9 +80,9 @@ public class ArgumentsParser {
         usage.append("Usage: krfc <options> <source files|build.krf>").append(Constants.NEW_LINE);
         usage.append(Constants.NEW_LINE);
         usage.append("available options are ");
-        System.out.println(usage.toString());
+        printStream.println(usage.toString());
         parser.printUsage(System.out);
-        System.err.println();
+        printStream.println();
     }
 
 }
