@@ -42,7 +42,10 @@ public class Main {
             CompilerConfigurations config = parser.parse();
 
             if (config.hasVersion()) {
-                parser.printUsage();
+                System.out.println(Constants.VERSION_INFO_STRING);
+                if (config.isDebugMode() || config.isVerboseMode()) {
+                    System.out.println(Constants.VERSION_INFO_STRING_DEBUG);
+                }
                 System.exit(ExitStatus.EX_OK.toInt());
             }
 

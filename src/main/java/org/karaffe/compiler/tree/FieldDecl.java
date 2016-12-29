@@ -53,7 +53,7 @@ public class FieldDecl implements Statement {
     }
 
     @Override
-    public ASTType getType() {
+    public ASTType getASTType() {
         return ASTType.FIELD_DECL;
     }
 

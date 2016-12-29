@@ -23,12 +23,27 @@
  */
 package org.karaffe.compiler.exception;
 
+import java.util.ResourceBundle;
+
 /**
  *
  * @author noko
  */
 public enum ExceptionType {
-    ERROR,
-    WARNING,
-    INFO,;
+    ERROR("exceptiontype.error"),
+    WARNING("exceptiontype.warning"),
+    INFO("exceptiontype.info"),;
+
+    private final String resourceKey;
+
+    private ExceptionType(String key) {
+        this.resourceKey = key;
+    }
+
+    @Override
+    public String toString() {
+        ResourceBundle rs = ResourceBundle.getBundle("compiler_msg");
+        String message = rs.getString(resourceKey);
+        return message;
+    }
 }

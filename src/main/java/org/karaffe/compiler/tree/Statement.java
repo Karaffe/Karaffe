@@ -31,5 +31,5 @@ public interface Statement {
 
     public String getName();
 
-    public ASTType getType();
+    public ASTType getASTType();
 }

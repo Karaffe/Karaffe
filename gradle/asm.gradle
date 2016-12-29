@@ -1,32 +1,39 @@
-dependencies {
-  compile group: 'org.ow2.asm', name: 'asm-all', version: '5.1'
-}
-
-def jarName = 'Karaffe-lang-' + version + '.jar'
-
-startScripts {
-  applicationName = 'krfc'
-  mainClassName = 'org.karaffe.compiler.Main'
-}
-
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.Path
 
+dependencies {
+  compile group: 'org.ow2.asm', name: 'asm-all', version: '5.1'
+}
+
+def jarBaseName = 'Karaffe-Compiler'
+def jarName = jarBaseName + '.jar'
 def krfHome = java.lang.System.getenv()['KRF_HOME'] ?: "krf"
-task installLocal(type: Copy, dependsOn: fatJar) {
-  from('./build/libs/fatjar-' + version + '.jar') {
-    rename ('fatjar-' + version + '.jar', jarName)
+def compilerMainClass = 'org.karaffe.compiler.Main'
+def classPath = files(Paths.get(krfHome, 'bin', 'Karaffe-Compiler.jar').toString())
+
+startScripts {
+  classpath = classPath
+}
+
+task createStartScripts(type: CreateStartScripts, dependsOn: fatJar){
+  outputDir = file(Paths.get(krfHome, 'bin').toString())
+  applicationName = 'krfc'
+  mainClassName = compilerMainClass
+  classpath = classPath
+}
+
+task installLocal(type: Copy, dependsOn: createStartScripts) {
+  from(Paths.get(".", "build","libs", jarBaseName + '-' + version + '.jar').toString()) {
+    rename '-' + version, ''
   }
-  from './build/libs/krfc'
-  from './build/libs/krfc.bat'
-  into krfHome
+  into krfHome + '/lib/'
 }
 
 fatJar {
-    baseName = 'fatJar'
+    baseName = jarBaseName
     manifest {
-        attributes('Main-Class': 'org.karaffe.compiler.Main')
+        attributes('Main-Class': compilerMainClass)
     }
 }
 

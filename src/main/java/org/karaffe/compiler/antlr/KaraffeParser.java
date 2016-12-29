@@ -17,25 +17,28 @@ public class KaraffeParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, LBRACE=6, RBRACE=7, Identifier=8, 
-		SP=9;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, T__10=11, LBRACE=12, RBRACE=13, Identifier=14, SP=15;
 	public static final int
-		RULE_compileUnit = 0, RULE_statement = 1, RULE_classDecl = 2, RULE_superOrInterfaceList = 3, 
-		RULE_classBodyBlock = 4, RULE_classBody = 5, RULE_className = 6, RULE_fieldDecl = 7, 
-		RULE_fieldName = 8, RULE_fieldType = 9, RULE_fieldInitializer = 10, RULE_type = 11, 
-		RULE_expr = 12;
+		RULE_compileUnit = 0, RULE_statement = 1, RULE_packageDecl = 2, RULE_packagePath = 3, 
+		RULE_classDecl = 4, RULE_classModifiers = 5, RULE_classModifier = 6, RULE_superOrInterfaceList = 7, 
+		RULE_classBodyBlock = 8, RULE_classBody = 9, RULE_className = 10, RULE_fieldDecl = 11, 
+		RULE_fieldName = 12, RULE_fieldType = 13, RULE_fieldInitializer = 14, 
+		RULE_type = 15, RULE_expr = 16;
 	public static final String[] ruleNames = {
-		"compileUnit", "statement", "classDecl", "superOrInterfaceList", "classBodyBlock", 
+		"compileUnit", "statement", "packageDecl", "packagePath", "classDecl", 
+		"classModifiers", "classModifier", "superOrInterfaceList", "classBodyBlock", 
 		"classBody", "className", "fieldDecl", "fieldName", "fieldType", "fieldInitializer", 
 		"type", "expr"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'class'", "':'", "','", "'def'", "'='", "'{'", "'}'"
+		null, "'package'", "'.'", "'class'", "'public'", "'open'", "'private'", 
+		"'abstract'", "':'", "','", "'def'", "'='", "'{'", "'}'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, "LBRACE", "RBRACE", "Identifier", 
-		"SP"
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		"LBRACE", "RBRACE", "Identifier", "SP"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -120,21 +123,21 @@ public class KaraffeParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
+			setState(37);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__0) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6))) != 0)) {
 				{
 				{
-				setState(26);
+				setState(34);
 				statement();
 				}
 				}
-				setState(31);
+				setState(39);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(32);
+			setState(40);
 			match(EOF);
 			}
 		}
@@ -150,6 +153,9 @@ public class KaraffeParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
+		public PackageDeclContext packageDecl() {
+			return getRuleContext(PackageDeclContext.class,0);
+		}
 		public ClassDeclContext classDecl() {
 			return getRuleContext(ClassDeclContext.class,0);
 		}
@@ -176,10 +182,136 @@ public class KaraffeParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_statement);
 		try {
+			setState(44);
+			switch (_input.LA(1)) {
+			case T__0:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(42);
+				packageDecl();
+				}
+				break;
+			case T__2:
+			case T__3:
+			case T__4:
+			case T__5:
+			case T__6:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(43);
+				classDecl();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PackageDeclContext extends ParserRuleContext {
+		public PackagePathContext packagePath() {
+			return getRuleContext(PackagePathContext.class,0);
+		}
+		public PackageDeclContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_packageDecl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).enterPackageDecl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).exitPackageDecl(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KaraffeVisitor ) return ((KaraffeVisitor<? extends T>)visitor).visitPackageDecl(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PackageDeclContext packageDecl() throws RecognitionException {
+		PackageDeclContext _localctx = new PackageDeclContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_packageDecl);
+		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(34);
-			classDecl();
+			setState(46);
+			match(T__0);
+			setState(47);
+			packagePath();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PackagePathContext extends ParserRuleContext {
+		public List<TerminalNode> Identifier() { return getTokens(KaraffeParser.Identifier); }
+		public TerminalNode Identifier(int i) {
+			return getToken(KaraffeParser.Identifier, i);
+		}
+		public PackagePathContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_packagePath; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).enterPackagePath(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).exitPackagePath(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KaraffeVisitor ) return ((KaraffeVisitor<? extends T>)visitor).visitPackagePath(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PackagePathContext packagePath() throws RecognitionException {
+		PackagePathContext _localctx = new PackagePathContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_packagePath);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(49);
+			match(Identifier);
+			setState(54);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__1) {
+				{
+				{
+				setState(50);
+				match(T__1);
+				setState(51);
+				match(Identifier);
+				}
+				}
+				setState(56);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -196,6 +328,9 @@ public class KaraffeParser extends Parser {
 	public static class ClassDeclContext extends ParserRuleContext {
 		public ClassNameContext className() {
 			return getRuleContext(ClassNameContext.class,0);
+		}
+		public ClassModifiersContext classModifiers() {
+			return getRuleContext(ClassModifiersContext.class,0);
 		}
 		public SuperOrInterfaceListContext superOrInterfaceList() {
 			return getRuleContext(SuperOrInterfaceListContext.class,0);
@@ -224,33 +359,149 @@ public class KaraffeParser extends Parser {
 
 	public final ClassDeclContext classDecl() throws RecognitionException {
 		ClassDeclContext _localctx = new ClassDeclContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_classDecl);
+		enterRule(_localctx, 8, RULE_classDecl);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(36);
-			match(T__0);
-			setState(37);
-			className();
-			setState(39);
+			setState(58);
 			_la = _input.LA(1);
-			if (_la==T__1) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6))) != 0)) {
 				{
-				setState(38);
+				setState(57);
+				classModifiers();
+				}
+			}
+
+			setState(60);
+			match(T__2);
+			setState(61);
+			className();
+			setState(63);
+			_la = _input.LA(1);
+			if (_la==T__7) {
+				{
+				setState(62);
 				superOrInterfaceList();
 				}
 			}
 
-			setState(42);
+			setState(66);
 			_la = _input.LA(1);
 			if (_la==LBRACE) {
 				{
-				setState(41);
+				setState(65);
 				classBodyBlock();
 				}
 			}
 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ClassModifiersContext extends ParserRuleContext {
+		public List<ClassModifierContext> classModifier() {
+			return getRuleContexts(ClassModifierContext.class);
+		}
+		public ClassModifierContext classModifier(int i) {
+			return getRuleContext(ClassModifierContext.class,i);
+		}
+		public ClassModifiersContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_classModifiers; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).enterClassModifiers(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).exitClassModifiers(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KaraffeVisitor ) return ((KaraffeVisitor<? extends T>)visitor).visitClassModifiers(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ClassModifiersContext classModifiers() throws RecognitionException {
+		ClassModifiersContext _localctx = new ClassModifiersContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_classModifiers);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(69); 
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			do {
+				{
+				{
+				setState(68);
+				classModifier();
+				}
+				}
+				setState(71); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6))) != 0) );
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ClassModifierContext extends ParserRuleContext {
+		public ClassModifierContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_classModifier; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).enterClassModifier(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KaraffeListener ) ((KaraffeListener)listener).exitClassModifier(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KaraffeVisitor ) return ((KaraffeVisitor<? extends T>)visitor).visitClassModifier(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ClassModifierContext classModifier() throws RecognitionException {
+		ClassModifierContext _localctx = new ClassModifierContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_classModifier);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(73);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			} else {
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -292,28 +543,28 @@ public class KaraffeParser extends Parser {
 
 	public final SuperOrInterfaceListContext superOrInterfaceList() throws RecognitionException {
 		SuperOrInterfaceListContext _localctx = new SuperOrInterfaceListContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_superOrInterfaceList);
+		enterRule(_localctx, 14, RULE_superOrInterfaceList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
-			match(T__1);
-			setState(45);
+			setState(75);
+			match(T__7);
+			setState(76);
 			className();
-			setState(50);
+			setState(81);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__2) {
+			while (_la==T__8) {
 				{
 				{
-				setState(46);
-				match(T__2);
-				setState(47);
+				setState(77);
+				match(T__8);
+				setState(78);
 				className();
 				}
 				}
-				setState(52);
+				setState(83);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -360,28 +611,28 @@ public class KaraffeParser extends Parser {
 
 	public final ClassBodyBlockContext classBodyBlock() throws RecognitionException {
 		ClassBodyBlockContext _localctx = new ClassBodyBlockContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_classBodyBlock);
+		enterRule(_localctx, 16, RULE_classBodyBlock);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(53);
+			setState(84);
 			match(LBRACE);
-			setState(57);
+			setState(88);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__0 || _la==T__3) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__9))) != 0)) {
 				{
 				{
-				setState(54);
+				setState(85);
 				classBody();
 				}
 				}
-				setState(59);
+				setState(90);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(60);
+			setState(91);
 			match(RBRACE);
 			}
 		}
@@ -424,21 +675,26 @@ public class KaraffeParser extends Parser {
 
 	public final ClassBodyContext classBody() throws RecognitionException {
 		ClassBodyContext _localctx = new ClassBodyContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_classBody);
+		enterRule(_localctx, 18, RULE_classBody);
 		try {
-			setState(64);
+			setState(95);
 			switch (_input.LA(1)) {
 			case T__0:
+			case T__2:
+			case T__3:
+			case T__4:
+			case T__5:
+			case T__6:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(62);
+				setState(93);
 				statement();
 				}
 				break;
-			case T__3:
+			case T__9:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(63);
+				setState(94);
 				fieldDecl();
 				}
 				break;
@@ -480,11 +736,11 @@ public class KaraffeParser extends Parser {
 
 	public final ClassNameContext className() throws RecognitionException {
 		ClassNameContext _localctx = new ClassNameContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_className);
+		enterRule(_localctx, 20, RULE_className);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(66);
+			setState(97);
 			match(Identifier);
 			}
 		}
@@ -530,19 +786,19 @@ public class KaraffeParser extends Parser {
 
 	public final FieldDeclContext fieldDecl() throws RecognitionException {
 		FieldDeclContext _localctx = new FieldDeclContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_fieldDecl);
+		enterRule(_localctx, 22, RULE_fieldDecl);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
-			match(T__3);
-			setState(69);
+			setState(99);
+			match(T__9);
+			setState(100);
 			fieldName();
-			setState(70);
-			match(T__1);
-			setState(71);
+			setState(101);
+			match(T__7);
+			setState(102);
 			fieldType();
-			setState(72);
+			setState(103);
 			fieldInitializer();
 			}
 		}
@@ -580,11 +836,11 @@ public class KaraffeParser extends Parser {
 
 	public final FieldNameContext fieldName() throws RecognitionException {
 		FieldNameContext _localctx = new FieldNameContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_fieldName);
+		enterRule(_localctx, 24, RULE_fieldName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(74);
+			setState(105);
 			match(Identifier);
 			}
 		}
@@ -624,11 +880,11 @@ public class KaraffeParser extends Parser {
 
 	public final FieldTypeContext fieldType() throws RecognitionException {
 		FieldTypeContext _localctx = new FieldTypeContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_fieldType);
+		enterRule(_localctx, 26, RULE_fieldType);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(76);
+			setState(107);
 			type();
 			}
 		}
@@ -668,13 +924,13 @@ public class KaraffeParser extends Parser {
 
 	public final FieldInitializerContext fieldInitializer() throws RecognitionException {
 		FieldInitializerContext _localctx = new FieldInitializerContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_fieldInitializer);
+		enterRule(_localctx, 28, RULE_fieldInitializer);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(78);
-			match(T__4);
-			setState(79);
+			setState(109);
+			match(T__10);
+			setState(110);
 			expr();
 			}
 		}
@@ -712,11 +968,11 @@ public class KaraffeParser extends Parser {
 
 	public final TypeContext type() throws RecognitionException {
 		TypeContext _localctx = new TypeContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_type);
+		enterRule(_localctx, 30, RULE_type);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(81);
+			setState(112);
 			match(Identifier);
 			}
 		}
@@ -754,11 +1010,11 @@ public class KaraffeParser extends Parser {
 
 	public final ExprContext expr() throws RecognitionException {
 		ExprContext _localctx = new ExprContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_expr);
+		enterRule(_localctx, 32, RULE_expr);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83);
+			setState(114);
 			match(Identifier);
 			}
 		}
@@ -774,26 +1030,33 @@ public class KaraffeParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\13X\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\21w\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\4\r\t\r\4\16\t\16\3\2\7\2\36\n\2\f\2\16\2!\13\2\3\2\3\2\3\3\3\3"+
-		"\3\4\3\4\3\4\5\4*\n\4\3\4\5\4-\n\4\3\5\3\5\3\5\3\5\7\5\63\n\5\f\5\16\5"+
-		"\66\13\5\3\6\3\6\7\6:\n\6\f\6\16\6=\13\6\3\6\3\6\3\7\3\7\5\7C\n\7\3\b"+
-		"\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\3\r\3\r\3\16"+
-		"\3\16\3\16\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\2P\2\37\3\2\2\2\4"+
-		"$\3\2\2\2\6&\3\2\2\2\b.\3\2\2\2\n\67\3\2\2\2\fB\3\2\2\2\16D\3\2\2\2\20"+
-		"F\3\2\2\2\22L\3\2\2\2\24N\3\2\2\2\26P\3\2\2\2\30S\3\2\2\2\32U\3\2\2\2"+
-		"\34\36\5\4\3\2\35\34\3\2\2\2\36!\3\2\2\2\37\35\3\2\2\2\37 \3\2\2\2 \""+
-		"\3\2\2\2!\37\3\2\2\2\"#\7\2\2\3#\3\3\2\2\2$%\5\6\4\2%\5\3\2\2\2&\'\7\3"+
-		"\2\2\')\5\16\b\2(*\5\b\5\2)(\3\2\2\2)*\3\2\2\2*,\3\2\2\2+-\5\n\6\2,+\3"+
-		"\2\2\2,-\3\2\2\2-\7\3\2\2\2./\7\4\2\2/\64\5\16\b\2\60\61\7\5\2\2\61\63"+
-		"\5\16\b\2\62\60\3\2\2\2\63\66\3\2\2\2\64\62\3\2\2\2\64\65\3\2\2\2\65\t"+
-		"\3\2\2\2\66\64\3\2\2\2\67;\7\b\2\28:\5\f\7\298\3\2\2\2:=\3\2\2\2;9\3\2"+
-		"\2\2;<\3\2\2\2<>\3\2\2\2=;\3\2\2\2>?\7\t\2\2?\13\3\2\2\2@C\5\4\3\2AC\5"+
-		"\20\t\2B@\3\2\2\2BA\3\2\2\2C\r\3\2\2\2DE\7\n\2\2E\17\3\2\2\2FG\7\6\2\2"+
-		"GH\5\22\n\2HI\7\4\2\2IJ\5\24\13\2JK\5\26\f\2K\21\3\2\2\2LM\7\n\2\2M\23"+
-		"\3\2\2\2NO\5\30\r\2O\25\3\2\2\2PQ\7\7\2\2QR\5\32\16\2R\27\3\2\2\2ST\7"+
-		"\n\2\2T\31\3\2\2\2UV\7\n\2\2V\33\3\2\2\2\b\37),\64;B";
+		"\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\3\2\7"+
+		"\2&\n\2\f\2\16\2)\13\2\3\2\3\2\3\3\3\3\5\3/\n\3\3\4\3\4\3\4\3\5\3\5\3"+
+		"\5\7\5\67\n\5\f\5\16\5:\13\5\3\6\5\6=\n\6\3\6\3\6\3\6\5\6B\n\6\3\6\5\6"+
+		"E\n\6\3\7\6\7H\n\7\r\7\16\7I\3\b\3\b\3\t\3\t\3\t\3\t\7\tR\n\t\f\t\16\t"+
+		"U\13\t\3\n\3\n\7\nY\n\n\f\n\16\n\\\13\n\3\n\3\n\3\13\3\13\5\13b\n\13\3"+
+		"\f\3\f\3\r\3\r\3\r\3\r\3\r\3\r\3\16\3\16\3\17\3\17\3\20\3\20\3\20\3\21"+
+		"\3\21\3\22\3\22\3\22\2\2\23\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \""+
+		"\2\3\3\2\6\to\2\'\3\2\2\2\4.\3\2\2\2\6\60\3\2\2\2\b\63\3\2\2\2\n<\3\2"+
+		"\2\2\fG\3\2\2\2\16K\3\2\2\2\20M\3\2\2\2\22V\3\2\2\2\24a\3\2\2\2\26c\3"+
+		"\2\2\2\30e\3\2\2\2\32k\3\2\2\2\34m\3\2\2\2\36o\3\2\2\2 r\3\2\2\2\"t\3"+
+		"\2\2\2$&\5\4\3\2%$\3\2\2\2&)\3\2\2\2\'%\3\2\2\2\'(\3\2\2\2(*\3\2\2\2)"+
+		"\'\3\2\2\2*+\7\2\2\3+\3\3\2\2\2,/\5\6\4\2-/\5\n\6\2.,\3\2\2\2.-\3\2\2"+
+		"\2/\5\3\2\2\2\60\61\7\3\2\2\61\62\5\b\5\2\62\7\3\2\2\2\638\7\20\2\2\64"+
+		"\65\7\4\2\2\65\67\7\20\2\2\66\64\3\2\2\2\67:\3\2\2\28\66\3\2\2\289\3\2"+
+		"\2\29\t\3\2\2\2:8\3\2\2\2;=\5\f\7\2<;\3\2\2\2<=\3\2\2\2=>\3\2\2\2>?\7"+
+		"\5\2\2?A\5\26\f\2@B\5\20\t\2A@\3\2\2\2AB\3\2\2\2BD\3\2\2\2CE\5\22\n\2"+
+		"DC\3\2\2\2DE\3\2\2\2E\13\3\2\2\2FH\5\16\b\2GF\3\2\2\2HI\3\2\2\2IG\3\2"+
+		"\2\2IJ\3\2\2\2J\r\3\2\2\2KL\t\2\2\2L\17\3\2\2\2MN\7\n\2\2NS\5\26\f\2O"+
+		"P\7\13\2\2PR\5\26\f\2QO\3\2\2\2RU\3\2\2\2SQ\3\2\2\2ST\3\2\2\2T\21\3\2"+
+		"\2\2US\3\2\2\2VZ\7\16\2\2WY\5\24\13\2XW\3\2\2\2Y\\\3\2\2\2ZX\3\2\2\2Z"+
+		"[\3\2\2\2[]\3\2\2\2\\Z\3\2\2\2]^\7\17\2\2^\23\3\2\2\2_b\5\4\3\2`b\5\30"+
+		"\r\2a_\3\2\2\2a`\3\2\2\2b\25\3\2\2\2cd\7\20\2\2d\27\3\2\2\2ef\7\f\2\2"+
+		"fg\5\32\16\2gh\7\n\2\2hi\5\34\17\2ij\5\36\20\2j\31\3\2\2\2kl\7\20\2\2"+
+		"l\33\3\2\2\2mn\5 \21\2n\35\3\2\2\2op\7\r\2\2pq\5\"\22\2q\37\3\2\2\2rs"+
+		"\7\20\2\2s!\3\2\2\2tu\7\20\2\2u#\3\2\2\2\f\'.8<ADISZa";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

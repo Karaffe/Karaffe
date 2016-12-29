@@ -23,6 +23,8 @@
  */
 package org.karaffe.compiler;
 
+import java.util.Optional;
+
 /**
  *
  * @author noko
@@ -32,11 +34,18 @@ public enum Constants {
     public static final String VERSION = "0.1";
     public static final String NEW_LINE = System.lineSeparator();
     public static final String VERSION_INFO_STRING;
+    public static final String VERSION_INFO_STRING_DEBUG;
+    public static final String CURRENT_CLASSPATH;
+    public static final String JAVA_HOME;
 
     static {
         StringBuilder versionInfo = new StringBuilder();
         versionInfo.append("Karaffe Compiler ").append(Constants.VERSION).append(" (").append(System.getProperty("java.vm.name")).append(", ").append(System.getProperty("java.runtime.version")).append(")").append(Constants.NEW_LINE);
         versionInfo.append("Usage: krfc <options> <source files|build.krf>").append(Constants.NEW_LINE);
         VERSION_INFO_STRING = versionInfo.toString();
+
+        CURRENT_CLASSPATH = System.getProperty("java.class.path");
+        JAVA_HOME = Optional.ofNullable(System.getenv("JAVA_HOME")).orElseGet(() -> System.getProperty("java.home"));
+        VERSION_INFO_STRING_DEBUG = String.format("CLASSPATH:%s%nJAVA_HOME:%s%n", CURRENT_CLASSPATH, JAVA_HOME);
     }
 }

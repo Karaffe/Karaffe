@@ -54,7 +54,7 @@ public class CompileUnit {
     public Stream<ClassDecl> classDeclStream() {
         return statements
                 .stream()
-                .filter(s -> s.getType() == ASTType.CLASS_DECL)
+                .filter(s -> s.getASTType() == ASTType.CLASS_DECL)
                 .map(ClassDecl.class::cast);
     }
 

@@ -76,10 +76,7 @@ public class ArgumentsParser {
 
     public void printUsage() {
         StringBuilder usage = new StringBuilder();
-        usage.append("Karaffe Compiler ").append(Constants.VERSION).append(" (").append(System.getProperty("java.vm.name")).append(", ").append(System.getProperty("java.runtime.version")).append(")").append(Constants.NEW_LINE);
-        usage.append("Usage: krfc <options> <source files|build.krf>").append(Constants.NEW_LINE);
-        usage.append(Constants.NEW_LINE);
-        usage.append("available options are ");
+        usage.append(Constants.VERSION_INFO_STRING);
         printStream.println(usage.toString());
         parser.printUsage(System.out);
         printStream.println();

@@ -52,7 +52,7 @@ public class ClassDecl implements Statement {
     }
 
     @Override
-    public ASTType getType() {
+    public ASTType getASTType() {
         return ASTType.CLASS_DECL;
     }
 

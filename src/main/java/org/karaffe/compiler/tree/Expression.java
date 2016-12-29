@@ -31,6 +31,6 @@ import org.karaffe.compiler.type.KType;
  */
 public interface Expression extends Statement {
 
-    public KType typeEval(Expression... args);
+    public KType getReturnType(Expression... args);
 
 }

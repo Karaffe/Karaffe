@@ -6,11 +6,31 @@ compileUnit
   ;
 
 statement 
-  : classDecl
+  : packageDecl
+  | classDecl 
+  ;
+
+packageDecl
+  : 'package' packagePath
+  ;
+
+packagePath
+  : Identifier ('.' Identifier)*
   ;
 
 classDecl 
-  : 'class' className superOrInterfaceList? classBodyBlock?
+  : classModifiers? 'class' className superOrInterfaceList? classBodyBlock?
+  ;
+
+classModifiers
+  : classModifier+
+  ;
+
+classModifier
+  : 'public'
+  | 'open'
+  | 'private'
+  | 'abstract'
   ;
 
 superOrInterfaceList

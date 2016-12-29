@@ -23,11 +23,35 @@ public interface KaraffeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(KaraffeParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#packageDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPackageDecl(KaraffeParser.PackageDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#packagePath}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPackagePath(KaraffeParser.PackagePathContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link KaraffeParser#classDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitClassDecl(KaraffeParser.ClassDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#classModifiers}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassModifiers(KaraffeParser.ClassModifiersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KaraffeParser#classModifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassModifier(KaraffeParser.ClassModifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link KaraffeParser#superOrInterfaceList}.
 	 * @param ctx the parse tree
