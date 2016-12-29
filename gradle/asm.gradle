@@ -12,10 +12,6 @@ def krfHome = java.lang.System.getenv()['KRF_HOME'] ?: "krf"
 def compilerMainClass = 'org.karaffe.compiler.Main'
 def classPath = files(Paths.get(krfHome, 'bin', 'Karaffe-Compiler.jar').toString())
 
-startScripts {
-  classpath = classPath
-}
-
 task createStartScripts(type: CreateStartScripts, dependsOn: fatJar){
   outputDir = file(Paths.get(krfHome, 'bin').toString())
   applicationName = 'krfc'

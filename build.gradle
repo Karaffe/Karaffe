@@ -10,10 +10,10 @@ version = '0.1'
 description = """Karaffe Compiler""" 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+mainClassName = "org.karaffe.compiler.Main"
 
 repositories {
     mavenCentral()
-//    jcenter()
 }
 
 ext {
