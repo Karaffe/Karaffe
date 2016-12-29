@@ -47,7 +47,7 @@ public class ArgumentsParserTest {
 
     @Test(expected = CommandLineException.class)
     public void testNullArg() {
-        ArgumentsParser parser = new ArgumentsParser(null);
+        ArgumentsParser parser = new ArgumentsParser((String[]) null);
         parser.parse();
     }
 
