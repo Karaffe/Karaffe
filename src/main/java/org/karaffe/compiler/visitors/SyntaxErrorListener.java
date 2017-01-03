@@ -96,20 +96,17 @@ public class SyntaxErrorListener extends BaseErrorListener {
 
     @Override
     public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {
-        log.error("syntax error detected. on reportAmbiguity");
-        throw new SyntaxErrorException(ExceptionType.ERROR, ExceptionMessages.SYNTAX_ERROR);
+        log.warn("reportAmbiguity : {} {} {}", startIndex, stopIndex, recognizer.getInputStream().getText(Interval.of(startIndex, stopIndex)));
     }
 
     @Override
     public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs) {
-        log.error("syntax error detected. on reportAttemptingFullContext");
-        throw new SyntaxErrorException(ExceptionType.ERROR, ExceptionMessages.SYNTAX_ERROR);
+        log.warn("reportAttemptingFullContext : {} {} {}", startIndex, stopIndex, recognizer.getInputStream().getText(Interval.of(startIndex, stopIndex)));
     }
 
     @Override
     public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs) {
-        log.error("syntax error detected. on reportContextSensitivity");
-        throw new SyntaxErrorException(ExceptionType.ERROR, ExceptionMessages.SYNTAX_ERROR);
+        log.warn("reportContextSensitivity : {} {} {}", startIndex, stopIndex, recognizer.getInputStream().getText(Interval.of(startIndex, stopIndex)));
     }
 
 }

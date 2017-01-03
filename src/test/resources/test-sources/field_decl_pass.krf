@@ -1,0 +1,4 @@
+class Hoge {
+  def a : Int = 0
+  def b = 12
+}

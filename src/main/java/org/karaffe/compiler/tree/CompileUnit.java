@@ -26,7 +26,9 @@ package org.karaffe.compiler.tree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.karaffe.io.KaraffeFile;
+import org.karaffe.compiler.exception.ExceptionMessages;
+import org.karaffe.compiler.exception.ExceptionType;
+import org.karaffe.compiler.exception.SourceCodeException;
 
 /**
  *
@@ -34,21 +36,25 @@ import org.karaffe.io.KaraffeFile;
  */
 public class CompileUnit {
 
-    private final KaraffeFile file;
+    private PackageDecl packageDecl;
+    private final List<ImportDecl> importDecls = new ArrayList<>();
     private final List<Statement> statements = new ArrayList<>();
     private int syntaxErrors = -1;
     private boolean aleadySetSyntaxErrors;
 
-    public CompileUnit(KaraffeFile file) {
-        this.file = file;
-    }
-
-    public KaraffeFile getFile() {
-        return file;
-    }
-
     public void addStatement(Statement statement) {
         this.statements.add(statement);
+    }
+
+    public void addStatement(PackageDecl packageDecl) {
+        if (packageDecl != null) {
+            throw new SourceCodeException(ExceptionType.ERROR, ExceptionMessages.PACKAGEDECL_DUPLICATE);
+        }
+        this.packageDecl = packageDecl;
+    }
+
+    public void addStatement(ImportDecl importDecl) {
+        this.importDecls.add(importDecl);
     }
 
     public Stream<ClassDecl> classDeclStream() {

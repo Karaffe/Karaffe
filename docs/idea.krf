@@ -1,0 +1,7 @@
+class Hoge {
+  
+}
+
+
+def a : A = A(new B("ABC"))
+def a : A = $.($."ABC")

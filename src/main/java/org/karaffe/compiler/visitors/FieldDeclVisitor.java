@@ -23,9 +23,11 @@
  */
 package org.karaffe.compiler.visitors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.Expression;
 import org.karaffe.compiler.tree.FieldDecl;
 import org.karaffe.compiler.tree.meta.Scope;
 
@@ -33,6 +35,7 @@ import org.karaffe.compiler.tree.meta.Scope;
  *
  * @author noko
  */
+@Slf4j
 public class FieldDeclVisitor extends KaraffeBaseVisitor<FieldDecl> {
 
     private final Scope scope;
@@ -46,8 +49,11 @@ public class FieldDeclVisitor extends KaraffeBaseVisitor<FieldDecl> {
 
     @Override
     public FieldDecl visitFieldDecl(KaraffeParser.FieldDeclContext fieldDeclContext) {
-        String name = fieldDeclContext.fieldName().accept(new FieldNameVisitor());
+        log.info("visitFieldDecl start");
+        String name = fieldDeclContext.fieldName().accept(new VarNameVisitor());
+        Expression expression = fieldDeclContext.fieldInitializer().accept(new ExpressionVisitor());
         FieldDecl fieldDecl = new FieldDecl(parent, name);
+        log.info("visitFieldDecl end");
         return fieldDecl;
     }
 

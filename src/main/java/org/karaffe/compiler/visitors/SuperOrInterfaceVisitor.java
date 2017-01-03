@@ -54,7 +54,7 @@ public class SuperOrInterfaceVisitor extends KaraffeBaseVisitor<ClassMetaData> {
 
     @Override
     public ClassMetaData visitSuperOrInterfaceList(KaraffeParser.SuperOrInterfaceListContext ctx) {
-        log.info("enter super or interface");
+        log.info("visitSuperOrInterfaceList start");
         List<KaraffeParser.ClassNameContext> superOrInterfaceList = ctx.className();
         log.debug("super or interfaces : {}", superOrInterfaceList.size());
 
@@ -85,7 +85,7 @@ public class SuperOrInterfaceVisitor extends KaraffeBaseVisitor<ClassMetaData> {
         }
 
         ClassMetaData metaData = ClassMetaData.builder().superClass(superType).interfaces(interfaces).outerClass(parent).build();
-        log.info("end super or interface");
+        log.info("visitSuperOrInterfaceList end");
         return metaData;
     }
 

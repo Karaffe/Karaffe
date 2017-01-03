@@ -73,14 +73,22 @@ public class ArgumentsParserTest {
 
     @Test
     public void testParseDebugModeFlag() {
-        checkFlagIsTrue(CompilerConfigurations::isDebugMode, "--debug");
-        checkFlagIsTrue(CompilerConfigurations::isDebugMode, "-vv");
+        checkFlagIsTrue(CompilerConfigurations::isDebugLogMode, "--log:debug");
     }
 
     @Test
-    public void testParseVerboseMode() {
-        checkFlagIsTrue(CompilerConfigurations::isVerboseMode, "-v");
-        checkFlagIsTrue(CompilerConfigurations::isVerboseMode, "--verbose");
+    public void testParseInfoMode() {
+        checkFlagIsTrue(CompilerConfigurations::isInfoLogMode, "--log:info");
+    }
+
+    @Test
+    public void testParseWarnMode() {
+        checkFlagIsTrue(CompilerConfigurations::isWarnLogMode, "--log:warn");
+    }
+
+    @Test
+    public void testParseErrorMode() {
+        checkFlagIsTrue(CompilerConfigurations::isErrorLogMode, "--log:error");
     }
 
     @Test

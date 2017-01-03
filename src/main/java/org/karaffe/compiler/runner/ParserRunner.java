@@ -42,11 +42,11 @@ import org.karaffe.io.KaraffeFile;
  * @author noko
  */
 @Slf4j
-public class Parser {
+public class ParserRunner {
 
     private final KaraffeFile file;
 
-    public Parser(KaraffeFile file) {
+    public ParserRunner(KaraffeFile file) {
         this.file = file;
     }
 
@@ -55,15 +55,23 @@ public class Parser {
             log.debug("parser initializing...");
             ANTLRFileStream fileStream = new ANTLRFileStream(file.getFileName());
             KaraffeLexer lexer = new KaraffeLexer(fileStream);
-            lexer.removeErrorListeners();
             KaraffeParser parser = new KaraffeParser(new BufferedTokenStream(lexer));
+
+            log.debug("clear listeners");
+            //clear listeners
+            lexer.removeErrorListeners();
             parser.removeErrorListeners();
             parser.removeParseListeners();
+            log.debug("clear listeners ok");
+
+            //listener initializing
+            log.debug("listener initializing...");
             SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener(file.getFileName());
             parser.addErrorListener(syntaxErrorListener);
             lexer.addErrorListener(syntaxErrorListener);
             ErrorNodeListener errorNodeListener = new ErrorNodeListener();
             parser.addParseListener(errorNodeListener);
+            log.debug("listener initialized");
             log.debug("parser initialized");
             log.debug("parsing...");
             CompileUnitVisitor visitor = new CompileUnitVisitor(file);

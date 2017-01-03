@@ -24,6 +24,7 @@
 package org.karaffe.compiler.visitors;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.exception.SourceCodeException;
@@ -36,6 +37,7 @@ import org.karaffe.io.KaraffeFile;
  *
  * @author noko
  */
+@Slf4j
 public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> {
 
     private final KaraffeFile file;
@@ -46,7 +48,8 @@ public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> {
 
     @Override
     public CompileUnit visitCompileUnit(KaraffeParser.CompileUnitContext compileUnitContext) {
-        CompileUnit compileUnit = new CompileUnit(file);
+        log.info("visitCompileUnit start");
+        CompileUnit compileUnit = new CompileUnit();
         Scope scope = new Scope();
 
         List<KaraffeParser.StatementContext> statementContexts = compileUnitContext.statement();
@@ -59,6 +62,7 @@ public class CompileUnitVisitor extends KaraffeBaseVisitor<CompileUnit> {
                 System.err.println(e);
             }
         }
+        log.info("visitCompileUnit end");
         return compileUnit;
     }
 

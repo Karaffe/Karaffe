@@ -28,6 +28,7 @@ import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.tree.ClassDecl;
 import org.karaffe.compiler.tree.FieldDecl;
+import org.karaffe.compiler.tree.FuncDecl;
 import org.karaffe.compiler.tree.Statement;
 import org.karaffe.compiler.tree.meta.Scope;
 
@@ -47,20 +48,24 @@ public class ClassBodyVisitor extends KaraffeBaseVisitor<Statement> {
     }
 
     @Override
-    public Statement visitClassDecl(KaraffeParser.ClassDeclContext ctx) {
-        log.debug("enter : visitClassDecl");
-        ClassDeclVisitor visitor = new ClassDeclVisitor(scope, parent);
-        ClassDecl classDecl = ctx.accept(visitor);
-        log.debug("exit  : visitClassDecl");
-        return classDecl;
+    public Statement visitStatement(KaraffeParser.StatementContext ctx) {
+        StatementVisitor visitor = new StatementVisitor(scope, parent);
+        Statement statement = ctx.accept(visitor);
+        return statement;
     }
 
     @Override
     public Statement visitFieldDecl(KaraffeParser.FieldDeclContext ctx) {
-        log.debug("enter : visitFieldDecl");
         FieldDeclVisitor visitor = new FieldDeclVisitor(scope, parent);
         FieldDecl fieldDecl = ctx.accept(visitor);
-        log.debug("exit  : visitFieldDecl");
         return fieldDecl;
     }
+
+    @Override
+    public Statement visitCtorDecl(KaraffeParser.CtorDeclContext ctx) {
+        CtorVisitor visitor = new CtorVisitor();
+        FuncDecl funcDecl = ctx.accept(visitor);
+        return funcDecl;
+    }
+
 }

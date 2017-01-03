@@ -21,37 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.visitors;
-
-import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
-import org.karaffe.compiler.antlr.KaraffeParser;
-import org.karaffe.compiler.exception.ExceptionMessages;
-import org.karaffe.compiler.exception.NamingException;
+package org.karaffe.compiler.tree;
 
 /**
  *
  * @author noko
  */
-@Slf4j
-public class ClassNameVisitor extends KaraffeBaseVisitor<String> {
-
-    @Override
-    public String visitClassName(KaraffeParser.ClassNameContext ctx) {
-        log.info("enter class name");
-        String className = ctx.getText();
-        log.info("className : " + className);
-        if (Character.isLowerCase(className.charAt(0))) {
-            throw new NamingException(ExceptionMessages.CLASS_NAME_MUSTBE_PASCAL_CASE, ctx.getParent(), ctx);
-        }
-        log.info("end class name");
-        return className;
-    }
-
-    @Override
-    public String visitChildren(RuleNode node) {
-        return super.visitChildren(node); //To change body of generated methods, choose Tools | Templates.
-    }
+public enum OpType {
+    INFIX
 
 }

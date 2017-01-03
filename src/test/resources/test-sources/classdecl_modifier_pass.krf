@@ -1,0 +1,28 @@
+class A {
+
+}
+
+public class B {
+
+}
+
+open class C {
+
+}
+
+abstract class E {
+
+}
+
+public abstract class PA {
+
+}
+
+public open class PO {
+
+}
+
+public abstract class PA {
+
+}
+

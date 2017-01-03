@@ -26,6 +26,7 @@ package org.karaffe.io;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.BiConsumer;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +50,13 @@ public class ClassFileWriter {
         this.compileUnit = compileUnit;
         this.writer = (name, byteCode) -> {
             try {
-                Files.write(Paths.get(name), byteCode);
+
+                Path path = Paths.get(name);
+                log.debug("writing... : {}", path);
+                Files.write(path, byteCode);
+                log.debug("ok");
             } catch (IOException ex) {
+                log.error("IOError : {}", ex);
                 throw new UncheckedIOException(ex);
             }
         };

@@ -29,8 +29,30 @@ import org.karaffe.compiler.type.KType;
  *
  * @author noko
  */
-public interface Expression extends Statement {
+public interface Expression extends Statement, TypeInferable {
 
-    public KType getReturnType(Expression... args);
+    public static final Expression NIL = new Expression() {
+        @Override
+        public String getName() {
+            return "nil";
+        }
+
+        @Override
+        public ASTType getASTType() {
+            return ASTType.NIL;
+        }
+
+        @Override
+        public KType getReturnType(Expression... args) {
+            if (args == null || args.length == 0) {
+                return KType.UNRESOLVED;
+            }
+            return KType.convert(Object.class);
+        }
+    };
+
+    public static Expression nil() {
+        return Expression.NIL;
+    }
 
 }

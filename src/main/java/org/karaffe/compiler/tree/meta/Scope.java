@@ -41,7 +41,7 @@ public class Scope {
 
     private final Map<String, KType> typeCache;
     private static final List<String> defaultImportPackages = new ArrayList<>();
-    private static final Map<String, KType> javaKaraffeTypeMapper = new HashMap();
+    private static final Map<String, KType> javaKaraffeTypeMapper = new HashMap<>();
 
     static {
         defaultImportPackages.add("java.lang");
@@ -93,6 +93,7 @@ public class Scope {
                 typeCache.put(fullName, kType);
                 return Optional.of(kType);
             } catch (ClassNotFoundException ex) {
+                log.debug("failed : {}", fullName);
                 //IGNORED
             }
         }

@@ -46,14 +46,23 @@ public class CompilerConfigurations implements KaraffeFileStream {
     @Option(name = "--version", aliases = "-version", usage = "Show compiler version")
     private boolean hasVersion;
 
-    @Option(name = "-vv", aliases = "--debug", usage = "log in debug mode")
-    private boolean isDebugMode;
+    @Option(name = "--log:debug", usage = "log in debug mode")
+    private boolean isDebugLogMode;
 
-    @Option(name = "-v", aliases = "--verbose", usage = "log in verbose mode")
-    private boolean isVerboseMode;
+    @Option(name = "--log:info", usage = "log in info mode")
+    private boolean isInfoLogMode;
+
+    @Option(name = "--log:warn", usage = "log in warn mode")
+    private boolean isWarnLogMode;
+
+    @Option(name = "--log:error", usage = "log in error mode")
+    private boolean isErrorLogMode;
 
     @Option(name = "--parallel", usage = "build in parallel")
     private boolean isParallelMode;
+
+    @Option(name = "--compile-only", usage = "dry run mode")
+    private boolean isCompileOnly;
 
     @Option(name = "--log-output", usage = "log message to FILE")
     private File logFile;
@@ -67,12 +76,20 @@ public class CompilerConfigurations implements KaraffeFileStream {
         return hasVersion;
     }
 
-    public boolean isDebugMode() {
-        return isDebugMode;
+    public boolean isDebugLogMode() {
+        return isDebugLogMode;
     }
 
-    public boolean isVerboseMode() {
-        return isVerboseMode;
+    public boolean isInfoLogMode() {
+        return isInfoLogMode;
+    }
+
+    public boolean isWarnLogMode() {
+        return isWarnLogMode;
+    }
+
+    public boolean isErrorLogMode() {
+        return isErrorLogMode;
     }
 
     public boolean isParallelMode() {
@@ -92,11 +109,15 @@ public class CompilerConfigurations implements KaraffeFileStream {
         return logFile;
     }
 
+    public boolean isCompileOnly() {
+        return isCompileOnly;
+    }
+
     public PrintStream getLogStream() {
         try {
             return new PrintStream(logFile);
         } catch (FileNotFoundException ex) {
-            throw new UncheckedIOException(ex);
+            throw new UncheckedIOException("unreachable", ex);
         }
     }
 
@@ -119,17 +140,12 @@ public class CompilerConfigurations implements KaraffeFileStream {
 
     @Override
     public String toString() {
-        return "CompilerConfigurations{" + "hasVersion=" + hasVersion + ", isDebugMode=" + isDebugMode + ", isVerboseMode=" + isVerboseMode + ", isParallelMode=" + isParallelMode + ", logFile=" + logFile + ", isArgumentsError=" + isArgumentsError + ", sourceFiles=" + sourceFiles + '}';
+        return "CompilerConfigurations{" + "hasVersion=" + hasVersion + ", isDebugMode=" + isDebugLogMode + ", isVerboseMode=" + isInfoLogMode + ", isParallelMode=" + isParallelMode + ", logFile=" + logFile + ", isArgumentsError=" + isArgumentsError + ", sourceFiles=" + sourceFiles + '}';
     }
 
     @Override
     public boolean isEmpty() {
         return sourceFiles.isEmpty();
-    }
-
-    public static CompilerConfigurations getDefaultConfig() {
-        CompilerConfigurations config = new CompilerConfigurations();
-        return config;
     }
 
 }

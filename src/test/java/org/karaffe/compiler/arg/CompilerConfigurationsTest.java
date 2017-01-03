@@ -53,10 +53,10 @@ public class CompilerConfigurationsTest {
         assertFalse(config.isArgumentsError());
         assertFalse(config.hasLogOutputFile());
         assertFalse(config.hasFile());
-        assertFalse(config.isDebugMode());
+        assertFalse(config.isDebugLogMode());
         assertTrue(config.isEmpty());
         assertFalse(config.isParallelMode());
-        assertFalse(config.isVerboseMode());
+        assertFalse(config.isInfoLogMode());
         Stream<KaraffeFile> stream = config.getFileStream();
         assertThat(stream.count(), is(0L));
         Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
@@ -71,10 +71,10 @@ public class CompilerConfigurationsTest {
         assertFalse(config.isArgumentsError());
         assertFalse(config.hasLogOutputFile());
         assertFalse(config.hasFile());
-        assertFalse(config.isDebugMode());
+        assertFalse(config.isDebugLogMode());
         assertTrue(config.isEmpty());
         assertFalse(config.isParallelMode());
-        assertFalse(config.isVerboseMode());
+        assertFalse(config.isInfoLogMode());
         Stream<KaraffeFile> stream = config.getFileStream();
         assertThat(stream.count(), is(0L));
         Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
@@ -83,34 +83,16 @@ public class CompilerConfigurationsTest {
 
     @Test
     public void testIsDebugMode() {
-        ArgumentsParser parser = new ArgumentsParser("-vv");
+        ArgumentsParser parser = new ArgumentsParser("--log:debug");
         CompilerConfigurations config = parser.parse();
         assertFalse(config.hasVersion());
         assertFalse(config.isArgumentsError());
         assertFalse(config.hasLogOutputFile());
         assertFalse(config.hasFile());
-        assertTrue(config.isDebugMode());
+        assertTrue(config.isDebugLogMode());
         assertTrue(config.isEmpty());
         assertFalse(config.isParallelMode());
-        assertFalse(config.isVerboseMode());
-        Stream<KaraffeFile> stream = config.getFileStream();
-        assertThat(stream.count(), is(0L));
-        Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
-        assertThat(parallelStream.count(), is(0L));
-    }
-
-    @Test
-    public void testIsDebugMode2() {
-        ArgumentsParser parser = new ArgumentsParser("--debug");
-        CompilerConfigurations config = parser.parse();
-        assertFalse(config.hasVersion());
-        assertFalse(config.isArgumentsError());
-        assertFalse(config.hasLogOutputFile());
-        assertFalse(config.hasFile());
-        assertTrue(config.isDebugMode());
-        assertTrue(config.isEmpty());
-        assertFalse(config.isParallelMode());
-        assertFalse(config.isVerboseMode());
+        assertFalse(config.isInfoLogMode());
         Stream<KaraffeFile> stream = config.getFileStream();
         assertThat(stream.count(), is(0L));
         Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
@@ -126,10 +108,10 @@ public class CompilerConfigurationsTest {
         assertTrue(config.hasLogOutputFile());
         assertThat(config.getLogFile().getName(), is("fileName"));
         assertFalse(config.hasFile());
-        assertFalse(config.isDebugMode());
+        assertFalse(config.isDebugLogMode());
         assertTrue(config.isEmpty());
         assertFalse(config.isParallelMode());
-        assertFalse(config.isVerboseMode());
+        assertFalse(config.isInfoLogMode());
         Stream<KaraffeFile> stream = config.getFileStream();
         assertThat(stream.count(), is(0L));
         Stream<KaraffeFile> parallelStream = config.getFileParallelStream();
@@ -145,10 +127,10 @@ public class CompilerConfigurationsTest {
         assertFalse(config.isArgumentsError());
         assertFalse(config.hasLogOutputFile());
         assertTrue(config.hasFile());
-        assertFalse(config.isDebugMode());
+        assertFalse(config.isDebugLogMode());
         assertFalse(config.isEmpty());
         assertFalse(config.isParallelMode());
-        assertFalse(config.isVerboseMode());
+        assertFalse(config.isInfoLogMode());
         Stream<KaraffeFile> stream = config.getFileStream();
         assertThat(stream.count(), is(1L));
         Stream<KaraffeFile> parallelStream = config.getFileParallelStream();

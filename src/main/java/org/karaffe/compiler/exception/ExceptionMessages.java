@@ -35,7 +35,8 @@ public enum ExceptionMessages {
     EMPTY_ARG("compiler.arg.emptyargs"),
     BAD_ARG("compiler.arg.badargs"),
     //Naming
-    CLASS_NAME_MUSTBE_PASCAL_CASE("compiler.err.classnaming.pascalcase"),
+    MUSTBE_PASCAL_CASE("compiler.err.pascalcase"),
+    MUSTBE_CAMEL_CASE("compiler.err.camelcase"),
     //IO
     FILE_NOT_FOUND("compiler.io.file.notfound"),
     //Source
@@ -43,7 +44,9 @@ public enum ExceptionMessages {
     //Typing
     TYPE_NOT_FOUND("compiler.err.type.notfound"),
     TYPE_IS_NOT_INHERITABLE("compiler.err.type.notinheritable"),
-    INNER_CLASS("compiler.err.innerclass"),;
+    INNER_CLASS("compiler.err.innerclass"),
+    INVALID_PATH("compiler.err.invalidpackagepath"),
+    PACKAGEDECL_DUPLICATE("compiler.err.packagedup"),;
 
     private final String messageKey;
     private String additionalInfo;

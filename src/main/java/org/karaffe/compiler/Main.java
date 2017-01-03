@@ -43,7 +43,7 @@ public class Main {
 
             if (config.hasVersion()) {
                 System.out.println(Constants.VERSION_INFO_STRING);
-                if (config.isDebugMode() || config.isVerboseMode()) {
+                if (config.isDebugLogMode() || config.isInfoLogMode()) {
                     System.out.println(Constants.VERSION_INFO_STRING_DEBUG);
                 }
                 System.exit(ExitStatus.EX_OK.toInt());
@@ -55,10 +55,14 @@ public class Main {
                 System.setErr(config.getLogStream());
             }
 
-            if (config.isVerboseMode()) {
+            if (config.isErrorLogMode()) {
+                rootLogger.setLevel(Level.ERROR);
+            } else if (config.isWarnLogMode()) {
+                rootLogger.setLevel(Level.WARN);
+            } else if (config.isInfoLogMode()) {
                 rootLogger.setLevel(Level.INFO);
-            } else if (config.isDebugMode()) {
-                rootLogger.setLevel(Level.ALL);
+            } else if (config.isDebugLogMode()) {
+                rootLogger.setLevel(Level.DEBUG);
             } else {
                 rootLogger.setLevel(Level.OFF);
             }

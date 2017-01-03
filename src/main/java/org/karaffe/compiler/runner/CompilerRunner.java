@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.ExitStatus;
 import org.karaffe.compiler.arg.CompilerConfigurations;
+import org.karaffe.compiler.tree.CompileUnit;
 import org.karaffe.io.ClassFileWriter;
 import org.karaffe.io.KaraffeFile;
 
@@ -38,10 +39,6 @@ import org.karaffe.io.KaraffeFile;
 public class CompilerRunner {
 
     private final CompilerConfigurations config;
-
-    public CompilerRunner() {
-        this.config = CompilerConfigurations.getDefaultConfig();
-    }
 
     public CompilerRunner(CompilerConfigurations config) {
         this.config = config;
@@ -61,10 +58,16 @@ public class CompilerRunner {
             fileStream = config.getFileStream();
         }
         log.debug("compiling... ");
-        fileStream.map(Parser::new)
-                .map(Parser::parse)
-                .peek(c -> log.debug("parse finished : {}", c))
-                .map(ClassFileWriter::new)
+        Stream<CompileUnit> compileUnitStream = fileStream.map(ParserRunner::new)
+                .map(ParserRunner::parse)
+                .peek(c -> log.debug("parse finished : {}", c));
+        if (config.isCompileOnly()) {
+            compileUnitStream.count();
+            log.debug("dry-run mode");
+            return ExitStatus.EX_OK;
+        }
+
+        compileUnitStream.map(ClassFileWriter::new)
                 .peek(w -> log.debug("class writer initialized. : {}", w))
                 .forEach(ClassFileWriter::writeClassDeclsToClassFile);
         return ExitStatus.EX_OK;

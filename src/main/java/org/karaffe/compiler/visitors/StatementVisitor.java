@@ -27,6 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
 import org.karaffe.compiler.antlr.KaraffeParser;
 import org.karaffe.compiler.tree.ClassDecl;
+import org.karaffe.compiler.tree.Expression;
+import org.karaffe.compiler.tree.FuncDecl;
+import org.karaffe.compiler.tree.ImportDecl;
+import org.karaffe.compiler.tree.InterfaceDecl;
+import org.karaffe.compiler.tree.PackageDecl;
 import org.karaffe.compiler.tree.Statement;
 import org.karaffe.compiler.tree.meta.Scope;
 
@@ -38,18 +43,58 @@ import org.karaffe.compiler.tree.meta.Scope;
 public class StatementVisitor extends KaraffeBaseVisitor<Statement> {
 
     private final Scope scope;
+    private final Statement parent;
 
     public StatementVisitor(Scope scope) {
         this.scope = scope;
+        this.parent = null;
+    }
+
+    public StatementVisitor(Scope scope, Statement parent) {
+        this.scope = scope;
+        this.parent = parent;
+    }
+
+    @Override
+    public Statement visitPackageDecl(KaraffeParser.PackageDeclContext ctx) {
+        PackageDeclVisitor visitor = new PackageDeclVisitor(scope, parent);
+        PackageDecl packageDecl = ctx.accept(visitor);
+        return packageDecl;
+    }
+
+    @Override
+    public Statement visitImportDecl(KaraffeParser.ImportDeclContext ctx) {
+        ImportDeclVisitor visitor = new ImportDeclVisitor(parent);
+        ImportDecl importDecl = ctx.accept(visitor);
+        return importDecl;
+    }
+
+    @Override
+    public Statement visitInterfaceDecl(KaraffeParser.InterfaceDeclContext ctx) {
+        InterfaceDeclVisitor visitor = new InterfaceDeclVisitor(parent);
+        InterfaceDecl interfaceDecl = ctx.accept(visitor);
+        return interfaceDecl;
+    }
+
+    @Override
+    public Statement visitFuncDecl(KaraffeParser.FuncDeclContext ctx) {
+        FuncDeclVisitor visitor = new FuncDeclVisitor(parent);
+        FuncDecl funcDecl = ctx.accept(visitor);
+        return funcDecl;
     }
 
     @Override
     public Statement visitClassDecl(KaraffeParser.ClassDeclContext ctx) {
-        log.debug("enter : visitClassDecl");
-        ClassDeclVisitor visitor = new ClassDeclVisitor(scope);
+        ClassDeclVisitor visitor = new ClassDeclVisitor(scope, (ClassDecl) parent);
         ClassDecl classDecl = ctx.accept(visitor);
-        log.debug("exit  : visitClassDecl");
         return classDecl;
+    }
+
+    @Override
+    public Statement visitExpr(KaraffeParser.ExprContext ctx) {
+        ExpressionVisitor visitor = new ExpressionVisitor();
+        Expression expression = ctx.accept(visitor);
+        return expression;
     }
 
 }

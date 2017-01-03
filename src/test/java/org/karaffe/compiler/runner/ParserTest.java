@@ -43,24 +43,46 @@ public class ParserTest {
     @Test
     public void shouldCompiles() throws IOException {
         Stream<Path> pathList = Files
-                .find(Paths.get("src", "test", "resources", "test-sources"), 10, (t, a) -> {
-                    System.out.println(t.getFileName().toString() + " : " + t.getFileName().toString().endsWith("_pass.krf"));
-                    return t.getFileName().toString().endsWith("_pass.krf");
-                });
+                .find(Paths.get("src", "test", "resources", "test-sources"), 10, (t, a) -> t.getFileName().toString().endsWith("_pass.krf"));
         long count = pathList
-                .peek(p -> System.err.println("Compiling... : " + p))
+                .peek(p -> System.err.println("Compiling... : " + p.toAbsolutePath()))
                 .map(p -> getCompileUnitFromSource(p))
                 .peek(c -> System.err.println("Compiled. : " + c))
                 .count();
         assertNotEquals(count, 0L);
     }
 
+    @Test
+    public void shouldNotCompiles() throws IOException {
+        Stream<Path> pathList = Files
+                .find(Paths.get("src", "test", "resources", "test-sources"), 10, (t, a) -> t.getFileName().toString().endsWith("_fail.krf"));
+
+        long count = pathList
+                .peek(p -> System.err.println("Compiling... : " + p.toAbsolutePath()))
+                .peek(p -> testFail(p))
+                .peek(p -> System.err.println("Fail test OK : " + p))
+                .count();
+        assertNotEquals(count, 0L);
+
+    }
+
     private CompileUnit getCompileUnitFromSource(Path path) {
         try {
             KaraffeFile file = new KaraffeFile(path);
-            Parser parser = new Parser(file);
+            ParserRunner parser = new ParserRunner(file);
             CompileUnit compileUnit = parser.parse();
             return compileUnit;
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
+
+    private void testFail(Path path) {
+        try {
+            KaraffeFile file = new KaraffeFile(path);
+            ParserRunner parser = new ParserRunner(file);
+            CompileUnit compileUnit = parser.parse();
+            throw new AssertionError("");
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }

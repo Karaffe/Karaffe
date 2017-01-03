@@ -28,5 +28,5 @@ package org.karaffe.compiler.tree;
  * @author noko
  */
 public enum ASTType {
-    CLASS_DECL, FIELD_DECL;
+    CLASS_DECL, FIELD_DECL, PACKAGE_DECL, IMPORT_DECL, INTERFACE_DECL, FUNC_DECL, NIL, OPERATOR, ATOM;
 }

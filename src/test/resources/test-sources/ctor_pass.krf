@@ -1,0 +1,6 @@
+class A {
+  init { }
+  init(a Int) { }
+  init(a Int) { }
+  init(a Int...) {}
+}

@@ -1,2 +1,14 @@
 class Hoge {
+  def field : Int
+  init {
+    this.field = 0
+  }
+  
+  func run( ) {
+    println(p(this.field))
+  }
+  
+  private func p(i Int) Int {
+    i + 1
+  }
 }

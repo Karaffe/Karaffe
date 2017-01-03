@@ -55,8 +55,8 @@ public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> {
 
     @Override
     public ClassDecl visitClassDecl(KaraffeParser.ClassDeclContext classDeclContext) {
-        log.info("enter class decl");
-        String className = classDeclContext.className().accept(new ClassNameVisitor());
+        log.info("visitClassDecl start");
+        String className = classDeclContext.className().accept(new TypeNameVisitor());
         ClassMetaData currentMetaData;
         if (classDeclContext.superOrInterfaceList() == null) {
             currentMetaData = ClassMetaData.builder().superClass(JavaType.ANY_TYPE).outerClass(parent).build();
@@ -78,7 +78,7 @@ public class ClassDeclVisitor extends KaraffeBaseVisitor<ClassDecl> {
             log.warn("{} is need default constructor", classDecl.getName());
         }
 
-        log.info("end class decl");
+        log.info("visitClassDecl end");
         return classDecl;
     }
 

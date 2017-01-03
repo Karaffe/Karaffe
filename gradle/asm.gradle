@@ -19,7 +19,7 @@ task createStartScripts(type: CreateStartScripts, dependsOn: fatJar){
   classpath = classPath
 }
 
-task installLocal(type: Copy, dependsOn: createStartScripts) {
+task installLocal(type: Copy,overwrite: true , dependsOn: createStartScripts) {
   from(Paths.get(".", "build","libs", jarBaseName + '-' + version + '.jar').toString()) {
     rename '-' + version, ''
   }

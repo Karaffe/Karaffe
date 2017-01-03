@@ -1,0 +1,3 @@
+class A {
+  def a : Int = 1
+}

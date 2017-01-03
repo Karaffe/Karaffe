@@ -21,20 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.karaffe.compiler.visitors;
+package org.karaffe.compiler.tree.meta;
 
-import org.karaffe.compiler.antlr.KaraffeBaseVisitor;
-import org.karaffe.compiler.antlr.KaraffeParser;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+import org.karaffe.compiler.exception.ExceptionMessages;
+import org.karaffe.compiler.exception.IllegalSymbolException;
 
 /**
  *
  * @author noko
  */
-public class FieldNameVisitor extends KaraffeBaseVisitor<String> {
+public class Path {
+
+    private final List<String> pathList = new ArrayList<>();
+
+    public void addPath(String path) {
+        pathList.add(path);
+    }
+
+    public List<String> toList() {
+        return new ArrayList<>(pathList);
+    }
+
+    public Stream<String> stream() {
+        return pathList.stream();
+    }
 
     @Override
-    public String visitFieldName(KaraffeParser.FieldNameContext ctx) {
-        return ctx.getText();
+    public String toString() {
+        return pathList.stream().reduce((left, right) -> left + "." + right).orElseThrow(() -> new IllegalSymbolException(ExceptionMessages.INVALID_PATH));
     }
 
 }
