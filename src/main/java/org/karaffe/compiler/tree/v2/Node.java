@@ -31,8 +31,6 @@ import java.util.Optional;
  */
 public abstract class Node {
 
-    public static final Node ROOT = RootNode.INSTANCE;
-
     private final long treeId;
     private final Pos pos;
     private final Optional<Node> owner;

@@ -35,6 +35,6 @@ public class FileUnit extends Node {
     private final List<CompileUnit> compileUnits = new ArrayList<>(1);
 
     public FileUnit() {
-        super(Pos.UNAVAILABLE, ROOT);
+        super(Pos.UNAVAILABLE, RootNode.INSTANCE);
     }
 }
