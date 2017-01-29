@@ -1,16 +1,16 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'jacoco'
-apply plugin: 'eu.appsatori.fatjar'
-apply plugin: 'antlr'
-
+plugins {
+  id 'eu.appsatori.fatjar' version '0.3'
+  id 'java'
+  id 'maven'
+  id 'application'
+} 
 group = 'org.karaffe'
 version = '0.1'
 
-description = """"""
-
+description = """Karaffe Compiler""" 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+mainClassName = "org.karaffe.compiler.Main"
 
 repositories {
     mavenCentral()
@@ -18,41 +18,31 @@ repositories {
 
 ext {
   antlrVersion = '4.5.3'
+  args4jVersion = '2.33'
   junitVersion = '4.11'
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: junitVersion
-    compile group: 'org.antlr', name: 'antlr4', version: antlrVersion
-    compile group: 'org.antlr', name: 'antlr4-maven-plugin', version: antlrVersion
-    antlr "org.antlr:antlr4:$antlrVersion"
+  compile group: 'args4j', name: 'args4j', version: args4jVersion
+  compileOnly "org.projectlombok:lombok:1.16.12"
+  compile "org.functionaljava:functionaljava:4.6"
+  compile "org.functionaljava:functionaljava-java8:4.6"
+  compile "org.functionaljava:functionaljava-quickcheck:4.6"
+  compile "org.functionaljava:functionaljava-java-core:4.6"
+  testCompile "org.mockito:mockito-core:2.+"
 }
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
-    }
-}
+apply from: 'gradle/antlr.gradle'
+apply from: 'gradle/asm.gradle'
+apply from: 'gradle/directories.gradle'
+apply from: 'gradle/log.gradle'
+apply from: 'gradle/quality.gradle'
 
-fatJar {
-    baseName = 'fatjar'
-    manifest {
-        attributes('Main-Class': 'org.karaffe.compiler.Main')
-    }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-                fileTree(dir: it,
-                    exclude: ['**/org/karaffe/antlr/**'])
-            })
-    }
+if( !JavaVersion.current().java8Compatible ) {
+  def errorString = """
+****************************************
+      JDK 8+ is required!
+****************************************
+  """
+  throw new GradleException(errorString)
 }

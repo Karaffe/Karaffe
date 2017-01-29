@@ -1,0 +1,21 @@
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: junitVersion
+}
+
+apply plugin: 'jacoco'
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+                fileTree(dir: it,
+                    exclude: ['**/org/karaffe/compiler/antlr/**', '**/org/karaffe/compiler/arg/KaraffeFileHandler*'])
+            })
+    }
+}
+
+task lexparTest(type :Exec, dependsOn: test){
+  commandLine "bash", "runtest.sh"
+}
