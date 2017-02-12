@@ -2,6 +2,8 @@ package org.karaffe.compiler;
 
 public class KaraffeCompilerException extends RuntimeException {
 
+    private static final long serialVersionUID = 8803424038193558641L;
+
     public KaraffeCompilerException() {
         super();
     }

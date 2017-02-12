@@ -1,10 +1,10 @@
 package org.karaffe.compiler;
 
-import org.karaffe.compiler.config.CompilerConfig;
+import org.karaffe.compiler.common.KaraffeCompilerConfig;
 
 public class Main {
 
     public static void main(String[] args) {
-        Compiler compiler = Compiler.get(CompilerConfig.getDefault());
+        KaraffeCompilerConfig config = new KaraffeCompilerConfig(args);
     }
 }
